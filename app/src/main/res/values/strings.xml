@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NextStep Mobile</string>
     <string name="app_name_title">NextStep</string>
-    <string name="hint_email">Email do MEI</string>
+    <string name="hint_email">Email</string>
     <string name="hint_password">Senha</string>
     <string name="btn_login_text">ENTRAR</string>
 </resources>
