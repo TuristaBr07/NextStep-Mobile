@@ -1,6 +1,7 @@
 package com.tamarin.nextstep;
 
-public class Mei {
+import java.io.Serializable;
+public class Mei implements Serializable {
     private String nome;
     private String cnpj;
     private double faturamentoAtual;

@@ -1,5 +1,6 @@
 package com.tamarin.nextstep;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,10 @@ public class MeiAdapter extends RecyclerView.Adapter<MeiAdapter.MeiViewHolder> {
 
     private List<Mei> meiList;
 
-    // Construtor: Recebe a lista de dados
     public MeiAdapter(List<Mei> meiList) {
         this.meiList = meiList;
     }
 
-    // 1. Cria o visual do cartão (infla o layout)
     @NonNull
     @Override
     public MeiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -26,7 +25,6 @@ public class MeiAdapter extends RecyclerView.Adapter<MeiAdapter.MeiViewHolder> {
         return new MeiViewHolder(view);
     }
 
-    // 2. Preenche os dados no cartão
     @Override
     public void onBindViewHolder(@NonNull MeiViewHolder holder, int position) {
         Mei mei = meiList.get(position);
@@ -35,23 +33,33 @@ public class MeiAdapter extends RecyclerView.Adapter<MeiAdapter.MeiViewHolder> {
         holder.tvCnpj.setText(mei.getCnpj());
         holder.tvRisco.setText(mei.getStatusRisco());
 
-        // Bônus: Mudar cor do badge baseada no risco
+        // Cores do Badge
         if (mei.getStatusRisco().equals("Alto")) {
-            holder.tvRisco.setTextColor(0xFFD32F2F); // Vermelho
-            holder.tvRisco.setBackgroundColor(0xFFFFEBEE); // Fundo Vermelho Claro
+            holder.tvRisco.setTextColor(0xFFD32F2F);
+            holder.tvRisco.setBackgroundColor(0xFFFFEBEE);
         } else {
-            holder.tvRisco.setTextColor(0xFF2E7D32); // Verde
-            holder.tvRisco.setBackgroundColor(0xFFE8F5E9); // Fundo Verde Claro
+            holder.tvRisco.setTextColor(0xFF2E7D32);
+            holder.tvRisco.setBackgroundColor(0xFFE8F5E9);
         }
+
+        // --- NOVIDADE: CLIQUE NO ITEM ---
+        holder.itemView.setOnClickListener(v -> {
+            // Cria a intenção de ir para a tela de Detalhes
+            Intent intent = new Intent(v.getContext(), DetalheMeiActivity.class);
+
+            // "Anexa" o objeto MEI na mala para viagem
+            intent.putExtra("mei_selecionado", mei);
+
+            // Inicia a viagem
+            v.getContext().startActivity(intent);
+        });
     }
 
-    // 3. Conta quantos itens tem na lista
     @Override
     public int getItemCount() {
         return meiList.size();
     }
 
-    // A classe que "segura" os componentes da tela
     static class MeiViewHolder extends RecyclerView.ViewHolder {
         TextView tvNomeEmpresa, tvCnpj, tvRisco;
 

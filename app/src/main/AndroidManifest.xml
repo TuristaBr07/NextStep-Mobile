@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextStepMobile">
         <activity
+            android:name=".DetalheMeiActivity"
+            android:exported="false" />
+        <activity
             android:name=".DashboardActivity"
             android:exported="false" />
         <activity
