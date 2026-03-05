@@ -8,11 +8,16 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+// Se a palavra 'BuildConfig' ficar vermelha, não se assuste.
+// Vamos resolver isso no passo "Rebuild" logo abaixo.
+import com.tamarin.nextstep.BuildConfig;
+
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://wsnrotqjekgelowseqet.supabase.co/"; // Sua URL correta
-    // Anon Key (Chave Pública)
-    private static final String ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzbnJvdHFqZWtnZWxvd3NlcWV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNDQzOTIsImV4cCI6MjA3NzcyMDM5Mn0.6lFmXwZCHiruXkOpBEE24z6k5caxyNpbLMUWJWS1aXE";
+    // AGORA PEGANDO DO SEGREDO (Cofre)
+    // O Gradle injetou essas variáveis automaticamente
+    private static final String BASE_URL = BuildConfig.SUPABASE_URL;
+    private static final String ANON_KEY = BuildConfig.SUPABASE_KEY;
 
     private static Retrofit retrofit = null;
 
@@ -23,16 +28,14 @@ public class RetrofitClient {
                 public Response intercept(Chain chain) throws IOException {
                     Request.Builder builder = chain.request().newBuilder();
 
-                    // 1. A 'apikey' é sempre a ANON (Identifica o App)
+                    // 1. Identifica o App (Chave Pública)
                     builder.addHeader("apikey", ANON_KEY);
 
-                    // 2. A 'Authorization' define QUEM é o usuário
+                    // 2. Identifica o Usuário (Token de Sessão ou Anon)
                     String userToken = SessionManager.getAuthToken();
                     if (userToken != null) {
-                        // Se temos token de usuário (VIP), usamos ele!
                         builder.addHeader("Authorization", "Bearer " + userToken);
                     } else {
-                        // Se não, usamos o token de visitante (Anon)
                         builder.addHeader("Authorization", "Bearer " + ANON_KEY);
                     }
 
