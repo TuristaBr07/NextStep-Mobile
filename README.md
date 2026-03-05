@@ -1,4 +1,5 @@
 NextStep Mobile 🚀
+
 NextStep Mobile é uma solução nativa desenvolvida para auxiliar Microempreendedores Individuais (MEIs) na gestão de seus negócios. O aplicativo transforma dados brutos em inteligência de negócio, permitindo o acompanhamento de transações financeiras e o monitoramento do limite de faturamento anual em tempo real.
 
 📋 Funcionalidades Principais
