@@ -43,4 +43,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Retrofit para consumir APIs REST (Supabase)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Conversor Gson para transformar JSON em Objetos Java
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
