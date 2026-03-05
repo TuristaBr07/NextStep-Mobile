@@ -1,11 +1,35 @@
 NextStep Mobile 🚀
-Aplicativo nativo para gestão financeira de MEIs integrado ao ecossistema NextStep.
+NextStep Mobile é uma solução nativa desenvolvida para auxiliar Microempreendedores Individuais (MEIs) na gestão de seus negócios. O aplicativo transforma dados brutos em inteligência de negócio, permitindo o acompanhamento de transações financeiras e o monitoramento do limite de faturamento anual em tempo real.
 
-🛠️ Tecnologias e Segurança
-Android Nativo (Java): Interface e lógica de negócio.
+📋 Funcionalidades Principais
+Autenticação Segura: Sistema de login integrado ao Supabase Auth utilizando tokens JWT para persistência de sessão.
 
-Retrofit & Gson: Integração com API REST do Supabase.
+Dashboard Financeiro: Visualização clara de Saldo Total, Receitas e Despesas.
 
-Autenticação JWT: Login seguro com gerenciamento de sessão.
+Monitoramento MEI: Barra de progresso dinâmica que alerta o usuário conforme ele se aproxima do limite de faturamento de R$ 81.000,00.
 
-Segurança de Dados: Implementação de Row Level Security (RLS) e proteção de credenciais via local.properties.
+Histórico de Transações: Lista detalhada de entradas e saídas consumida via API REST.
+
+Análise de Risco: Interface preparada para exibir status de risco e faturamento atual de empresas cadastradas.
+
+🛡️ Segurança e Arquitetura
+O projeto segue as melhores práticas de desenvolvimento seguro (DevSecOps):
+
+Proteção de Credenciais: Utilização do arquivo local.properties (ignorado pelo VCS) e BuildConfig para garantir que chaves de API e URLs sensíveis nunca sejam expostas no código-fonte público.
+
+Row Level Security (RLS): O banco de dados Supabase está protegido por políticas de RLS, garantindo que cada usuário acesse exclusivamente seus próprios dados financeiros.
+
+Arquitetura REST: Consumo de APIs utilizando Retrofit 2 e OkHttp3, com interceptores para injeção automática de tokens de autorização.
+
+🛠️ Tecnologias Utilizadas
+Linguagem: Java.
+
+Arquitetura: Android Nativo.
+
+Rede: Retrofit 2.9.0 & OkHttp.
+
+Serialização: Gson Converter.
+
+Interface: Material Design, ConstraintLayout e RecyclerView.
+
+Backend: Supabase (PostgreSQL, Auth e API REST).
