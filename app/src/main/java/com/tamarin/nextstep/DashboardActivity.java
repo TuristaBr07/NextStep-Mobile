@@ -1,14 +1,25 @@
 package com.tamarin.nextstep;
 
+import android.content.Intent; // IMPORTANTE: Para mudar de tela
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast; // Adicionado para exibir erros se precisar
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton; // IMPORTANTE: O botão redondo
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -25,7 +36,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // 1. Inicializar Componentes
+        // 1. Inicializar Componentes de Texto e Lista
         rvTransactions = findViewById(R.id.rvTransactions);
         tvSaldo = findViewById(R.id.tvSaldo);
         tvReceita = findViewById(R.id.tvReceita);
@@ -36,16 +47,35 @@ public class DashboardActivity extends AppCompatActivity {
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setHasFixedSize(true);
 
-        // 3. Carregar Dados
-        fetchTransactions();
+        // --- AQUI ESTÁ O CÓDIGO DO BOTÃO QUE FALTAVA ---
+        FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
+        if (fabAdd != null) { // Verificação de segurança
+            fabAdd.setOnClickListener(v -> {
+                // Navega para a tela de Adicionar Transação
+                Intent intent = new Intent(DashboardActivity.this, AddTransactionActivity.class);
+                startActivity(intent);
+            });
+        }
+        // -----------------------------------------------
 
+        // NOTA: Eu removi o fetchTransactions() daqui do onCreate
+        // e coloquei no onResume logo abaixo.
+    }
+
+    // --- O PULO DO GATO: ATUALIZAR AO VOLTAR ---
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Toda vez que a tela aparecer (ou você voltar da tela de cadastro),
+        // ele vai buscar os dados novos no banco.
+        fetchTransactions();
     }
 
     private void fetchTransactions() {
-        // Chama a API criada no passo anterior
-        RetrofitClient.getApi().getTransactions().enqueue(new retrofit2.Callback<List<Transaction>>() {
+        // Chama a API criada
+        RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
             @Override
-            public void onResponse(retrofit2.Call<List<Transaction>> call, retrofit2.Response<List<Transaction>> response) {
+            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     // SUCESSO: Dados chegaram do banco!
                     transactionList = response.body();
@@ -58,24 +88,28 @@ public class DashboardActivity extends AppCompatActivity {
                     calculateKPIs();
                 } else {
                     System.out.println("Erro na resposta: " + response.code());
+                    Toast.makeText(DashboardActivity.this, "Erro ao carregar dados", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Transaction>> call, Throwable t) {
+            public void onFailure(Call<List<Transaction>> call, Throwable t) {
                 System.out.println("Falha na conexão: " + t.getMessage());
-                // Dica: Se cair aqui, verifique sua internet ou a URL no RetrofitClient
+                Toast.makeText(DashboardActivity.this, "Sem conexão com internet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void calculateKPIs() {
+        if (transactionList == null) return;
+
         double totalReceita = 0;
         double totalDespesa = 0;
 
         // Soma os valores da lista
         for (Transaction tx : transactionList) {
-            if ("Receita".equalsIgnoreCase(tx.getType())) {
+            // Verifica se o tipo é null antes de comparar para evitar crash
+            if (tx.getType() != null && (tx.getType().equalsIgnoreCase("Receita") || tx.getType().equalsIgnoreCase("income"))) {
                 totalReceita += tx.getAmount();
             } else {
                 totalDespesa += tx.getAmount();

@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+// --- CORREÇÃO: Inicializar o Gerente de Sessão AQUI ---
+        SessionManager.init(this);
+
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -44,22 +47,33 @@ public class MainActivity extends AppCompatActivity {
     private void fazerLogin(String email, String senha) {
         LoginRequest loginRequest = new LoginRequest(email, senha);
 
-        RetrofitClient.getApi().loginUser(loginRequest).enqueue(new Callback<LoginResponse>() {
+        // ATENÇÃO: Verifique se na sua SupabaseApi o método chama "login" ou "loginUser".
+        // No código que te passei anteriormente, chamamos de "login".
+        RetrofitClient.getApi().login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // SUCESSO! Pegamos o Token VIP
+
+                    // 1. Pegamos o Token
                     String token = response.body().getAccessToken();
 
-                    // Guardamos no Gerente de Sessão
-                    SessionManager.setAuthToken(token);
+                    // 2. Pegamos o ID do Usuário (NOVO!)
+                    // Se der erro aqui, verifique se fez o Passo 1 e 2 (User e LoginResponse)
+                    String userId = "";
+                    if (response.body().getUser() != null) {
+                        userId = response.body().getUser().getId();
+                    }
+
+                    // 3. Salvamos os dois na Sessão (Agora funciona!)
+                    SessionManager.init(MainActivity.this); // Garante que iniciou
+                    SessionManager.saveSession(token, userId);
 
                     Toast.makeText(MainActivity.this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
 
                     // Vai para o Dashboard
                     Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                     startActivity(intent);
-                    finish(); // Fecha a tela de login para não voltar com "voltar"
+                    finish();
                 } else {
                     Toast.makeText(MainActivity.this, "Erro: Email ou senha inválidos", Toast.LENGTH_LONG).show();
                 }

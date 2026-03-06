@@ -1,10 +1,28 @@
 package com.tamarin.nextstep;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LoginResponse {
-    // O Supabase manda um JSON com "access_token"
-    private String access_token;
+
+    @SerializedName("access_token")
+    private String accessToken;
+
+    @SerializedName("user")
+    private User user; // Adicionamos isso aqui!
 
     public String getAccessToken() {
-        return access_token;
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
