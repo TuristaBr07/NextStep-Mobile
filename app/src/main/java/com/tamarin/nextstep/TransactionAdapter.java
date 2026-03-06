@@ -31,18 +31,30 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction tx = list.get(position);
 
+        // Define os textos básicos
         holder.tvDescription.setText(tx.getDescription());
         holder.tvCategory.setText(tx.getCategory() + " • " + tx.getDate());
 
         // Formatação de dinheiro (R$)
         holder.tvAmount.setText(String.format(Locale.getDefault(), "R$ %.2f", tx.getAmount()));
 
-        // Lógica Visual: Receita (Verde) vs Despesa (Vermelho)
-        if ("Despesa".equalsIgnoreCase(tx.getType())) {
+        // --- CORREÇÃO DA LÓGICA DE COR ---
+        String type = tx.getType();
+
+        // Verifica se é DESPESA aceitando Inglês (expense) e Português (Despesa/Saída)
+        boolean isExpense = type != null && (
+                type.equalsIgnoreCase("expense") ||
+                        type.equalsIgnoreCase("Despesa") ||
+                        type.equalsIgnoreCase("Saída")
+        );
+
+        if (isExpense) {
+            // É Saída: Vermelho e Seta para Baixo
             holder.tvAmount.setTextColor(Color.parseColor("#D32F2F")); // Vermelho
             holder.ivIcon.setImageResource(android.R.drawable.arrow_down_float);
             holder.ivIcon.setColorFilter(Color.parseColor("#D32F2F"));
         } else {
+            // É Entrada: Verde e Seta para Cima
             holder.tvAmount.setTextColor(Color.parseColor("#2E7D32")); // Verde
             holder.ivIcon.setImageResource(android.R.drawable.arrow_up_float);
             holder.ivIcon.setColorFilter(Color.parseColor("#2E7D32"));
@@ -51,7 +63,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0; // Proteção extra contra lista nula
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
