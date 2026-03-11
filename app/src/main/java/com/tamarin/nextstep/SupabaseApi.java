@@ -6,6 +6,8 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PATCH;   // <-- Importação adicionada
+import retrofit2.http.DELETE;  // <-- Importação adicionada
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
@@ -20,12 +22,19 @@ public interface SupabaseApi {
     @GET("rest/v1/transactions?select=*&order=date.desc")
     Call<List<Transaction>> getTransactions();
 
-    // CRIAR NOVA TRANSAÇÃO (O código novo começa aqui)
-    // O header "Prefer: return=representation" pede pro Supabase devolver
-    // os dados que acabou de salvar (útil para confirmar que deu certo).
+    // CRIAR NOVA TRANSAÇÃO
     @Headers("Prefer: return=representation")
     @POST("rest/v1/transactions")
     Call<List<Transaction>> createTransaction(@Body Transaction transaction);
+
+    // ATUALIZAR TRANSAÇÃO (O Supabase usa PATCH para atualizações)
+    @Headers("Prefer: return=representation")
+    @PATCH("rest/v1/transactions")
+    Call<List<Transaction>> updateTransaction(@Query("id") String idQuery, @Body Transaction transaction);
+
+    // APAGAR TRANSAÇÃO
+    @DELETE("rest/v1/transactions")
+    Call<Void> deleteTransaction(@Query("id") String idQuery);
 
     // --- CATEGORIAS ---
 

@@ -41,6 +41,20 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         // --- CORREÇÃO DA LÓGICA DE COR ---
         String type = tx.getType();
 
+        // --- TORNAR A LINHA CLICÁVEL ---
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(v.getContext(), EditTransactionActivity.class);
+
+            // Passar os dados da transação para o ecrã de edição
+            intent.putExtra("EXTRA_ID", tx.getId());
+            intent.putExtra("EXTRA_DESC", tx.getDescription());
+            intent.putExtra("EXTRA_AMOUNT", tx.getAmount());
+            intent.putExtra("EXTRA_TYPE", tx.getType());
+            intent.putExtra("EXTRA_CATEGORY", tx.getCategory());
+
+            v.getContext().startActivity(intent);
+        });
+
         // Verifica se é DESPESA aceitando Inglês (expense) e Português (Despesa/Saída)
         boolean isExpense = type != null && (
                 type.equalsIgnoreCase("expense") ||
