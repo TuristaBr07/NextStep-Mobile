@@ -63,15 +63,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         );
 
         if (isExpense) {
-            // É Saída: Vermelho e Seta para Baixo
-            holder.tvAmount.setTextColor(Color.parseColor("#D32F2F")); // Vermelho
-            holder.ivIcon.setImageResource(android.R.drawable.arrow_down_float);
+            // É Saída: Vermelho, ícone de queda, e aviso para leitor de tela
+            holder.tvAmount.setTextColor(Color.parseColor("#D32F2F"));
+            holder.ivIcon.setImageResource(R.drawable.ic_expense); // Novo ícone vetorial
             holder.ivIcon.setColorFilter(Color.parseColor("#D32F2F"));
+            holder.ivIcon.setContentDescription("Ícone de despesa"); // Acessibilidade
         } else {
-            // É Entrada: Verde e Seta para Cima
-            holder.tvAmount.setTextColor(Color.parseColor("#2E7D32")); // Verde
-            holder.ivIcon.setImageResource(android.R.drawable.arrow_up_float);
+            // É Entrada: Verde, ícone de alta, e aviso para leitor de tela
+            holder.tvAmount.setTextColor(Color.parseColor("#2E7D32"));
+            holder.ivIcon.setImageResource(R.drawable.ic_income); // Novo ícone vetorial
             holder.ivIcon.setColorFilter(Color.parseColor("#2E7D32"));
+            holder.ivIcon.setContentDescription("Ícone de receita"); // Acessibilidade
         }
     }
 

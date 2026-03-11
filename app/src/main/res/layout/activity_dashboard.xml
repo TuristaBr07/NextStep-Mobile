@@ -6,94 +6,160 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="#F8F9FA"
     android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="Logotipo NextStep"
+        android:src="@drawable/logo_nextstep"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Olá, Empreendedor! 👋"
-        android:textSize="24sp"
+        android:layout_marginStart="16dp"
+        android:text="Olá, Empreendedor!"
+        android:textColor="#1F1F1F"
+        android:textSize="22sp"
         android:textStyle="bold"
-        android:textColor="#333333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintBottom_toTopOf="@+id/tvSubHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivLogo"
+        app:layout_constraintTop_toTopOf="@id/ivLogo"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tvSubHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Visão financeira do seu negócio"
+        android:textColor="#757575"
         android:textSize="14sp"
-        android:textColor="#666666"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvHeader"/>
+        app:layout_constraintBottom_toBottomOf="@id/ivLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvHeader"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader" />
 
     <LinearLayout
         android:id="@+id/llKpis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:orientation="horizontal"
         android:weightSum="3"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/tvSubHeader">
+        app:layout_constraintTop_toBottomOf="@id/ivLogo">
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="90dp"
+            android:layout_marginEnd="6dp"
             android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            app:cardCornerRadius="8dp"
             app:cardBackgroundColor="#FFFFFF"
-            app:cardElevation="2dp">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:padding="8dp">
-                <TextView android:text="💼 Saldo" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/tvSaldo" android:text="R$ 0,00" android:textSize="14sp" android:textStyle="bold" android:textColor="#333333" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Saldo"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSaldo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="R$ 0,00"
+                    android:textColor="#1F1F1F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="90dp"
+            android:layout_marginHorizontal="6dp"
             android:layout_weight="1"
-            android:layout_marginHorizontal="4dp"
-            app:cardCornerRadius="8dp"
             app:cardBackgroundColor="#FFFFFF"
-            app:cardElevation="2dp">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:padding="8dp">
-                <TextView android:text="📈 Receitas" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/tvReceita" android:text="R$ 0,00" android:textSize="14sp" android:textStyle="bold" android:textColor="#2E7D32" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Receitas"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvReceita"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="R$ 0,00"
+                    android:textColor="#2E7D32"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="6dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            app:cardCornerRadius="8dp"
             app:cardBackgroundColor="#FFFFFF"
-            app:cardElevation="2dp">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:padding="8dp">
-                <TextView android:text="📉 Despesas" android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                <TextView android:id="@+id/tvDespesa" android:text="R$ 0,00" android:textSize="14sp" android:textStyle="bold" android:textColor="#D32F2F" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Despesas"
+                    android:textColor="#757575"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDespesa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="R$ 0,00"
+                    android:textColor="#D32F2F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
@@ -102,45 +168,48 @@
         android:id="@+id/tvLabelMei"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:text="Limite MEI (R$ 81k)"
-        android:textSize="12sp"
+        android:textColor="#1F1F1F"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/llKpis"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/llKpis" />
 
     <ProgressBar
         android:id="@+id/pbMeiLimit"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:max="100"
         android:progress="0"
         android:progressTint="#2E7D32"
-        app:layout_constraintTop_toBottomOf="@id/tvLabelMei"/>
+        android:scaleY="2"
+        app:layout_constraintTop_toBottomOf="@id/tvLabelMei" />
 
     <TextView
         android:id="@+id/tvListaTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Últimas Transações"
+        android:textColor="#1F1F1F"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/pbMeiLimit"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pbMeiLimit" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTransactions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvListaTitle"
+        android:layout_marginTop="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_transaction"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvListaTitle"
+        tools:listitem="@layout/item_transaction" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
@@ -148,12 +217,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="Adicionar nova transação"
+        android:focusable="true"
         android:src="@android:drawable/ic_input_add"
-        app:tint="#FFFFFF"
-        app:backgroundTint="#000000"
+        app:backgroundTint="#1F1F1F"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="#FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
