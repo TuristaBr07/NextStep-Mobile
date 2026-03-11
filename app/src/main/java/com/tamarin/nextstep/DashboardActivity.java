@@ -87,8 +87,21 @@ public class DashboardActivity extends AppCompatActivity {
                     // Recalcula Saldo e Gráficos
                     calculateKPIs();
                 } else {
-                    System.out.println("Erro na resposta: " + response.code());
-                    Toast.makeText(DashboardActivity.this, "Erro ao carregar dados", Toast.LENGTH_SHORT).show();
+                    // NOVO: Tratamento de Sessão Expirada (Erro 401)
+                    if (response.code() == 401) {
+                        Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
+
+                        // Limpa o token inválido usando o método exato do seu SessionManager
+                        SessionManager.clear();
+
+                        // Redireciona de volta para o Login
+                        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish(); // Destrói o Dashboard para o usuário não conseguir voltar pelo botão de "Voltar" do celular
+                    } else {
+                        System.out.println("Erro na resposta: " + response.code());
+                        Toast.makeText(DashboardActivity.this, "Erro ao carregar dados", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 

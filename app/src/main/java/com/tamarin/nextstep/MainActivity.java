@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
@@ -15,18 +16,37 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    // NOVOS TEXTVIEWS
+    private TextView tvForgotPassword, tvGoToRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-// --- CORREÇÃO: Inicializar o Gerente de Sessão AQUI ---
         SessionManager.init(this);
+
+        // Se o usuário já tiver um token salvo, pode pular direto pro Dashboard (opcional, adicionei como boa prática)
+        if (SessionManager.getToken() != null && !SessionManager.getToken().isEmpty()) {
+            startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+            finish();
+            return;
+        }
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvGoToRegister = findViewById(R.id.tvGoToRegister);
+
+        // AÇÕES DOS NOVOS CLIQUES
+        tvGoToRegister.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+        });
+
+        tvForgotPassword.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ForgotPasswordActivity.class));
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,30 +67,22 @@ public class MainActivity extends AppCompatActivity {
     private void fazerLogin(String email, String senha) {
         LoginRequest loginRequest = new LoginRequest(email, senha);
 
-        // ATENÇÃO: Verifique se na sua SupabaseApi o método chama "login" ou "loginUser".
-        // No código que te passei anteriormente, chamamos de "login".
         RetrofitClient.getApi().login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-                    // 1. Pegamos o Token
                     String token = response.body().getAccessToken();
-
-                    // 2. Pegamos o ID do Usuário (NOVO!)
-                    // Se der erro aqui, verifique se fez o Passo 1 e 2 (User e LoginResponse)
                     String userId = "";
                     if (response.body().getUser() != null) {
                         userId = response.body().getUser().getId();
                     }
 
-                    // 3. Salvamos os dois na Sessão (Agora funciona!)
-                    SessionManager.init(MainActivity.this); // Garante que iniciou
+                    SessionManager.init(MainActivity.this);
                     SessionManager.saveSession(token, userId);
 
                     Toast.makeText(MainActivity.this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
 
-                    // Vai para o Dashboard
                     Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                     startActivity(intent);
                     finish();
