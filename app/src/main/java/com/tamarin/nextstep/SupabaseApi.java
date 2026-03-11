@@ -16,16 +16,21 @@ public interface SupabaseApi {
     @POST("auth/v1/token?grant_type=password")
     Call<LoginResponse> login(@Body LoginRequest request);
 
-    // NOVO: Rota de Cadastro
     @POST("auth/v1/signup")
     Call<Void> register(@Body SignUpRequest request);
 
-    // NOVO: Rota de Recuperação de Senha
     @POST("auth/v1/recover")
     Call<Void> recoverPassword(@Body RecoverRequest request);
 
-    // --- TRANSAÇÕES ---
+    // --- PERFIL ---
+    @GET("rest/v1/profiles?select=*")
+    Call<List<Profile>> getProfile(@Query("id") String idQuery);
 
+    @Headers("Prefer: return=representation")
+    @PATCH("rest/v1/profiles")
+    Call<List<Profile>> updateProfile(@Query("id") String idQuery, @Body Profile profile);
+
+    // --- TRANSAÇÕES ---
     @GET("rest/v1/transactions?select=*&order=date.desc")
     Call<List<Transaction>> getTransactions();
 
@@ -41,7 +46,13 @@ public interface SupabaseApi {
     Call<Void> deleteTransaction(@Query("id") String idQuery);
 
     // --- CATEGORIAS ---
-
     @GET("rest/v1/categories?select=*")
     Call<List<Category>> getCategories();
+
+    @Headers("Prefer: return=representation")
+    @POST("rest/v1/categories")
+    Call<List<Category>> createCategory(@Body Category category);
+
+    @DELETE("rest/v1/categories")
+    Call<Void> deleteCategory(@Query("id") String idQuery);
 }

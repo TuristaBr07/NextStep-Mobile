@@ -32,6 +32,9 @@
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

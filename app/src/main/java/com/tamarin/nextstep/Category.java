@@ -10,8 +10,12 @@ public class Category {
     @SerializedName("name")
     private String name;
 
-    @SerializedName("type") // NOVO CAMPO: Identifica se é income ou expense
+    @SerializedName("type")
     private String type;
+
+    // NOVO CAMPO: Para vincular a categoria ao usuário no banco
+    @SerializedName("user_id")
+    private String userId;
 
     public Category() {
     }
@@ -38,6 +42,14 @@ public class Category {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

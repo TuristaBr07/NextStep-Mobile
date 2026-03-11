@@ -1,39 +1,37 @@
 package com.tamarin.nextstep;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 public class SessionManager {
-    private static final String PREF_NAME = "NextStepSession";
-    private static final String KEY_TOKEN = "auth_token";
-    private static final String KEY_USER_ID = "user_id";
-    private static SharedPreferences prefs;
 
-    // Inicializa o gerenciador (chamado na MainActivity)
+    // Variáveis estáticas armazenam os dados apenas na memória RAM (Volátil)
+    private static String currentToken = null;
+    private static String currentUserId = null;
+
+    // Mantemos o método init para não quebrar a chamada lá na MainActivity
     public static void init(Context context) {
-        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        // Como não usamos mais SharedPreferences, este método fica vazio
     }
 
-    // Salva o Token e o ID do Usuário ao fazer login
+    // Salva o Token e o ID do Usuário na memória enquanto o app estiver aberto
     public static void saveSession(String token, String userId) {
-        prefs.edit()
-                .putString(KEY_TOKEN, token)
-                .putString(KEY_USER_ID, userId)
-                .apply();
+        currentToken = token;
+        currentUserId = userId;
     }
 
     // Recupera o Token
     public static String getToken() {
-        return prefs.getString(KEY_TOKEN, null);
+        return currentToken;
     }
 
     // Recupera o ID do Usuário (Para salvar na transação)
     public static String getUserId() {
-        return prefs.getString(KEY_USER_ID, null);
+        return currentUserId;
     }
 
-    // Limpa a sessão (Logout)
+    // Limpa a sessão (Logout manual ou erro 401)
     public static void clear() {
-        prefs.edit().clear().apply();
+        currentToken = null;
+        currentUserId = null;
     }
 }

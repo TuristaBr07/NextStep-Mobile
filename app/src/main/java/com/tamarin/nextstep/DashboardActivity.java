@@ -56,10 +56,15 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
-        // -----------------------------------------------
 
-        // NOTA: Eu removi o fetchTransactions() daqui do onCreate
-        // e coloquei no onResume logo abaixo.
+        // --- NOVO: CÓDIGO DO BOTÃO DE CONFIGURAÇÕES ---
+        View ivSettingsBtn = findViewById(R.id.ivSettingsBtn);
+        if (ivSettingsBtn != null) {
+            ivSettingsBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     // --- O PULO DO GATO: ATUALIZAR AO VOLTAR ---

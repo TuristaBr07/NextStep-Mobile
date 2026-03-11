@@ -4,4 +4,8 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Senha</string>
     <string name="btn_login_text">ENTRAR</string>
+    <string-array name="transaction_types">
+        <item>Receita</item>
+        <item>Despesa</item>
+    </string-array>
 </resources>
