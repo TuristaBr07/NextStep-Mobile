@@ -28,6 +28,8 @@ public class DashboardActivity extends AppCompatActivity {
     private List<Transaction> transactionList;
 
     private TextView tvSaldo, tvReceita, tvDespesa;
+    private TextView tvHeader, tvSubHeader;
+    private android.widget.ImageView ivLogo;
     private ProgressBar pbMeiLimit;
     private com.github.mikephil.charting.charts.LineChart lineChart;
 
@@ -42,6 +44,9 @@ public class DashboardActivity extends AppCompatActivity {
         tvDespesa = findViewById(R.id.tvDespesa);
         pbMeiLimit = findViewById(R.id.pbMeiLimit);
         lineChart = findViewById(R.id.lineChartDashboard);
+        tvHeader = findViewById(R.id.tvHeader);
+        tvSubHeader = findViewById(R.id.tvSubHeader);
+        ivLogo = findViewById(R.id.ivLogo);
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setHasFixedSize(true);
@@ -87,6 +92,7 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         fetchTransactions();
+        fetchUserProfile();
 
         // Garante que a aba "Início" volta a estar destacada quando o utilizador volta de outra tela
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
@@ -215,5 +221,51 @@ public class DashboardActivity extends AppCompatActivity {
         lineChart.getAxisRight().setEnabled(false);
         lineChart.animateX(1000);
         lineChart.invalidate();
+    }
+    private void fetchUserProfile() {
+        String userId = SessionManager.getUserId();
+        if (userId == null || userId.isEmpty()) return;
+
+        RetrofitClient.getApi().getProfile("eq." + userId).enqueue(new Callback<List<Profile>>() {
+            @Override
+            public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    Profile p = response.body().get(0);
+
+                    // Pega apenas o primeiro nome para ficar mais amigável
+                    if (p.getFullName() != null && !p.getFullName().isEmpty()) {
+                        String firstName = p.getFullName().split(" ")[0];
+                        tvHeader.setText("Olá, " + firstName + "!");
+                    }
+
+                    // Se o usuário tiver cadastrado a empresa, mostra aqui
+                    if (p.getCompanyName() != null && !p.getCompanyName().isEmpty()) {
+                        tvSubHeader.setText("Visão financeira de " + p.getCompanyName());
+                    } else {
+                        tvSubHeader.setText("Visão financeira do seu negócio");
+                    }
+                    // --- FOTO AQUI ---
+                    if (p.getAvatar() != null && !p.getAvatar().isEmpty()) {
+                        android.graphics.Bitmap bitmap = decodeBase64ToBitmap(p.getAvatar());
+                        if (bitmap != null) {
+                            ivLogo.setImageBitmap(bitmap);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Profile>> call, Throwable t) {
+                // Falha silenciosa para não travar a experiência do usuário
+            }
+        });
+    }
+    private android.graphics.Bitmap decodeBase64ToBitmap(String b64) {
+        try {
+            byte[] imageAsBytes = android.util.Base64.decode(b64.getBytes(), android.util.Base64.DEFAULT);
+            return android.graphics.BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
