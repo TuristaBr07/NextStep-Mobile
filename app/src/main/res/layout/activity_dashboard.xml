@@ -32,6 +32,17 @@
         android:layout_marginEnd="16dp"/>
 
     <ImageView
+        android:id="@+id/ivReportsBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_sort_by_size"
+        android:contentDescription="Relatórios"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivHistoryBtn"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"/>
+
+    <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="52dp"
         android:layout_height="52dp"
@@ -190,7 +201,7 @@
         android:id="@+id/tvLabelMei"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:text="Limite MEI (R$ 81k)"
         android:textColor="#1F1F1F"
         android:textSize="14sp"
@@ -210,17 +221,26 @@
         android:scaleY="2"
         app:layout_constraintTop_toBottomOf="@id/tvLabelMei" />
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChartDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/pbMeiLimit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/tvListaTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Últimas Transações"
         android:textColor="#1F1F1F"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pbMeiLimit" />
+        app:layout_constraintTop_toBottomOf="@id/lineChartDashboard" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTransactions"

@@ -38,6 +38,9 @@
         <activity
             android:name=".TransactionsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ReportsActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
