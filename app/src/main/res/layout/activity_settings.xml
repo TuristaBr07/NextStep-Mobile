@@ -3,164 +3,224 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/ns_background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Configurações"
+            android:textColor="@color/ns_text_primary"
             android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            android:layout_marginBottom="24dp"/>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="8dp">
-
-            <ImageView
-                android:id="@+id/ivAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/logo_nextstep"
-                android:contentDescription="Foto de Perfil" />
-        </androidx.cardview.widget.CardView>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Toque para alterar a foto"
-            android:textSize="12sp"
-            android:textColor="@color/colorTextSecondary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginTop="6dp"
+            android:text="Gerencie seus dados, preferências e categorias."
+            android:textColor="@color/ns_text_secondary"
+            android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meu Perfil"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextSecondary"
-            android:layout_marginBottom="16dp"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Nome Completo">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etProfileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Nome da Empresa (Opcional)">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etProfileCompany"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSaveProfile"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Salvar Perfil"
-            app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="32dp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginBottom="32dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gerenciar Categorias"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextSecondary"
-            android:layout_marginBottom="16dp"/>
-
+        <!-- Perfil -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_form_card"
+            android:elevation="3dp"
+            android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinnerCatType"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    app:cardCornerRadius="55dp"
+                    app:cardElevation="4dp">
+
+                    <ImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Foto de perfil"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/logo_nextstep" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Toque para alterar a foto"
+                    android:textColor="@color/ns_text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:entries="@array/transaction_types"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Meu perfil"
+                android:textColor="@color/ns_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                android:hint="Nova Categoria">
+                android:layout_marginTop="16dp"
+                android:hint="Nome completo"
+                app:boxBackgroundColor="@color/ns_surface_soft"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeColor="@color/ns_primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/ns_text_primary"
+                    android:textColorHint="@color/ns_text_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:hint="Nome da empresa (opcional)"
+                app:boxBackgroundColor="@color/ns_surface_soft"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeColor="@color/ns_primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etProfileCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/ns_text_primary"
+                    android:textColorHint="@color/ns_text_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="20dp"
+                android:text="Salvar perfil"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/ns_primary"
+                app:cornerRadius="16dp" />
+        </LinearLayout>
+
+        <!-- Categorias -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_form_card"
+            android:elevation="3dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gerenciar categorias"
+                android:textColor="@color/ns_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Crie e remova categorias para organizar melhor seu fluxo de caixa."
+                android:textColor="@color/ns_text_secondary"
+                android:textSize="13sp" />
+
+            <Spinner
+                android:id="@+id/spinnerCatType"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_filter_box"
+                android:entries="@array/transaction_types"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:hint="Nova categoria"
+                app:boxBackgroundColor="@color/ns_surface_soft"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeColor="@color/ns_primary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewCatName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords"
+                    android:textColor="@color/ns_text_primary"
+                    android:textColorHint="@color/ns_text_hint" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddCat"
-                android:layout_width="wrap_content"
-                android:layout_height="55dp"
-                android:text="ADD"
-                app:backgroundTint="?attr/colorSecondary"
-                app:cornerRadius="8dp" />
-        </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="14dp"
+                android:text="Adicionar categoria"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:backgroundTint="@color/ns_secondary"
+                app:cornerRadius="16dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCategoriesSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="32dp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategoriesSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Sair da Conta"
-            app:backgroundTint="?attr/colorError"
-            app:cornerRadius="12dp"
-            android:layout_marginTop="16dp"/>
+            android:layout_height="58dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="24dp"
+            android:text="Sair da conta"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/ns_error"
+            app:cornerRadius="16dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

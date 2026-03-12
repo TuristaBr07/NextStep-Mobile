@@ -1,37 +1,74 @@
 package com.tamarin.nextstep;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class SessionManager {
 
-    // Variáveis estáticas armazenam os dados apenas na memória RAM (Volátil)
-    private static String currentToken = null;
-    private static String currentUserId = null;
+    private static final String PREF_NAME = "nextstep_session";
+    private static final String KEY_TOKEN = "access_token";
+    private static final String KEY_USER_ID = "user_id";
 
-    // Mantemos o método init para não quebrar a chamada lá na MainActivity
-    public static void init(Context context) {
-        // Como não usamos mais SharedPreferences, este método fica vazio
+    private static SharedPreferences prefs;
+    private static String currentToken;
+    private static String currentUserId;
+
+    private SessionManager() {
+        // Evita instanciação
     }
 
-    // Salva o Token e o ID do Usuário na memória enquanto o app estiver aberto
+    public static void init(Context context) {
+        if (prefs == null) {
+            prefs = context.getApplicationContext()
+                    .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+            currentToken = prefs.getString(KEY_TOKEN, null);
+            currentUserId = prefs.getString(KEY_USER_ID, null);
+        }
+    }
+
     public static void saveSession(String token, String userId) {
+        ensureInitialized();
+
         currentToken = token;
         currentUserId = userId;
+
+        prefs.edit()
+                .putString(KEY_TOKEN, token)
+                .putString(KEY_USER_ID, userId)
+                .apply();
     }
 
-    // Recupera o Token
     public static String getToken() {
+        ensureInitialized();
         return currentToken;
     }
 
-    // Recupera o ID do Usuário (Para salvar na transação)
     public static String getUserId() {
+        ensureInitialized();
         return currentUserId;
     }
 
-    // Limpa a sessão (Logout manual ou erro 401)
+    public static boolean hasSession() {
+        ensureInitialized();
+        return currentToken != null && !currentToken.trim().isEmpty();
+    }
+
     public static void clear() {
+        ensureInitialized();
+
         currentToken = null;
         currentUserId = null;
+
+        prefs.edit()
+                .remove(KEY_TOKEN)
+                .remove(KEY_USER_ID)
+                .apply();
+    }
+
+    private static void ensureInitialized() {
+        if (prefs == null) {
+            throw new IllegalStateException("SessionManager não foi inicializado. Chame SessionManager.init(context) antes de usar.");
+        }
     }
 }

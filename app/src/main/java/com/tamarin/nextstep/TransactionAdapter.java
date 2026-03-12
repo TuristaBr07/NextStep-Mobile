@@ -1,19 +1,23 @@
 package com.tamarin.nextstep;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
-    private List<Transaction> list;
+    private final List<Transaction> list;
 
     public TransactionAdapter(List<Transaction> list) {
         this.list = list;
@@ -31,31 +35,29 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction tx = list.get(position);
 
-        // Define os textos básicos
-        holder.tvDescription.setText(tx.getDescription());
-        holder.tvCategory.setText(tx.getCategory() + " • " + tx.getDate());
+        String description = tx.getDescription() != null && !tx.getDescription().trim().isEmpty()
+                ? tx.getDescription()
+                : "Transação sem descrição";
 
-        // Formatação de dinheiro (R$)
-        holder.tvAmount.setText(String.format(Locale.getDefault(), "R$ %.2f", tx.getAmount()));
-
-        // --- CORREÇÃO DA LÓGICA DE COR ---
+        String category = tx.getCategory() != null ? tx.getCategory() : "Sem categoria";
+        String date = tx.getDate() != null ? tx.getDate() : "--/--/----";
+        Double amount = tx.getAmount() != null ? tx.getAmount() : 0.0;
         String type = tx.getType();
 
-        // --- TORNAR A LINHA CLICÁVEL ---
-        holder.itemView.setOnClickListener(v -> {
-            android.content.Intent intent = new android.content.Intent(v.getContext(), EditTransactionActivity.class);
+        holder.tvDescription.setText(description);
+        holder.tvCategory.setText(category + " • " + date);
+        holder.tvAmount.setText(String.format(Locale.getDefault(), "R$ %.2f", amount));
 
-            // Passar os dados da transação para o ecrã de edição
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), EditTransactionActivity.class);
             intent.putExtra("EXTRA_ID", tx.getId());
             intent.putExtra("EXTRA_DESC", tx.getDescription());
             intent.putExtra("EXTRA_AMOUNT", tx.getAmount());
             intent.putExtra("EXTRA_TYPE", tx.getType());
             intent.putExtra("EXTRA_CATEGORY", tx.getCategory());
-
             v.getContext().startActivity(intent);
         });
 
-        // Verifica se é DESPESA aceitando Inglês (expense) e Português (Despesa/Saída)
         boolean isExpense = type != null && (
                 type.equalsIgnoreCase("expense") ||
                         type.equalsIgnoreCase("Despesa") ||
@@ -63,28 +65,29 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         );
 
         if (isExpense) {
-            // É Saída: Vermelho, ícone de queda, e aviso para leitor de tela
-            holder.tvAmount.setTextColor(Color.parseColor("#D32F2F"));
-            holder.ivIcon.setImageResource(R.drawable.ic_expense); // Novo ícone vetorial
-            holder.ivIcon.setColorFilter(Color.parseColor("#D32F2F"));
-            holder.ivIcon.setContentDescription("Ícone de despesa"); // Acessibilidade
+            holder.tvAmount.setTextColor(Color.parseColor("#C62828"));
+            holder.ivIcon.setImageResource(R.drawable.ic_expense);
+            holder.ivIcon.setColorFilter(Color.parseColor("#C62828"));
+            holder.iconContainer.setBackgroundResource(R.drawable.bg_soft_pill);
+            holder.ivIcon.setContentDescription("Ícone de despesa");
         } else {
-            // É Entrada: Verde, ícone de alta, e aviso para leitor de tela
             holder.tvAmount.setTextColor(Color.parseColor("#2E7D32"));
-            holder.ivIcon.setImageResource(R.drawable.ic_income); // Novo ícone vetorial
+            holder.ivIcon.setImageResource(R.drawable.ic_income);
             holder.ivIcon.setColorFilter(Color.parseColor("#2E7D32"));
-            holder.ivIcon.setContentDescription("Ícone de receita"); // Acessibilidade
+            holder.iconContainer.setBackgroundResource(R.drawable.bg_soft_pill);
+            holder.ivIcon.setContentDescription("Ícone de receita");
         }
     }
 
     @Override
     public int getItemCount() {
-        return list != null ? list.size() : 0; // Proteção extra contra lista nula
+        return list != null ? list.size() : 0;
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
         TextView tvDescription, tvCategory, tvAmount;
         ImageView ivIcon;
+        LinearLayout iconContainer;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +95,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvAmount = itemView.findViewById(R.id.tvAmount);
             ivIcon = itemView.findViewById(R.id.ivIcon);
+            iconContainer = itemView.findViewById(R.id.iconContainer);
         }
     }
 }
