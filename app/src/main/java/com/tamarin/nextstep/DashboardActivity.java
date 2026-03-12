@@ -2,7 +2,6 @@ package com.tamarin.nextstep;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -29,8 +29,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     private TextView tvSaldo, tvReceita, tvDespesa;
     private ProgressBar pbMeiLimit;
-
-    // Variável do Gráfico
     private com.github.mikephil.charting.charts.LineChart lineChart;
 
     @Override
@@ -56,36 +54,45 @@ public class DashboardActivity extends AppCompatActivity {
             });
         }
 
-        View ivSettingsBtn = findViewById(R.id.ivSettingsBtn);
-        if (ivSettingsBtn != null) {
-            ivSettingsBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
-                startActivity(intent);
-            });
-        }
+        // --- NOVA NAVEGAÇÃO INFERIOR ---
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
 
-        View ivHistoryBtn = findViewById(R.id.ivHistoryBtn);
-        if (ivHistoryBtn != null) {
-            ivHistoryBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(DashboardActivity.this, TransactionsActivity.class);
-                startActivity(intent);
-            });
-        }
+        // Mantém a aba "Início" selecionada visualmente
+        bottomNav.setSelectedItemId(R.id.nav_home);
 
-        // NOVO: CÓDIGO DO BOTÃO DE RELATÓRIOS
-        View ivReportsBtn = findViewById(R.id.ivReportsBtn);
-        if (ivReportsBtn != null) {
-            ivReportsBtn.setOnClickListener(v -> {
-                Intent intent = new Intent(DashboardActivity.this, ReportsActivity.class);
-                startActivity(intent);
-            });
-        }
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                // Já estamos no Dashboard, não faz nada
+                return true;
+
+            } else if (itemId == R.id.nav_history) {
+                startActivity(new Intent(DashboardActivity.this, TransactionsActivity.class));
+                return false; // Retorna false para a aba "Início" continuar marcada quando voltar
+
+            } else if (itemId == R.id.nav_reports) {
+                startActivity(new Intent(DashboardActivity.this, ReportsActivity.class));
+                return false;
+
+            } else if (itemId == R.id.nav_settings) {
+                startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));
+                return false;
+            }
+            return false;
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         fetchTransactions();
+
+        // Garante que a aba "Início" volta a estar destacada quando o utilizador volta de outra tela
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        if(bottomNav != null){
+            bottomNav.setSelectedItemId(R.id.nav_home);
+        }
     }
 
     private void fetchTransactions() {
@@ -147,11 +154,9 @@ public class DashboardActivity extends AppCompatActivity {
             pbMeiLimit.setProgressTintList(android.content.res.ColorStateList.valueOf(0xFF2E7D32));
         }
 
-        // Chama o método para desenhar o gráfico
         drawChart();
     }
 
-    // --- LÓGICA DO GRÁFICO DE LINHAS ---
     private void drawChart() {
         if (transactionList == null || transactionList.isEmpty() || lineChart == null) {
             if (lineChart != null) lineChart.clear();

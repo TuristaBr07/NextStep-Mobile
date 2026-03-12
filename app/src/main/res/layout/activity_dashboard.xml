@@ -10,39 +10,6 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/ivSettingsBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@android:drawable/ic_menu_preferences"
-        android:contentDescription="Configurações"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"/>
-
-    <ImageView
-        android:id="@+id/ivHistoryBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@android:drawable/ic_menu_recent_history"
-        android:contentDescription="Ver Histórico"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivSettingsBtn"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"/>
-
-    <ImageView
-        android:id="@+id/ivReportsBtn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@android:drawable/ic_menu_sort_by_size"
-        android:contentDescription="Relatórios"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivHistoryBtn"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"/>
-
-    <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="52dp"
         android:layout_height="52dp"
@@ -247,7 +214,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvListaTitle"
@@ -257,14 +225,27 @@
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
         android:clickable="true"
         android:contentDescription="Adicionar nova transação"
         android:focusable="true"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="#1F1F1F"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="#FFFFFF" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        app:itemIconTint="#46453B"
+        app:itemTextColor="#46453B"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

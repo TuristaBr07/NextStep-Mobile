@@ -2,11 +2,12 @@ package com.tamarin.nextstep;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+// NOVA IMPORTAÇÃO DO TEXT INPUT EDIT TEXT
+import com.google.android.material.textfield.TextInputEditText;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,7 +15,7 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etFullName, etRegEmail, etRegPassword, etConfirmPassword;
+    private TextInputEditText etFullName, etRegEmail, etRegPassword, etConfirmPassword;
     private Button btnRegister;
     private TextView tvBackToLogin;
 
@@ -30,16 +31,16 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvBackToLogin = findViewById(R.id.tvBackToLogin);
 
-        tvBackToLogin.setOnClickListener(v -> finish()); // Volta para a tela de login
+        tvBackToLogin.setOnClickListener(v -> finish());
 
         btnRegister.setOnClickListener(v -> fazerRegistro());
     }
 
     private void fazerRegistro() {
-        String nome = etFullName.getText().toString().trim();
-        String email = etRegEmail.getText().toString().trim();
-        String senha = etRegPassword.getText().toString();
-        String confSenha = etConfirmPassword.getText().toString();
+        String nome = etFullName.getText() != null ? etFullName.getText().toString().trim() : "";
+        String email = etRegEmail.getText() != null ? etRegEmail.getText().toString().trim() : "";
+        String senha = etRegPassword.getText() != null ? etRegPassword.getText().toString() : "";
+        String confSenha = etConfirmPassword.getText() != null ? etConfirmPassword.getText().toString() : "";
 
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confSenha.isEmpty()) {
             Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
@@ -58,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(RegisterActivity.this, "Cadastro realizado! Verifique seu e-mail.", Toast.LENGTH_LONG).show();
-                    finish(); // Volta para o login
+                    finish();
                 } else {
                     Toast.makeText(RegisterActivity.this, "Erro ao cadastrar. Verifique os dados.", Toast.LENGTH_LONG).show();
                 }

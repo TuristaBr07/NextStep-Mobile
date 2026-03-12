@@ -3,13 +3,15 @@ package com.tamarin.nextstep;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+// IMPORTAÇÃO DO TEXT INPUT EDIT TEXT
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private EditText etProfileName, etProfileCompany, etNewCatName;
+    private TextInputEditText etProfileName, etProfileCompany, etNewCatName;
     private Button btnSaveProfile, btnAddCat, btnLogout;
     private Spinner spinnerCatType;
 
@@ -83,8 +85,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveProfile() {
         String userId = SessionManager.getUserId();
-        String name = etProfileName.getText().toString();
-        String company = etProfileCompany.getText().toString();
+
+        // Verificação de segurança (evitar nulls)
+        String name = etProfileName.getText() != null ? etProfileName.getText().toString().trim() : "";
+        String company = etProfileCompany.getText() != null ? etProfileCompany.getText().toString().trim() : "";
 
         Profile profileUpdate = new Profile(name, company);
 
@@ -118,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void addCategory() {
-        String name = etNewCatName.getText().toString().trim();
+        String name = etNewCatName.getText() != null ? etNewCatName.getText().toString().trim() : "";
         String type = spinnerCatType.getSelectedItem().toString();
 
         if (name.isEmpty()) return;
@@ -126,8 +130,6 @@ public class SettingsActivity extends AppCompatActivity {
         Category newCat = new Category();
         newCat.setName(name);
         newCat.setType(type);
-
-        // NOVO: Injetando o ID do usuário logado na categoria
         newCat.setUserId(SessionManager.getUserId());
 
         RetrofitClient.getApi().createCategory(newCat).enqueue(new Callback<List<Category>>() {

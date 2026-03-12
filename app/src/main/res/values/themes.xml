@@ -1,9 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.NextStepMobile" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.NextStep" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
+
+        <item name="colorError">@color/colorError</item>
+
+        <item name="android:statusBarColor">@color/colorBackground</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="Theme.NextStepMobile" parent="Base.Theme.NextStepMobile" />
+    <style name="Theme.NextStepMobile" parent="Base.Theme.NextStep" />
 </resources>
