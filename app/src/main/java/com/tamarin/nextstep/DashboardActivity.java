@@ -65,6 +65,15 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             });
         }
+
+        // NOVO: CÓDIGO DO BOTÃO DE HISTÓRICO
+        View ivHistoryBtn = findViewById(R.id.ivHistoryBtn);
+        if (ivHistoryBtn != null) {
+            ivHistoryBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(DashboardActivity.this, TransactionsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     // --- O PULO DO GATO: ATUALIZAR AO VOLTAR ---

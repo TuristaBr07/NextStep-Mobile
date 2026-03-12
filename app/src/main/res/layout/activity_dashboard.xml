@@ -21,6 +21,17 @@
         android:layout_marginEnd="24dp"/>
 
     <ImageView
+        android:id="@+id/ivHistoryBtn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_recent_history"
+        android:contentDescription="Ver Histórico"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/ivSettingsBtn"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"/>
+
+    <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="52dp"
         android:layout_height="52dp"

@@ -8,4 +8,9 @@
         <item>Receita</item>
         <item>Despesa</item>
     </string-array>
+    <string-array name="filter_types">
+        <item>Todos</item>
+        <item>Receita</item>
+        <item>Despesa</item>
+    </string-array>
 </resources>
