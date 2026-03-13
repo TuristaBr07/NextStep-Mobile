@@ -1,7 +1,12 @@
 package com.tamarin.nextstep;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,12 +15,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,13 +38,17 @@ public class DashboardActivity extends AppCompatActivity {
 
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
-    private List<Transaction> transactionList;
+    private List<Transaction> transactionList = new ArrayList<>();
 
-    private TextView tvSaldo, tvReceita, tvDespesa;
-    private TextView tvHeader, tvSubHeader;
-    private android.widget.ImageView ivLogo;
+    private TextView tvSaldo;
+    private TextView tvReceita;
+    private TextView tvDespesa;
+    private TextView tvHeader;
+    private TextView tvSubHeader;
+
+    private ImageView ivLogo;
     private ProgressBar pbMeiLimit;
-    private com.github.mikephil.charting.charts.LineChart lineChart;
+    private LineChart lineChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +59,11 @@ public class DashboardActivity extends AppCompatActivity {
         tvSaldo = findViewById(R.id.tvSaldo);
         tvReceita = findViewById(R.id.tvReceita);
         tvDespesa = findViewById(R.id.tvDespesa);
-        pbMeiLimit = findViewById(R.id.pbMeiLimit);
-        lineChart = findViewById(R.id.lineChartDashboard);
         tvHeader = findViewById(R.id.tvHeader);
         tvSubHeader = findViewById(R.id.tvSubHeader);
         ivLogo = findViewById(R.id.ivLogo);
+        pbMeiLimit = findViewById(R.id.pbMeiLimit);
+        lineChart = findViewById(R.id.lineChartDashboard);
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setHasFixedSize(true);
@@ -59,33 +76,7 @@ public class DashboardActivity extends AppCompatActivity {
             });
         }
 
-        // --- NOVA NAVEGAÇÃO INFERIOR ---
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-
-        // Mantém a aba "Início" selecionada visualmente
-        bottomNav.setSelectedItemId(R.id.nav_home);
-
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.nav_home) {
-                // Já estamos no Dashboard, não faz nada
-                return true;
-
-            } else if (itemId == R.id.nav_history) {
-                startActivity(new Intent(DashboardActivity.this, TransactionsActivity.class));
-                return false; // Retorna false para a aba "Início" continuar marcada quando voltar
-
-            } else if (itemId == R.id.nav_reports) {
-                startActivity(new Intent(DashboardActivity.this, ReportsActivity.class));
-                return false;
-
-            } else if (itemId == R.id.nav_settings) {
-                startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));
-                return false;
-            }
-            return false;
-        });
+        setupBottomNavigation();
     }
 
     @Override
@@ -94,11 +85,39 @@ public class DashboardActivity extends AppCompatActivity {
         fetchTransactions();
         fetchUserProfile();
 
-        // Garante que a aba "Início" volta a estar destacada quando o utilizador volta de outra tela
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
-        if(bottomNav != null){
+        if (bottomNav != null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        if (bottomNav == null) return;
+
+        bottomNav.setSelectedItemId(R.id.nav_home);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                return true;
+            } else if (itemId == R.id.nav_history) {
+                startActivity(new Intent(DashboardActivity.this, TransactionsActivity.class));
+                return false;
+            } else if (itemId == R.id.nav_reports) {
+                startActivity(new Intent(DashboardActivity.this, ReportsActivity.class));
+                return false;
+            } else if (itemId == R.id.nav_chatbot) {
+                startActivity(new Intent(DashboardActivity.this, ChatbotActivity.class));
+                return false;
+            } else if (itemId == R.id.nav_settings) {
+                startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));
+                return false;
+            }
+
+            return false;
+        });
     }
 
     private void fetchTransactions() {
@@ -112,20 +131,34 @@ public class DashboardActivity extends AppCompatActivity {
                     calculateKPIs();
                 } else {
                     if (response.code() == 401) {
-                        Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Sessão expirada. Faça login novamente.",
+                                Toast.LENGTH_LONG
+                        ).show();
+
                         SessionManager.clear();
+
                         Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(DashboardActivity.this, "Erro ao carregar dados", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                DashboardActivity.this,
+                                "Erro ao carregar dados",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                Toast.makeText(DashboardActivity.this, "Sem conexão com internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        DashboardActivity.this,
+                        "Sem conexão com internet",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
@@ -133,11 +166,13 @@ public class DashboardActivity extends AppCompatActivity {
     private void calculateKPIs() {
         if (transactionList == null) return;
 
-        double totalReceita = 0;
-        double totalDespesa = 0;
+        double totalReceita = 0.0;
+        double totalDespesa = 0.0;
 
         for (Transaction tx : transactionList) {
-            if (tx.getType() != null && (tx.getType().equalsIgnoreCase("Receita") || tx.getType().equalsIgnoreCase("income"))) {
+            String type = tx.getType();
+
+            if (type != null && (type.equalsIgnoreCase("Receita") || type.equalsIgnoreCase("income"))) {
                 totalReceita += tx.getAmount();
             } else {
                 totalDespesa += tx.getAmount();
@@ -152,12 +187,15 @@ public class DashboardActivity extends AppCompatActivity {
 
         double limiteMEI = 81000.0;
         int progresso = (int) ((totalReceita / limiteMEI) * 100);
+        if (progresso < 0) progresso = 0;
+        if (progresso > 100) progresso = 100;
+
         pbMeiLimit.setProgress(progresso);
 
         if (progresso > 80) {
-            pbMeiLimit.setProgressTintList(android.content.res.ColorStateList.valueOf(0xFFFF0000));
+            pbMeiLimit.setProgressTintList(ColorStateList.valueOf(0xFFD32F2F));
         } else {
-            pbMeiLimit.setProgressTintList(android.content.res.ColorStateList.valueOf(0xFF2E7D32));
+            pbMeiLimit.setProgressTintList(ColorStateList.valueOf(0xFF2E7D32));
         }
 
         drawChart();
@@ -165,56 +203,65 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void drawChart() {
         if (transactionList == null || transactionList.isEmpty() || lineChart == null) {
-            if (lineChart != null) lineChart.clear();
+            if (lineChart != null) {
+                lineChart.clear();
+            }
             return;
         }
 
-        java.util.List<com.github.mikephil.charting.data.Entry> incomeEntries = new java.util.ArrayList<>();
-        java.util.List<com.github.mikephil.charting.data.Entry> expenseEntries = new java.util.ArrayList<>();
+        List<Entry> incomeEntries = new ArrayList<>();
+        List<Entry> expenseEntries = new ArrayList<>();
 
-        java.util.Map<String, Double> incomeMap = new java.util.TreeMap<>();
-        java.util.Map<String, Double> expenseMap = new java.util.TreeMap<>();
+        Map<String, Double> incomeMap = new TreeMap<>();
+        Map<String, Double> expenseMap = new TreeMap<>();
 
         for (Transaction tx : transactionList) {
             String date = tx.getDate();
+            if (date == null) {
+                date = "Sem data";
+            }
+
             double amount = tx.getAmount();
 
             if (tx.getType() != null && (tx.getType().equalsIgnoreCase("Receita") || tx.getType().equalsIgnoreCase("income"))) {
                 incomeMap.put(date, incomeMap.getOrDefault(date, 0.0) + amount);
-                if (!expenseMap.containsKey(date)) expenseMap.put(date, 0.0);
+                if (!expenseMap.containsKey(date)) {
+                    expenseMap.put(date, 0.0);
+                }
             } else {
                 expenseMap.put(date, expenseMap.getOrDefault(date, 0.0) + amount);
-                if (!incomeMap.containsKey(date)) incomeMap.put(date, 0.0);
+                if (!incomeMap.containsKey(date)) {
+                    incomeMap.put(date, 0.0);
+                }
             }
         }
 
         int index = 0;
-        final java.util.List<String> xLabels = new java.util.ArrayList<>();
+        List<String> xLabels = new ArrayList<>();
 
         for (String date : incomeMap.keySet()) {
             xLabels.add(date);
-            incomeEntries.add(new com.github.mikephil.charting.data.Entry(index, incomeMap.get(date).floatValue()));
-            expenseEntries.add(new com.github.mikephil.charting.data.Entry(index, expenseMap.get(date).floatValue()));
+            incomeEntries.add(new Entry(index, incomeMap.get(date).floatValue()));
+            expenseEntries.add(new Entry(index, expenseMap.getOrDefault(date, 0.0).floatValue()));
             index++;
         }
 
-        com.github.mikephil.charting.data.LineDataSet incomeSet = new com.github.mikephil.charting.data.LineDataSet(incomeEntries, "Receitas");
+        LineDataSet incomeSet = new LineDataSet(incomeEntries, "Receitas");
         incomeSet.setColor(0xFF2E7D32);
         incomeSet.setCircleColor(0xFF2E7D32);
         incomeSet.setLineWidth(2f);
 
-        com.github.mikephil.charting.data.LineDataSet expenseSet = new com.github.mikephil.charting.data.LineDataSet(expenseEntries, "Despesas");
+        LineDataSet expenseSet = new LineDataSet(expenseEntries, "Despesas");
         expenseSet.setColor(0xFFD32F2F);
         expenseSet.setCircleColor(0xFFD32F2F);
         expenseSet.setLineWidth(2f);
 
-        com.github.mikephil.charting.data.LineData lineData = new com.github.mikephil.charting.data.LineData(incomeSet, expenseSet);
-
+        LineData lineData = new LineData(incomeSet, expenseSet);
         lineChart.setData(lineData);
 
-        com.github.mikephil.charting.components.XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new com.github.mikephil.charting.formatter.IndexAxisValueFormatter(xLabels));
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
         xAxis.setGranularity(1f);
 
         lineChart.getDescription().setEnabled(false);
@@ -222,6 +269,7 @@ public class DashboardActivity extends AppCompatActivity {
         lineChart.animateX(1000);
         lineChart.invalidate();
     }
+
     private void fetchUserProfile() {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.isEmpty()) return;
@@ -232,21 +280,19 @@ public class DashboardActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     Profile p = response.body().get(0);
 
-                    // Pega apenas o primeiro nome para ficar mais amigável
                     if (p.getFullName() != null && !p.getFullName().isEmpty()) {
                         String firstName = p.getFullName().split(" ")[0];
                         tvHeader.setText("Olá, " + firstName + "!");
                     }
 
-                    // Se o usuário tiver cadastrado a empresa, mostra aqui
                     if (p.getCompanyName() != null && !p.getCompanyName().isEmpty()) {
                         tvSubHeader.setText("Visão financeira de " + p.getCompanyName());
                     } else {
                         tvSubHeader.setText("Visão financeira do seu negócio");
                     }
-                    // --- FOTO AQUI ---
+
                     if (p.getAvatar() != null && !p.getAvatar().isEmpty()) {
-                        android.graphics.Bitmap bitmap = decodeBase64ToBitmap(p.getAvatar());
+                        Bitmap bitmap = decodeBase64ToBitmap(p.getAvatar());
                         if (bitmap != null) {
                             ivLogo.setImageBitmap(bitmap);
                         }
@@ -256,14 +302,15 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
-                // Falha silenciosa para não travar a experiência do usuário
+                // Falha silenciosa para não impactar a experiência
             }
         });
     }
-    private android.graphics.Bitmap decodeBase64ToBitmap(String b64) {
+
+    private Bitmap decodeBase64ToBitmap(String b64) {
         try {
-            byte[] imageAsBytes = android.util.Base64.decode(b64.getBytes(), android.util.Base64.DEFAULT);
-            return android.graphics.BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+            byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
         } catch (Exception e) {
             return null;
         }
