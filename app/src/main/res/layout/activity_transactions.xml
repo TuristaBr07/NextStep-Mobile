@@ -15,9 +15,9 @@
         android:paddingStart="20dp"
         android:paddingTop="24dp"
         android:paddingEnd="20dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvTransactionsTitle"
@@ -42,10 +42,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/headerContainer"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/headerContainer">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -170,6 +170,16 @@
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvResultsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="0 transações encontradas"
+                android:textColor="@color/ns_text_secondary"
+                android:textSize="13sp"
+                tools:text="8 transações encontradas" />
 
             <LinearLayout
                 android:id="@+id/layoutEmptyState"

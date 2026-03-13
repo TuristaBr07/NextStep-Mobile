@@ -5,17 +5,22 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,9 +30,11 @@ import retrofit2.Response;
 public class TransactionsActivity extends AppCompatActivity {
 
     private EditText etSearch;
-    private Spinner spinnerFilterType, spinnerFilterCategory;
+    private Spinner spinnerFilterType;
+    private Spinner spinnerFilterCategory;
     private RecyclerView rvAllTransactions;
     private LinearLayout layoutEmptyState;
+    private TextView tvResultsCount;
 
     private TransactionAdapter adapter;
     private List<Transaction> allTransactions = new ArrayList<>();
@@ -44,6 +51,7 @@ public class TransactionsActivity extends AppCompatActivity {
         spinnerFilterCategory = findViewById(R.id.spinnerFilterCategory);
         rvAllTransactions = findViewById(R.id.rvAllTransactions);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        tvResultsCount = findViewById(R.id.tvResultsCount);
 
         rvAllTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvAllTransactions.setHasFixedSize(true);
@@ -74,6 +82,10 @@ public class TransactionsActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Toast.makeText(TransactionsActivity.this, "Erro ao carregar transações.", Toast.LENGTH_SHORT).show();
+                    allTransactions.clear();
+                    filteredTransactions.clear();
+                    adapter.notifyDataSetChanged();
+                    updateResultsInfo();
                     updateEmptyState();
                 }
             }
@@ -81,6 +93,10 @@ public class TransactionsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
                 Toast.makeText(TransactionsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
+                allTransactions.clear();
+                filteredTransactions.clear();
+                adapter.notifyDataSetChanged();
+                updateResultsInfo();
                 updateEmptyState();
             }
         });
@@ -97,10 +113,12 @@ public class TransactionsActivity extends AppCompatActivity {
                     categoryNames.add("Todas");
 
                     for (Category cat : categories) {
-                        categoryNames.add(cat.getName());
+                        if (cat.getName() != null && !cat.getName().trim().isEmpty()) {
+                            categoryNames.add(cat.getName());
+                        }
                     }
 
-                    ArrayAdapter<String> catAdapter = new ArrayAdapter<>(
+                    android.widget.ArrayAdapter<String> catAdapter = new android.widget.ArrayAdapter<>(
                             TransactionsActivity.this,
                             android.R.layout.simple_spinner_item,
                             categoryNames
@@ -172,22 +190,75 @@ public class TransactionsActivity extends AppCompatActivity {
         filteredTransactions.clear();
 
         for (Transaction tx : allTransactions) {
-            boolean matchText = textFilter.isEmpty()
-                    || (tx.getDescription() != null && tx.getDescription().toLowerCase().contains(textFilter));
+            String description = tx.getDescription() != null ? tx.getDescription().toLowerCase() : "";
+            String category = tx.getCategory() != null ? tx.getCategory() : "";
+            String type = tx.getType() != null ? tx.getType() : "";
 
-            boolean matchType = typeFilter.equals("Todos")
-                    || (tx.getType() != null && tx.getType().equalsIgnoreCase(typeFilter));
-
-            boolean matchCategory = categoryFilter.equals("Todas")
-                    || (tx.getCategory() != null && tx.getCategory().equalsIgnoreCase(categoryFilter));
+            boolean matchText = textFilter.isEmpty() || description.contains(textFilter);
+            boolean matchType = typeFilter.equals("Todos") || type.equalsIgnoreCase(typeFilter);
+            boolean matchCategory = categoryFilter.equals("Todas") || category.equalsIgnoreCase(categoryFilter);
 
             if (matchText && matchType && matchCategory) {
                 filteredTransactions.add(tx);
             }
         }
 
+        sortTransactionsByDateDesc(filteredTransactions);
+
         adapter.notifyDataSetChanged();
+        updateResultsInfo();
         updateEmptyState();
+    }
+
+    private void sortTransactionsByDateDesc(List<Transaction> transactions) {
+        Collections.sort(transactions, new Comparator<Transaction>() {
+            @Override
+            public int compare(Transaction t1, Transaction t2) {
+                long d1 = parseDateToMillis(t1 != null ? t1.getDate() : null);
+                long d2 = parseDateToMillis(t2 != null ? t2.getDate() : null);
+                return Long.compare(d2, d1);
+            }
+        });
+    }
+
+    private long parseDateToMillis(String rawDate) {
+        if (rawDate == null || rawDate.trim().isEmpty()) {
+            return Long.MIN_VALUE;
+        }
+
+        String[] patterns = new String[]{
+                "yyyy-MM-dd",
+                "dd/MM/yyyy",
+                "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        };
+
+        for (String pattern : patterns) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat(pattern, java.util.Locale.getDefault());
+                sdf.setLenient(false);
+                Date date = sdf.parse(rawDate);
+                if (date != null) {
+                    return date.getTime();
+                }
+            } catch (ParseException ignored) {
+            }
+        }
+
+        return Long.MIN_VALUE;
+    }
+
+    private void updateResultsInfo() {
+        if (tvResultsCount == null) return;
+
+        int count = filteredTransactions.size();
+        if (count == 0) {
+            tvResultsCount.setText("Nenhuma transação encontrada");
+        } else if (count == 1) {
+            tvResultsCount.setText("1 transação encontrada");
+        } else {
+            tvResultsCount.setText(count + " transações encontradas");
+        }
     }
 
     private void updateEmptyState() {
