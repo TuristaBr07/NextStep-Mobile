@@ -1,9 +1,11 @@
 package com.tamarin.nextstep;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,11 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tamarin.nextstep.chatbot.ChatbotApi;
 import com.tamarin.nextstep.chatbot.ChatbotRequest;
 import com.tamarin.nextstep.chatbot.ChatbotResponse;
 import com.tamarin.nextstep.chatbot.ChatbotRetrofitClient;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -29,15 +34,20 @@ import retrofit2.Response;
 
 public class ChatbotActivity extends AppCompatActivity {
 
+    private static final String PREFS_NAME = "nextstep_chatbot_prefs";
+    private static final String KEY_CHAT_MESSAGES = "chat_messages";
+
     private RecyclerView rvChatMessages;
     private TextInputEditText etChatMessage;
     private ImageButton btnSendMessage;
     private TextView tvChatEmptyState;
+    private TextView tvTypingIndicator;
 
     private final List<ChatMessage> messages = new ArrayList<>();
     private ChatMessageAdapter adapter;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+    private final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +59,7 @@ public class ChatbotActivity extends AppCompatActivity {
         etChatMessage = findViewById(R.id.etChatMessage);
         btnSendMessage = findViewById(R.id.btnSendMessage);
         tvChatEmptyState = findViewById(R.id.tvChatEmptyState);
+        tvTypingIndicator = findViewById(R.id.tvTypingIndicator);
 
         toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -56,11 +67,22 @@ public class ChatbotActivity extends AppCompatActivity {
         adapter = new ChatMessageAdapter(messages);
         rvChatMessages.setAdapter(adapter);
 
-        addBotMessage(buildWelcomeMessage());
+        restoreChatHistory();
+
+        if (messages.isEmpty()) {
+            addBotMessage(buildWelcomeMessage(), false);
+        }
 
         btnSendMessage.setOnClickListener(v -> sendMessage());
 
         updateEmptyState();
+        showTypingIndicator(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        persistChatHistory();
     }
 
     private String buildWelcomeMessage() {
@@ -92,6 +114,7 @@ public class ChatbotActivity extends AppCompatActivity {
 
     private void requestBotReply(String userText) {
         setSendingState(true);
+        showTypingIndicator(true);
 
         ChatbotApi chatbotApi = ChatbotRetrofitClient.getApi();
 
@@ -107,17 +130,18 @@ public class ChatbotActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ChatbotResponse> call, Response<ChatbotResponse> response) {
                 setSendingState(false);
+                showTypingIndicator(false);
 
                 if (response.isSuccessful() && response.body() != null) {
                     String reply = response.body().extractBestReply();
 
                     if (reply != null && !reply.isEmpty()) {
-                        addBotMessage(reply);
+                        addBotMessage(reply, true);
                         return;
                     }
                 }
 
-                addBotMessage(buildMockReply(userText));
+                addBotMessage(buildMockReply(userText), true);
                 Toast.makeText(
                         ChatbotActivity.this,
                         "Resposta externa indisponível. Usando modo local.",
@@ -128,7 +152,8 @@ public class ChatbotActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ChatbotResponse> call, Throwable t) {
                 setSendingState(false);
-                addBotMessage(buildMockReply(userText));
+                showTypingIndicator(false);
+                addBotMessage(buildMockReply(userText), true);
                 Toast.makeText(
                         ChatbotActivity.this,
                         "Falha ao conectar com o assistente externo. Usando modo local.",
@@ -141,13 +166,18 @@ public class ChatbotActivity extends AppCompatActivity {
     private void simulateLocalFallback(String userText) {
         handler.postDelayed(() -> {
             setSendingState(false);
-            addBotMessage(buildMockReply(userText));
-        }, 600);
+            showTypingIndicator(false);
+            addBotMessage(buildMockReply(userText), true);
+        }, 1000);
     }
 
     private void setSendingState(boolean sending) {
         btnSendMessage.setEnabled(!sending);
         etChatMessage.setEnabled(!sending);
+    }
+
+    private void showTypingIndicator(boolean visible) {
+        tvTypingIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private String buildMockReply(String userText) {
@@ -178,13 +208,18 @@ public class ChatbotActivity extends AppCompatActivity {
         adapter.notifyItemInserted(messages.size() - 1);
         scrollToBottom();
         updateEmptyState();
+        persistChatHistory();
     }
 
-    private void addBotMessage(String text) {
+    private void addBotMessage(String text, boolean persist) {
         messages.add(new ChatMessage(text, false));
         adapter.notifyItemInserted(messages.size() - 1);
         scrollToBottom();
         updateEmptyState();
+
+        if (persist) {
+            persistChatHistory();
+        }
     }
 
     private void scrollToBottom() {
@@ -194,6 +229,31 @@ public class ChatbotActivity extends AppCompatActivity {
     }
 
     private void updateEmptyState() {
-        tvChatEmptyState.setVisibility(messages.isEmpty() ? TextView.VISIBLE : TextView.GONE);
+        tvChatEmptyState.setVisibility(messages.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    private void persistChatHistory() {
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String json = gson.toJson(messages);
+        preferences.edit().putString(KEY_CHAT_MESSAGES, json).apply();
+    }
+
+    private void restoreChatHistory() {
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String json = preferences.getString(KEY_CHAT_MESSAGES, null);
+
+        if (json == null || json.trim().isEmpty()) {
+            return;
+        }
+
+        Type type = new TypeToken<List<ChatMessage>>() {}.getType();
+        List<ChatMessage> restoredMessages = gson.fromJson(json, type);
+
+        if (restoredMessages != null && !restoredMessages.isEmpty()) {
+            messages.clear();
+            messages.addAll(restoredMessages);
+            adapter.notifyDataSetChanged();
+            scrollToBottom();
+        }
     }
 }

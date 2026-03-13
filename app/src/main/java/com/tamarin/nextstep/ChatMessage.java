@@ -1,8 +1,12 @@
 package com.tamarin.nextstep;
 
 public class ChatMessage {
-    private final String text;
-    private final boolean fromUser;
+    private String text;
+    private boolean fromUser;
+
+    public ChatMessage() {
+        // Necessário para serialização/desserialização local com Gson
+    }
 
     public ChatMessage(String text, boolean fromUser) {
         this.text = text;
@@ -15,5 +19,13 @@ public class ChatMessage {
 
     public boolean isFromUser() {
         return fromUser;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setFromUser(boolean fromUser) {
+        this.fromUser = fromUser;
     }
 }
