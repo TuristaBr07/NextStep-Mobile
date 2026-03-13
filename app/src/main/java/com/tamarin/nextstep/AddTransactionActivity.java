@@ -1,8 +1,7 @@
 package com.tamarin.nextstep;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -10,11 +9,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-// IMPORTAÇÃO DO TEXT INPUT DO MATERIAL DESIGN
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,8 +27,11 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private Spinner spinnerType, spinnerCategory;
     private TextInputEditText etDescription, etAmount, etDate;
+    private TextInputLayout tilDescription, tilAmount, tilDate;
     private Button btnSaveTransaction;
-    private List<Category> userCategories = new ArrayList<>();
+
+    private List<Category> categories = new ArrayList<>();
+    private boolean isSaving = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,29 +43,29 @@ public class AddTransactionActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.etDescription);
         etAmount = findViewById(R.id.etAmount);
         etDate = findViewById(R.id.etDate);
+        tilDescription = findViewById(R.id.tilDescription);
+        tilAmount = findViewById(R.id.tilAmount);
+        tilDate = findViewById(R.id.tilDate);
         btnSaveTransaction = findViewById(R.id.btnSaveTransaction);
 
         setupTypeSpinner();
         loadCategories();
 
-        btnSaveTransaction.setOnClickListener(v -> saveTransaction());
+        btnSaveTransaction.setOnClickListener(v -> {
+            if (!isSaving) {
+                validateAndSave();
+            }
+        });
     }
 
     private void setupTypeSpinner() {
-        String[] types = {"Receita", "Despesa"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerType.setAdapter(adapter);
-
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateCategorySpinner();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.transaction_types,
+                android.R.layout.simple_spinner_item
+        );
+        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setAdapter(typeAdapter);
     }
 
     private void loadCategories() {
@@ -67,90 +73,201 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    userCategories = response.body();
+                    categories = response.body();
                     updateCategorySpinner();
+                } else {
+                    Toast.makeText(AddTransactionActivity.this, "Erro ao carregar categorias.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-                Toast.makeText(AddTransactionActivity.this, "Erro ao carregar categorias", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Falha ao carregar categorias.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateCategorySpinner() {
-        if (spinnerType.getSelectedItem() == null) return;
+        String selectedType = spinnerType.getSelectedItem() != null
+                ? spinnerType.getSelectedItem().toString()
+                : "Receita";
 
-        String selectedType = spinnerType.getSelectedItem().toString();
-        List<String> filteredCategories = new ArrayList<>();
-
-        for (Category cat : userCategories) {
-            if (cat.getType() != null && cat.getType().equalsIgnoreCase(selectedType)) {
-                filteredCategories.add(cat.getName());
+        List<String> categoryNames = new ArrayList<>();
+        for (Category category : categories) {
+            if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
+                categoryNames.add(category.getName());
             }
         }
 
-        if (filteredCategories.isEmpty()) {
-            filteredCategories.add("Sem categorias");
+        if (categoryNames.isEmpty()) {
+            categoryNames.add("Sem categoria");
         }
 
-        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, filteredCategories);
-        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(catAdapter);
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                categoryNames
+        );
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(categoryAdapter);
+
+        spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+                updateCategorySpinnerWithoutLoop();
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
     }
 
-    private void saveTransaction() {
-        if (spinnerType.getSelectedItem() == null || spinnerCategory.getSelectedItem() == null) {
-            Toast.makeText(this, "Aguarde o carregamento das categorias", Toast.LENGTH_SHORT).show();
-            return;
+    private void updateCategorySpinnerWithoutLoop() {
+        String selectedType = spinnerType.getSelectedItem() != null
+                ? spinnerType.getSelectedItem().toString()
+                : "Receita";
+
+        List<String> categoryNames = new ArrayList<>();
+        for (Category category : categories) {
+            if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
+                categoryNames.add(category.getName());
+            }
         }
 
-        String type = spinnerType.getSelectedItem().toString();
-        String category = spinnerCategory.getSelectedItem().toString();
+        if (categoryNames.isEmpty()) {
+            categoryNames.add("Sem categoria");
+        }
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                categoryNames
+        );
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(categoryAdapter);
+    }
+
+    private void validateAndSave() {
+        clearErrors();
+
+        String type = spinnerType.getSelectedItem() != null ? spinnerType.getSelectedItem().toString() : "";
+        String category = spinnerCategory.getSelectedItem() != null ? spinnerCategory.getSelectedItem().toString() : "";
         String description = etDescription.getText() != null ? etDescription.getText().toString().trim() : "";
-        String amountStr = etAmount.getText() != null ? etAmount.getText().toString().trim() : "";
-        String date = etDate.getText() != null ? etDate.getText().toString().trim() : "";
+        String amountText = etAmount.getText() != null ? etAmount.getText().toString().trim() : "";
+        String dateText = etDate.getText() != null ? etDate.getText().toString().trim() : "";
 
-        if (description.isEmpty() || amountStr.isEmpty() || date.isEmpty() || category.equals("Sem categorias")) {
-            Toast.makeText(this, "Preencha todos os campos corretamente", Toast.LENGTH_SHORT).show();
+        boolean hasError = false;
+
+        if (TextUtils.isEmpty(description)) {
+            tilDescription.setError("Informe uma descrição");
+            hasError = true;
+        }
+
+        if (TextUtils.isEmpty(amountText)) {
+            tilAmount.setError("Informe o valor");
+            hasError = true;
+        } else {
+            try {
+                double amount = Double.parseDouble(amountText.replace(",", "."));
+                if (amount <= 0) {
+                    tilAmount.setError("O valor deve ser maior que zero");
+                    hasError = true;
+                }
+            } catch (NumberFormatException e) {
+                tilAmount.setError("Valor inválido");
+                hasError = true;
+            }
+        }
+
+        if (TextUtils.isEmpty(dateText)) {
+            tilDate.setError("Informe a data");
+            hasError = true;
+        } else if (!isValidDate(dateText)) {
+            tilDate.setError("Use o formato DD/MM/AAAA");
+            hasError = true;
+        }
+
+        if (hasError) {
             return;
         }
 
-        double amount;
-        try {
-            amount = Double.parseDouble(amountStr.replace(",", "."));
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Valor inválido", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        saveTransaction(type, category, description, amountText, dateText);
+    }
 
-        Transaction newTransaction = new Transaction();
-        newTransaction.setType(type);
-        newTransaction.setCategory(category);
-        newTransaction.setDescription(description);
-        newTransaction.setAmount(amount);
-        newTransaction.setDate(date);
+    private void saveTransaction(String type, String category, String description, String amountText, String dateText) {
+        setLoading(true);
 
-        // Injetar o ID do utilizador logado para não dar erro no banco!
-        newTransaction.setUserId(SessionManager.getUserId());
+        Transaction transaction = new Transaction();
+        transaction.setType(type);
+        transaction.setCategory(category);
+        transaction.setDescription(description);
+        transaction.setAmount(Double.parseDouble(amountText.replace(",", ".")));
+        transaction.setDate(formatDateToApi(dateText));
+        transaction.setUserId(SessionManager.getUserId());
 
-// Correção: Agora esperamos uma List<Transaction> como resposta
-        RetrofitClient.getApi().createTransaction(newTransaction).enqueue(new Callback<List<Transaction>>() {
+        RetrofitClient.getApi().createTransaction(transaction).enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                setLoading(false);
+
                 if (response.isSuccessful()) {
-                    Toast.makeText(AddTransactionActivity.this, "Transação salva!", Toast.LENGTH_SHORT).show();
-                    finish(); // Fecha a tela e volta pro Dashboard
+                    Toast.makeText(AddTransactionActivity.this, "Transação criada com sucesso!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if (response.code() == 401) {
+                    Toast.makeText(AddTransactionActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show();
+                    SessionManager.clear();
+                    finish();
                 } else {
-                    Toast.makeText(AddTransactionActivity.this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddTransactionActivity.this, "Erro ao salvar transação.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                Toast.makeText(AddTransactionActivity.this, "Falha na conexão", Toast.LENGTH_SHORT).show();
+                setLoading(false);
+                Toast.makeText(AddTransactionActivity.this, "Falha de conexão.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setLoading(boolean loading) {
+        isSaving = loading;
+        btnSaveTransaction.setEnabled(!loading);
+        btnSaveTransaction.setText(loading ? "Salvando..." : "Salvar transação");
+
+        spinnerType.setEnabled(!loading);
+        spinnerCategory.setEnabled(!loading);
+        etDescription.setEnabled(!loading);
+        etAmount.setEnabled(!loading);
+        etDate.setEnabled(!loading);
+    }
+
+    private void clearErrors() {
+        tilDescription.setError(null);
+        tilAmount.setError(null);
+        tilDate.setError(null);
+    }
+
+    private boolean isValidDate(String value) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        sdf.setLenient(false);
+        try {
+            Date date = sdf.parse(value);
+            return date != null;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+
+    private String formatDateToApi(String value) {
+        try {
+            SimpleDateFormat input = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat output = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = input.parse(value);
+            return date != null ? output.format(date) : value;
+        } catch (Exception e) {
+            return value;
+        }
     }
 }

@@ -1,10 +1,10 @@
 package com.tamarin.nextstep;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +18,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private Button btnSendResetLink;
     private TextView tvBackToLoginFromForgot;
 
+    private boolean isLoading = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,33 +29,78 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnSendResetLink = findViewById(R.id.btnSendResetLink);
         tvBackToLoginFromForgot = findViewById(R.id.tvBackToLoginFromForgot);
 
-        tvBackToLoginFromForgot.setOnClickListener(v -> finish());
+        btnSendResetLink.setOnClickListener(v -> {
+            if (!isLoading) {
+                validateAndRecover();
+            }
+        });
 
-        btnSendResetLink.setOnClickListener(v -> enviarLink());
+        tvBackToLoginFromForgot.setOnClickListener(v -> finish());
     }
 
-    private void enviarLink() {
-        String email = etForgotEmail.getText().toString().trim();
+    private void validateAndRecover() {
+        String email = etForgotEmail.getText() != null
+                ? etForgotEmail.getText().toString().trim()
+                : "";
 
         if (email.isEmpty()) {
-            Toast.makeText(this, "Por favor, informe seu e-mail.", Toast.LENGTH_SHORT).show();
+            etForgotEmail.setError("Informe seu e-mail");
+            etForgotEmail.requestFocus();
             return;
         }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etForgotEmail.setError("E-mail inválido");
+            etForgotEmail.requestFocus();
+            return;
+        }
+
+        etForgotEmail.setError(null);
+        recoverPassword(email);
+    }
+
+    private void recoverPassword(String email) {
+        setLoading(true);
 
         RecoverRequest request = new RecoverRequest(email);
 
         RetrofitClient.getApi().recoverPassword(request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                // O Supabase geralmente retorna sucesso (200) mesmo se o e-mail não existir por questões de segurança
-                Toast.makeText(ForgotPasswordActivity.this, "Se houver uma conta, um link foi enviado.", Toast.LENGTH_LONG).show();
-                finish();
+                setLoading(false);
+
+                if (response.isSuccessful()) {
+                    UiUtils.showLongToast(
+                            ForgotPasswordActivity.this,
+                            "Se o e-mail existir, você receberá instruções para redefinir a senha."
+                    );
+                    finish();
+                } else {
+                    UiUtils.showLongToast(
+                            ForgotPasswordActivity.this,
+                            "Não foi possível processar a solicitação agora."
+                    );
+                }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ForgotPasswordActivity.this, "Falha na conexão: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                setLoading(false);
+                UiUtils.showLongToast(
+                        ForgotPasswordActivity.this,
+                        "Falha na conexão. Verifique sua internet."
+                );
             }
         });
+    }
+
+    private void setLoading(boolean loading) {
+        isLoading = loading;
+
+        etForgotEmail.setEnabled(!loading);
+        btnSendResetLink.setEnabled(!loading);
+        tvBackToLoginFromForgot.setEnabled(!loading);
+
+        btnSendResetLink.setText(loading ? "ENVIANDO..." : "ENVIAR LINK");
     }
 }

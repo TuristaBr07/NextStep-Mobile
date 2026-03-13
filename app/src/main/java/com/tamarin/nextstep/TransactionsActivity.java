@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private EditText etSearch;
     private Spinner spinnerFilterType, spinnerFilterCategory;
     private RecyclerView rvAllTransactions;
+    private LinearLayout layoutEmptyState;
 
     private TransactionAdapter adapter;
     private List<Transaction> allTransactions = new ArrayList<>();
@@ -41,6 +43,7 @@ public class TransactionsActivity extends AppCompatActivity {
         spinnerFilterType = findViewById(R.id.spinnerFilterType);
         spinnerFilterCategory = findViewById(R.id.spinnerFilterCategory);
         rvAllTransactions = findViewById(R.id.rvAllTransactions);
+        layoutEmptyState = findViewById(R.id.layoutEmptyState);
 
         rvAllTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvAllTransactions.setHasFixedSize(true);
@@ -71,12 +74,14 @@ public class TransactionsActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Toast.makeText(TransactionsActivity.this, "Erro ao carregar transações.", Toast.LENGTH_SHORT).show();
+                    updateEmptyState();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
                 Toast.makeText(TransactionsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
+                updateEmptyState();
             }
         });
     }
@@ -182,5 +187,16 @@ public class TransactionsActivity extends AppCompatActivity {
         }
 
         adapter.notifyDataSetChanged();
+        updateEmptyState();
+    }
+
+    private void updateEmptyState() {
+        if (filteredTransactions.isEmpty()) {
+            layoutEmptyState.setVisibility(View.VISIBLE);
+            rvAllTransactions.setVisibility(View.GONE);
+        } else {
+            layoutEmptyState.setVisibility(View.GONE);
+            rvAllTransactions.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -53,7 +53,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Busca -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +86,6 @@
                     android:textColorHint="@color/ns_text_hint" />
             </LinearLayout>
 
-            <!-- Filtros -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -147,7 +145,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Cabeçalho da lista -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,6 +169,44 @@
                     android:text="toque para editar"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_dashboard_card"
+                android:elevation="2dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="28dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="Sem resultados"
+                    android:src="@android:drawable/ic_menu_info_details"
+                    app:tint="@color/ns_text_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Nenhuma transação encontrada"
+                    android:textColor="@color/ns_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="Ajuste os filtros ou cadastre uma nova movimentação."
+                    android:textColor="@color/ns_text_secondary"
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
