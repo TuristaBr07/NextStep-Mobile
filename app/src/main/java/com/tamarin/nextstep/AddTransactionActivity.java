@@ -1,5 +1,6 @@
 package com.tamarin.nextstep;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +51,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         btnSaveTransaction = findViewById(R.id.btnSaveTransaction);
 
         setupTypeSpinner();
+        setupDateField();
         loadCategories();
 
         btnSaveTransaction.setOnClickListener(v -> {
@@ -66,6 +69,58 @@ public class AddTransactionActivity extends AppCompatActivity {
         );
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(typeAdapter);
+
+        spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+                updateCategorySpinner();
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+            }
+        });
+    }
+
+    private void setupDateField() {
+        etDate.setFocusable(false);
+        etDate.setClickable(true);
+        etDate.setLongClickable(false);
+        etDate.setOnClickListener(v -> showDatePicker());
+        etDate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                showDatePicker();
+            }
+        });
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+
+        String currentValue = etDate.getText() != null ? etDate.getText().toString().trim() : "";
+        if (!currentValue.isEmpty()) {
+            try {
+                Date parsed = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(currentValue);
+                if (parsed != null) {
+                    calendar.setTime(parsed);
+                }
+            } catch (ParseException ignored) {
+            }
+        }
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    String formatted = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                    etDate.setText(formatted);
+                    tilDate.setError(null);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+        dialog.show();
     }
 
     private void loadCategories() {
@@ -88,42 +143,6 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void updateCategorySpinner() {
-        String selectedType = spinnerType.getSelectedItem() != null
-                ? spinnerType.getSelectedItem().toString()
-                : "Receita";
-
-        List<String> categoryNames = new ArrayList<>();
-        for (Category category : categories) {
-            if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
-                categoryNames.add(category.getName());
-            }
-        }
-
-        if (categoryNames.isEmpty()) {
-            categoryNames.add("Sem categoria");
-        }
-
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                categoryNames
-        );
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
-
-        spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
-                updateCategorySpinnerWithoutLoop();
-            }
-
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-            }
-        });
-    }
-
-    private void updateCategorySpinnerWithoutLoop() {
         String selectedType = spinnerType.getSelectedItem() != null
                 ? spinnerType.getSelectedItem().toString()
                 : "Receita";

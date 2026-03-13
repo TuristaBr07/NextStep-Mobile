@@ -21,7 +21,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Cabeçalho -->
             <TextView
                 android:id="@+id/tvAddTitle"
                 android:layout_width="wrap_content"
@@ -39,7 +38,6 @@
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="14sp" />
 
-            <!-- Card do formulário -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +96,9 @@
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
-                    app:boxStrokeWidthFocused="2dp">
+                    app:boxStrokeWidthFocused="2dp"
+                    app:helperText="Ex.: pagamento de fornecedor, venda de produto"
+                    app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDescription"
@@ -122,7 +122,9 @@
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
-                    app:boxStrokeWidthFocused="2dp">
+                    app:boxStrokeWidthFocused="2dp"
+                    app:helperText="Aceita ponto ou vírgula como separador decimal"
+                    app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAmount"
@@ -139,20 +141,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Data (DD/MM/AAAA)"
+                    android:hint="Data"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
-                    app:boxStrokeWidthFocused="2dp">
+                    app:boxStrokeWidthFocused="2dp"
+                    app:helperText="Toque para escolher no calendário"
+                    app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:inputType="none"
                         android:textColor="@color/ns_text_primary"
                         android:textColorHint="@color/ns_text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>

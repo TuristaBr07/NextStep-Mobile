@@ -65,6 +65,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             intent.putExtra("EXTRA_AMOUNT", tx.getAmount());
             intent.putExtra("EXTRA_TYPE", tx.getType());
             intent.putExtra("EXTRA_CATEGORY", tx.getCategory());
+            intent.putExtra("EXTRA_DATE", tx.getDate());
             v.getContext().startActivity(intent);
         });
 
