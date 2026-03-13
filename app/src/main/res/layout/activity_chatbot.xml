@@ -3,20 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:background="@color/ns_background">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarChatbot"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorSurface"
+        android:backgroundTint="@color/ns_surface"
         android:elevation="4dp"
         android:title="Assistente NextStep"
-        android:titleTextColor="?android:textColorPrimary"
+        android:titleTextColor="@color/ns_text_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@android:drawable/ic_media_previous"
+        app:navigationIconTint="@color/ns_text_primary"
         app:titleCentered="false" />
 
     <TextView
@@ -26,7 +27,7 @@
         android:layout_marginHorizontal="24dp"
         android:gravity="center"
         android:text="Comece a conversar com o assistente da NextStep."
-        android:textColor="?android:textColorSecondary"
+        android:textColor="@color/ns_text_secondary"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/chatInputContainer"
@@ -42,7 +43,7 @@
         android:paddingStart="12dp"
         android:paddingTop="12dp"
         android:paddingEnd="12dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/tvTypingIndicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +57,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
         android:text="Assistente digitando..."
-        android:textColor="?android:textColorSecondary"
-        android:textSize="14sp"
+        android:textColor="@color/ns_text_secondary"
+        android:textSize="13sp"
         android:textStyle="italic"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/chatInputContainer"
@@ -69,8 +70,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="@color/ns_surface"
+        app:cardCornerRadius="22dp"
         app:cardElevation="4dp"
+        app:strokeColor="@color/ns_border"
+        app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -78,38 +82,57 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilChatMessage"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Digite sua mensagem"
+                app:boxBackgroundColor="@color/ns_surface_soft"
                 app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusTopStart="16dp">
+                app:boxCornerRadiusBottomEnd="18dp"
+                app:boxCornerRadiusBottomStart="18dp"
+                app:boxCornerRadiusTopEnd="18dp"
+                app:boxCornerRadiusTopStart="18dp"
+                app:boxStrokeColor="@color/ns_border"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="@color/ns_text_secondary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etChatMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top|start"
                     android:inputType="textMultiLine"
                     android:maxLines="4"
-                    android:minHeight="48dp" />
+                    android:minHeight="44dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/ns_text_primary"
+                    android:textColorHint="@color/ns_text_hint"
+                    android:textCursorDrawable="@null" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/btnSendMessage"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@drawable/bg_chat_send_button"
                 android:contentDescription="Enviar mensagem"
-                android:padding="10dp"
-                android:src="@android:drawable/ic_menu_send" />
+                android:padding="12dp"
+                android:src="@android:drawable/ic_menu_send"
+                android:tint="@android:color/white" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

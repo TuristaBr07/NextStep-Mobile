@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,11 +13,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tamarin.nextstep.chatbot.ChatbotApi;
@@ -42,6 +43,7 @@ public class ChatbotActivity extends AppCompatActivity {
 
     private RecyclerView rvChatMessages;
     private TextInputEditText etChatMessage;
+    private TextInputLayout tilChatMessage;
     private ImageButton btnSendMessage;
     private TextView tvChatEmptyState;
     private TextView tvTypingIndicator;
@@ -61,10 +63,12 @@ public class ChatbotActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarChatbot);
         rvChatMessages = findViewById(R.id.rvChatMessages);
         etChatMessage = findViewById(R.id.etChatMessage);
+        tilChatMessage = findViewById(R.id.tilChatMessage);
         btnSendMessage = findViewById(R.id.btnSendMessage);
         tvChatEmptyState = findViewById(R.id.tvChatEmptyState);
         tvTypingIndicator = findViewById(R.id.tvTypingIndicator);
 
+        toolbar.setTitle("Assistente NextStep");
         toolbar.inflateMenu(R.menu.chatbot_toolbar_menu);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setOnMenuItemClickListener(this::handleToolbarMenuClick);
@@ -83,6 +87,7 @@ public class ChatbotActivity extends AppCompatActivity {
 
         updateEmptyState();
         showTypingIndicator(false);
+        setSendingState(false);
     }
 
     @Override
@@ -123,12 +128,12 @@ public class ChatbotActivity extends AppCompatActivity {
     private String buildWelcomeMessage() {
         if (ChatbotRetrofitClient.isConfigured()) {
             return "Olá! Eu sou o assistente da NextStep.\n\n" +
-                    "Nesta versão, já estou preparado para integração HTTP com o microserviço externo.";
+                    "Já estou preparado para integração HTTP com o microserviço externo. Você pode me perguntar sobre MEI, faturamento, despesas, receitas e organização financeira.";
         }
 
         return "Olá! Eu sou o assistente da NextStep.\n\n" +
-                "Nesta versão, o endpoint externo ainda não foi configurado no app. " +
-                "Por isso, vou responder em modo local até a integração real ser ativada.";
+                "Nesta versão, o endpoint externo ainda não foi configurado no app. Por isso, vou responder em modo local até a integração real ser ativada.\n\n" +
+                "Você pode me perguntar, por exemplo, sobre limite do MEI, despesas, receitas, impostos e organização financeira.";
     }
 
     private void sendMessage() {
@@ -137,11 +142,11 @@ public class ChatbotActivity extends AppCompatActivity {
                 : "";
 
         if (TextUtils.isEmpty(userText)) {
-            etChatMessage.setError("Digite uma mensagem");
+            tilChatMessage.setError("Digite uma mensagem");
             return;
         }
 
-        etChatMessage.setError(null);
+        tilChatMessage.setError(null);
         addUserMessage(userText);
         etChatMessage.setText("");
         requestBotReply(userText);
@@ -209,6 +214,14 @@ public class ChatbotActivity extends AppCompatActivity {
     private void setSendingState(boolean sending) {
         btnSendMessage.setEnabled(!sending);
         etChatMessage.setEnabled(!sending);
+        tilChatMessage.setEnabled(!sending);
+        btnSendMessage.setAlpha(sending ? 0.55f : 1f);
+
+        int tintColor = ContextCompat.getColor(
+                this,
+                sending ? R.color.ns_surface : android.R.color.white
+        );
+        btnSendMessage.setColorFilter(tintColor);
     }
 
     private void showTypingIndicator(boolean visible) {
