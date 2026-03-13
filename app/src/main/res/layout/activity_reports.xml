@@ -93,8 +93,35 @@
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartReports"
                     android:layout_width="match_parent"
-                    android:layout_height="360dp"
+                    android:layout_height="420dp"
                     android:layout_marginTop="14dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Resumo por categoria"
+                    android:textColor="@color/ns_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSummaryEmpty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Sem dados por categoria para exibir."
+                    android:textColor="@color/ns_text_secondary"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layoutCategorySummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical" />
+
             </LinearLayout>
 
         </LinearLayout>

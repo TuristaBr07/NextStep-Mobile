@@ -18,7 +18,7 @@
         <item name="android:windowBackground">@color/ns_background</item>
         <item name="colorControlHighlight">@color/ns_primary_light</item>
 
-        <!-- reduz a interferência visual do autofill -->
+        <!-- Remove o highlight artificial do autofill para reduzir interferência visual -->
         <item name="android:autofilledHighlight">@android:color/transparent</item>
     </style>
 
