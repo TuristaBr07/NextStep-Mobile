@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,13 +38,14 @@ import retrofit2.Response;
 public class ChatbotActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "nextstep_chatbot_prefs";
-    private static final String KEY_CHAT_MESSAGES = "chat_messages";
+    private static final String KEY_CHAT_MESSAGES_PREFIX = "chat_messages_";
 
     private RecyclerView rvChatMessages;
     private TextInputEditText etChatMessage;
     private ImageButton btnSendMessage;
     private TextView tvChatEmptyState;
     private TextView tvTypingIndicator;
+    private MaterialToolbar toolbar;
 
     private final List<ChatMessage> messages = new ArrayList<>();
     private ChatMessageAdapter adapter;
@@ -54,14 +58,16 @@ public class ChatbotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbot);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbarChatbot);
+        toolbar = findViewById(R.id.toolbarChatbot);
         rvChatMessages = findViewById(R.id.rvChatMessages);
         etChatMessage = findViewById(R.id.etChatMessage);
         btnSendMessage = findViewById(R.id.btnSendMessage);
         tvChatEmptyState = findViewById(R.id.tvChatEmptyState);
         tvTypingIndicator = findViewById(R.id.tvTypingIndicator);
 
+        toolbar.inflateMenu(R.menu.chatbot_toolbar_menu);
         toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setOnMenuItemClickListener(this::handleToolbarMenuClick);
 
         rvChatMessages.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ChatMessageAdapter(messages);
@@ -83,6 +89,35 @@ public class ChatbotActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         persistChatHistory();
+    }
+
+    private boolean handleToolbarMenuClick(MenuItem item) {
+        if (item.getItemId() == R.id.action_clear_chat) {
+            confirmClearChat();
+            return true;
+        }
+        return false;
+    }
+
+    private void confirmClearChat() {
+        new AlertDialog.Builder(this)
+                .setTitle("Limpar conversa")
+                .setMessage("Deseja apagar todo o histórico desta conversa?")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Limpar", (dialog, which) -> clearChatHistory())
+                .show();
+    }
+
+    private void clearChatHistory() {
+        messages.clear();
+        adapter.notifyDataSetChanged();
+        clearPersistedChatHistory();
+
+        addBotMessage(buildWelcomeMessage(), true);
+        showTypingIndicator(false);
+        updateEmptyState();
+
+        Toast.makeText(this, "Conversa limpa com sucesso.", Toast.LENGTH_SHORT).show();
     }
 
     private String buildWelcomeMessage() {
@@ -235,12 +270,12 @@ public class ChatbotActivity extends AppCompatActivity {
     private void persistChatHistory() {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = gson.toJson(messages);
-        preferences.edit().putString(KEY_CHAT_MESSAGES, json).apply();
+        preferences.edit().putString(getChatStorageKey(), json).apply();
     }
 
     private void restoreChatHistory() {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String json = preferences.getString(KEY_CHAT_MESSAGES, null);
+        String json = preferences.getString(getChatStorageKey(), null);
 
         if (json == null || json.trim().isEmpty()) {
             return;
@@ -255,5 +290,20 @@ public class ChatbotActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             scrollToBottom();
         }
+    }
+
+    private void clearPersistedChatHistory() {
+        SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        preferences.edit().remove(getChatStorageKey()).apply();
+    }
+
+    private String getChatStorageKey() {
+        String userId = SessionManager.getUserId();
+
+        if (userId == null || userId.trim().isEmpty()) {
+            return KEY_CHAT_MESSAGES_PREFIX + "guest";
+        }
+
+        return KEY_CHAT_MESSAGES_PREFIX + userId;
     }
 }
