@@ -3,10 +3,12 @@ package com.tamarin.nextstep;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -14,7 +16,8 @@ import retrofit2.Response;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    private EditText etForgotEmail;
+    private TextInputEditText etForgotEmail;
+    private TextInputLayout tilForgotEmail;
     private Button btnSendResetLink;
     private TextView tvBackToLoginFromForgot;
 
@@ -26,6 +29,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
 
         etForgotEmail = findViewById(R.id.etForgotEmail);
+        tilForgotEmail = findViewById(R.id.tilForgotEmail);
         btnSendResetLink = findViewById(R.id.btnSendResetLink);
         tvBackToLoginFromForgot = findViewById(R.id.tvBackToLoginFromForgot);
 
@@ -39,23 +43,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void validateAndRecover() {
+        tilForgotEmail.setError(null);
+
         String email = etForgotEmail.getText() != null
                 ? etForgotEmail.getText().toString().trim()
                 : "";
 
         if (email.isEmpty()) {
-            etForgotEmail.setError("Informe seu e-mail");
-            etForgotEmail.requestFocus();
+            tilForgotEmail.setError("Informe seu e-mail");
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etForgotEmail.setError("E-mail inválido");
-            etForgotEmail.requestFocus();
+            tilForgotEmail.setError("E-mail inválido");
             return;
         }
 
-        etForgotEmail.setError(null);
         recoverPassword(email);
     }
 
@@ -101,6 +104,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnSendResetLink.setEnabled(!loading);
         tvBackToLoginFromForgot.setEnabled(!loading);
 
-        btnSendResetLink.setText(loading ? "ENVIANDO..." : "ENVIAR LINK");
+        btnSendResetLink.setText(loading ? "Enviando..." : "Enviar link");
     }
 }

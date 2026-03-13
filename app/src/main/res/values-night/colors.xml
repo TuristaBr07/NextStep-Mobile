@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ns_primary">#81C784</color>
+    <color name="ns_primary_dark">#66BB6A</color>
+    <color name="ns_primary_light">#A5D6A7</color>
+
+    <color name="ns_secondary">#64B5F6</color>
+    <color name="ns_secondary_light">#1E3A5F</color>
+
+    <color name="ns_background">#111411</color>
+    <color name="ns_surface">#1A1F1A</color>
+    <color name="ns_surface_soft">#232923</color>
+
+    <color name="ns_text_primary">#F2F5F2</color>
+    <color name="ns_text_secondary">#C2CBC2</color>
+    <color name="ns_text_hint">#98A398</color>
+
+    <color name="ns_border">#354035</color>
+    <color name="ns_error">#EF5350</color>
+    <color name="ns_success">#81C784</color>
+
+    <color name="colorTextSecondary">#C2CBC2</color>
+</resources>
