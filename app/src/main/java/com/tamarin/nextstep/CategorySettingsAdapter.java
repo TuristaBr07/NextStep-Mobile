@@ -1,18 +1,22 @@
 package com.tamarin.nextstep;
 
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class CategorySettingsAdapter extends RecyclerView.Adapter<CategorySettingsAdapter.ViewHolder> {
 
-    private List<Category> categories;
-    private OnCategoryDeleteListener deleteListener;
+    private final List<Category> categories;
+    private final OnCategoryDeleteListener deleteListener;
 
     public interface OnCategoryDeleteListener {
         void onDeleteClick(Category category);
@@ -33,15 +37,24 @@ public class CategorySettingsAdapter extends RecyclerView.Adapter<CategorySettin
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Category cat = categories.get(position);
-        holder.tvCatName.setText(cat.getName());
-        holder.tvCatType.setText(cat.getType());
 
-        // Define a cor baseada no tipo para ficar bonito
-        if ("Receita".equalsIgnoreCase(cat.getType())) {
-            holder.tvCatType.setTextColor(0xFF2E7D32); // Verde
-        } else {
-            holder.tvCatType.setTextColor(0xFFD32F2F); // Vermelho
-        }
+        holder.tvCatName.setText(cat.getName());
+
+        boolean isIncome = "Receita".equalsIgnoreCase(cat.getType());
+        int accentColor = ContextCompat.getColor(
+                holder.itemView.getContext(),
+                isIncome ? R.color.ns_success : R.color.ns_error
+        );
+
+        holder.tvCatType.setText(isIncome ? "Receita" : "Despesa");
+        holder.tvCatType.setTextColor(accentColor);
+
+        GradientDrawable pill = new GradientDrawable();
+        pill.setCornerRadius(999f);
+        pill.setColor(adjustAlpha(accentColor, 0.12f));
+        pill.setStroke(1, adjustAlpha(accentColor, 0.35f));
+        holder.tvCatType.setBackground(pill);
+        holder.tvCatType.setPadding(dp(holder, 10), dp(holder, 4), dp(holder, 10), dp(holder, 4));
 
         holder.ivDeleteCat.setOnClickListener(v -> deleteListener.onDeleteClick(cat));
     }
@@ -49,6 +62,18 @@ public class CategorySettingsAdapter extends RecyclerView.Adapter<CategorySettin
     @Override
     public int getItemCount() {
         return categories != null ? categories.size() : 0;
+    }
+
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(android.graphics.Color.alpha(color) * factor);
+        int red = android.graphics.Color.red(color);
+        int green = android.graphics.Color.green(color);
+        int blue = android.graphics.Color.blue(color);
+        return android.graphics.Color.argb(alpha, red, green, blue);
+    }
+
+    private int dp(ViewHolder holder, int value) {
+        return Math.round(value * holder.itemView.getResources().getDisplayMetrics().density);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

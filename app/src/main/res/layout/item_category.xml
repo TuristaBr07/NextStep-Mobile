@@ -36,17 +36,20 @@
                 android:id="@+id/tvCatType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:text="Receita"
                 android:textColor="@color/ns_text_secondary"
-                android:textSize="13sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/ivDeleteCat"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Excluir categoria"
+            android:padding="2dp"
             android:src="@android:drawable/ic_menu_delete"
             app:tint="@color/ns_error" />
 

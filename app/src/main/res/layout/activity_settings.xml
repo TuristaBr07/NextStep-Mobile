@@ -28,7 +28,6 @@
             android:textColor="@color/ns_text_secondary"
             android:textSize="14sp" />
 
-        <!-- Perfil -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,9 +43,9 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    app:cardCornerRadius="55dp"
+                    android:layout_width="112dp"
+                    android:layout_height="112dp"
+                    app:cardCornerRadius="56dp"
                     app:cardElevation="4dp">
 
                     <ImageView
@@ -62,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Toque para alterar a foto"
+                    android:text="Toque na foto para alterar"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -77,6 +76,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilProfileName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,8 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:boxStrokeColor="@color/ns_primary">
+                app:boxStrokeColor="@color/ns_primary"
+                app:boxStrokeWidthFocused="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProfileName"
@@ -99,6 +100,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilProfileCompany"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,13 +111,14 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:boxStrokeColor="@color/ns_primary">
+                app:boxStrokeColor="@color/ns_primary"
+                app:boxStrokeWidthFocused="2dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProfileCompany"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:textColor="@color/ns_text_primary"
                     android:textColorHint="@color/ns_text_hint" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -133,7 +136,6 @@
                 app:cornerRadius="16dp" />
         </LinearLayout>
 
-        <!-- Categorias -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -169,6 +171,7 @@
                 android:paddingEnd="12dp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNewCatName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,7 +182,10 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:boxStrokeColor="@color/ns_primary">
+                app:boxStrokeColor="@color/ns_primary"
+                app:boxStrokeWidthFocused="2dp"
+                app:helperText="Ex.: Transporte, Alimentação, Serviços"
+                app:helperTextTextColor="@color/ns_text_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewCatName"
@@ -198,14 +204,23 @@
                 android:text="Adicionar categoria"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                app:backgroundTint="@color/ns_secondary"
+                app:backgroundTint="@color/ns_primary"
                 app:cornerRadius="16dp" />
+
+            <TextView
+                android:id="@+id/tvCategoryCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="0 categorias cadastradas"
+                android:textColor="@color/ns_text_secondary"
+                android:textSize="13sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCategoriesSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="12dp"
                 android:nestedScrollingEnabled="false" />
         </LinearLayout>
 
