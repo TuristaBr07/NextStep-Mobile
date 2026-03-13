@@ -8,6 +8,7 @@ plugins {
 // --- LER O ARQUIVO LOCAL.PROPERTIES ---
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
+
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
@@ -23,16 +24,16 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // --- INJETAR CHAVES NO CÓDIGO ---
-        // Aqui usamos o método seguro (?.let) caso a chave não exista, para não quebrar a build
         val supabaseUrl = localProperties.getProperty("SUPABASE_URL") ?: ""
         val supabaseKey = localProperties.getProperty("SUPABASE_KEY") ?: ""
+        val chatbotBaseUrl = localProperties.getProperty("CHATBOT_BASE_URL") ?: ""
 
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
+        buildConfigField("String", "CHATBOT_BASE_URL", "\"$chatbotBaseUrl\"")
         // --------------------------------
     }
 
@@ -67,7 +68,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     testImplementation(libs.junit)

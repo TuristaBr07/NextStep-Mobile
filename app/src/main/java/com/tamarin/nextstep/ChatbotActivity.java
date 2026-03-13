@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,10 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.tamarin.nextstep.chatbot.ChatbotApi;
+import com.tamarin.nextstep.chatbot.ChatbotRequest;
+import com.tamarin.nextstep.chatbot.ChatbotResponse;
+import com.tamarin.nextstep.chatbot.ChatbotRetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatbotActivity extends AppCompatActivity {
 
@@ -47,15 +56,22 @@ public class ChatbotActivity extends AppCompatActivity {
         adapter = new ChatMessageAdapter(messages);
         rvChatMessages.setAdapter(adapter);
 
-        addBotMessage(
-                "Olá! Eu sou o assistente da NextStep.\n\n" +
-                        "Nesta primeira versão, eu ainda estou em modo local, mas a tela já foi preparada " +
-                        "para futura integração com o microserviço de IA."
-        );
+        addBotMessage(buildWelcomeMessage());
 
         btnSendMessage.setOnClickListener(v -> sendMessage());
 
         updateEmptyState();
+    }
+
+    private String buildWelcomeMessage() {
+        if (ChatbotRetrofitClient.isConfigured()) {
+            return "Olá! Eu sou o assistente da NextStep.\n\n" +
+                    "Nesta versão, já estou preparado para integração HTTP com o microserviço externo.";
+        }
+
+        return "Olá! Eu sou o assistente da NextStep.\n\n" +
+                "Nesta versão, o endpoint externo ainda não foi configurado no app. " +
+                "Por isso, vou responder em modo local até a integração real ser ativada.";
     }
 
     private void sendMessage() {
@@ -71,17 +87,67 @@ public class ChatbotActivity extends AppCompatActivity {
         etChatMessage.setError(null);
         addUserMessage(userText);
         etChatMessage.setText("");
-
-        simulateBotReply(userText);
+        requestBotReply(userText);
     }
 
-    private void simulateBotReply(String userText) {
-        btnSendMessage.setEnabled(false);
+    private void requestBotReply(String userText) {
+        setSendingState(true);
 
+        ChatbotApi chatbotApi = ChatbotRetrofitClient.getApi();
+
+        if (chatbotApi == null) {
+            simulateLocalFallback(userText);
+            return;
+        }
+
+        String userId = SessionManager.getUserId();
+        ChatbotRequest request = new ChatbotRequest(userText, userId, "android");
+
+        chatbotApi.sendMessage(request).enqueue(new Callback<ChatbotResponse>() {
+            @Override
+            public void onResponse(Call<ChatbotResponse> call, Response<ChatbotResponse> response) {
+                setSendingState(false);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    String reply = response.body().extractBestReply();
+
+                    if (reply != null && !reply.isEmpty()) {
+                        addBotMessage(reply);
+                        return;
+                    }
+                }
+
+                addBotMessage(buildMockReply(userText));
+                Toast.makeText(
+                        ChatbotActivity.this,
+                        "Resposta externa indisponível. Usando modo local.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+
+            @Override
+            public void onFailure(Call<ChatbotResponse> call, Throwable t) {
+                setSendingState(false);
+                addBotMessage(buildMockReply(userText));
+                Toast.makeText(
+                        ChatbotActivity.this,
+                        "Falha ao conectar com o assistente externo. Usando modo local.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
+    private void simulateLocalFallback(String userText) {
         handler.postDelayed(() -> {
+            setSendingState(false);
             addBotMessage(buildMockReply(userText));
-            btnSendMessage.setEnabled(true);
-        }, 700);
+        }, 600);
+    }
+
+    private void setSendingState(boolean sending) {
+        btnSendMessage.setEnabled(!sending);
+        etChatMessage.setEnabled(!sending);
     }
 
     private String buildMockReply(String userText) {
@@ -104,7 +170,7 @@ public class ChatbotActivity extends AppCompatActivity {
         }
 
         return "Entendi sua mensagem: \"" + userText + "\".\n\n" +
-                "Nesta fase, estou respondendo com lógica local. No próximo passo, posso ser conectado a um endpoint HTTP real da IA.";
+                "Neste momento, estou usando a resposta local do app. Assim que o endpoint Python estiver pronto, esta tela já poderá consumir a resposta externa.";
     }
 
     private void addUserMessage(String text) {
