@@ -12,13 +12,13 @@
         android:id="@+id/scrollDashboard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:clipToPadding="false"
+        android:fillViewport="true"
         android:paddingBottom="100dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,7 +26,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Cabeçalho -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +67,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Card principal -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -117,7 +115,6 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- KPIs -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -184,7 +181,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Limite MEI -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -219,11 +215,21 @@
                     android:layout_marginTop="14dp"
                     android:max="100"
                     android:progress="0"
+                    android:progressBackgroundTint="@color/ns_border"
                     android:progressTint="@color/ns_success"
                     android:scaleY="3" />
+
+                <TextView
+                    android:id="@+id/tvMeiProgressValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="0% do limite • R$ 0,00 de R$ 81.000,00"
+                    android:textColor="@color/ns_text_secondary"
+                    android:textSize="13sp"
+                    tools:text="63% do limite • R$ 51.000,00 de R$ 81.000,00" />
             </LinearLayout>
 
-            <!-- Gráfico -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -252,11 +258,10 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/lineChartDashboard"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
+                    android:layout_height="240dp"
                     android:layout_marginTop="14dp" />
             </LinearLayout>
 
-            <!-- Título lista -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -282,7 +287,6 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <!-- Lista -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTransactions"
                 android:layout_width="match_parent"
@@ -315,8 +319,8 @@
         app:itemIconTint="@color/ns_text_secondary"
         app:itemTextColor="@color/ns_text_secondary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

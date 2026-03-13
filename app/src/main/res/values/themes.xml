@@ -17,6 +17,9 @@
         <item name="android:statusBarColor">@color/ns_primary_dark</item>
         <item name="android:windowBackground">@color/ns_background</item>
         <item name="colorControlHighlight">@color/ns_primary_light</item>
+
+        <!-- Remove o highlight artificial do autofill para reduzir interferência visual -->
+        <item name="android:autofilledHighlight">@android:color/transparent</item>
     </style>
 
     <style name="Theme.NextStep" parent="Base.Theme.NextStep" />
