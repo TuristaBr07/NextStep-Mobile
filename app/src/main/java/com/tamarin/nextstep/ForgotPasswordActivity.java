@@ -50,12 +50,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 : "";
 
         if (email.isEmpty()) {
-            tilForgotEmail.setError("Informe seu e-mail");
+            tilForgotEmail.setError(getString(R.string.error_email_required));
             return;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilForgotEmail.setError("E-mail inválido");
+            tilForgotEmail.setError(getString(R.string.error_invalid_email));
             return;
         }
 
@@ -75,13 +75,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     UiUtils.showLongToast(
                             ForgotPasswordActivity.this,
-                            "Se o e-mail existir, você receberá instruções para redefinir a senha."
+                            getString(R.string.forgot_success)
                     );
                     finish();
                 } else {
                     UiUtils.showLongToast(
                             ForgotPasswordActivity.this,
-                            "Não foi possível processar a solicitação agora."
+                            getString(R.string.forgot_error_generic)
                     );
                 }
             }
@@ -91,7 +91,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 setLoading(false);
                 UiUtils.showLongToast(
                         ForgotPasswordActivity.this,
-                        "Falha na conexão. Verifique sua internet."
+                        getString(R.string.connection_failure_check_internet)
                 );
             }
         });
@@ -104,6 +104,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnSendResetLink.setEnabled(!loading);
         tvBackToLoginFromForgot.setEnabled(!loading);
 
-        btnSendResetLink.setText(loading ? "Enviando..." : "Enviar link");
+        btnSendResetLink.setText(loading ? getString(R.string.forgot_loading) : getString(R.string.forgot_send_link));
     }
 }

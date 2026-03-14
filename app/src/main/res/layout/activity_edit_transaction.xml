@@ -25,7 +25,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Editar transação"
+                android:text="@string/edit_transaction_title"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Atualize as informações ou exclua esta movimentação."
+                android:text="@string/edit_transaction_subtitle"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="14sp" />
 
@@ -51,7 +51,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Descrição"
+                    android:hint="@string/transaction_description_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -59,7 +59,7 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Edite a descrição da movimentação"
+                    app:helperText="@string/edit_transaction_description_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -77,7 +77,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Valor (R$)"
+                    android:hint="@string/transaction_amount_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -85,7 +85,7 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Aceita ponto ou vírgula como separador decimal"
+                    app:helperText="@string/transaction_amount_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -103,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Data"
+                    android:hint="@string/transaction_date_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -111,15 +111,15 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Toque para escolher no calendário"
+                    app:helperText="@string/transaction_date_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:clickable="true"
+                        android:focusable="false"
                         android:inputType="none"
                         android:textColor="@color/ns_text_primary"
                         android:textColorHint="@color/ns_text_hint" />
@@ -130,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Tipo de movimentação"
+                    android:text="@string/edit_transaction_type_label"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -147,7 +147,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Entrada"
+                        android:text="@string/edit_transaction_income"
                         android:textColor="@color/ns_text_primary" />
 
                     <RadioButton
@@ -155,7 +155,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Saída"
+                        android:text="@string/edit_transaction_expense"
                         android:textColor="@color/ns_text_primary" />
                 </RadioGroup>
 
@@ -164,7 +164,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Categoria"
+                    android:text="@string/transaction_category_label"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -183,7 +183,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:layout_marginTop="26dp"
-                    android:text="Salvar alterações"
+                    android:text="@string/edit_transaction_save"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -194,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Ações de risco"
+                    android:text="@string/edit_transaction_risk_actions"
                     android:textColor="@color/ns_error"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -204,7 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:layout_marginTop="10dp"
-                    android:text="Excluir transação"
+                    android:text="@string/edit_transaction_delete"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textStyle="bold"

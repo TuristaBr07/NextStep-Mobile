@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Configurações"
+            android:text="@string/settings_title"
             android:textColor="@color/ns_text_primary"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Gerencie seus dados, preferências e categorias."
+            android:text="@string/settings_subtitle"
             android:textColor="@color/ns_text_secondary"
             android:textSize="14sp" />
 
@@ -52,7 +52,7 @@
                         android:id="@+id/ivAvatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:contentDescription="Foto de perfil"
+                        android:contentDescription="@string/settings_profile_photo_description"
                         android:scaleType="centerCrop"
                         android:src="@drawable/logo_nextstep" />
                 </androidx.cardview.widget.CardView>
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Toque na foto para alterar"
+                    android:text="@string/settings_change_photo"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:text="Meu perfil"
+                android:text="@string/settings_profile_title"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Nome completo"
+                android:hint="@string/settings_profile_name_hint"
                 app:boxBackgroundColor="@color/ns_surface_soft"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -105,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:hint="Nome da empresa (opcional)"
+                android:hint="@string/settings_profile_company_hint"
                 app:boxBackgroundColor="@color/ns_surface_soft"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -128,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="20dp"
-                android:text="Salvar perfil"
+                android:text="@string/settings_save_profile"
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -147,7 +147,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gerenciar categorias"
+                android:text="@string/settings_categories_title"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -156,7 +156,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Crie e remova categorias para organizar melhor seu fluxo de caixa."
+                android:text="@string/settings_categories_subtitle"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="13sp" />
 
@@ -176,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:hint="Nova categoria"
+                android:hint="@string/settings_new_category_hint"
                 app:boxBackgroundColor="@color/ns_surface_soft"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -184,7 +184,7 @@
                 app:boxCornerRadiusTopStart="16dp"
                 app:boxStrokeColor="@color/ns_primary"
                 app:boxStrokeWidthFocused="2dp"
-                app:helperText="Ex.: Transporte, Alimentação, Serviços"
+                app:helperText="@string/settings_new_category_helper"
                 app:helperTextTextColor="@color/ns_text_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -201,7 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="14dp"
-                android:text="Adicionar categoria"
+                android:text="@string/settings_add_category"
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 app:backgroundTint="@color/ns_primary"
@@ -212,7 +212,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="0 categorias cadastradas"
+                android:text="@string/settings_category_count_default"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="13sp" />
 
@@ -230,7 +230,7 @@
             android:layout_height="58dp"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="24dp"
-            android:text="Sair da conta"
+            android:text="@string/settings_logout"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:textStyle="bold"

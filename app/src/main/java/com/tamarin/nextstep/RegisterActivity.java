@@ -62,31 +62,31 @@ public class RegisterActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (fullName.isEmpty()) {
-            tilFullName.setError("Informe seu nome completo");
+            tilFullName.setError(getString(R.string.error_full_name_required));
             hasError = true;
         }
 
         if (email.isEmpty()) {
-            tilRegEmail.setError("Informe seu e-mail");
+            tilRegEmail.setError(getString(R.string.error_email_required));
             hasError = true;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilRegEmail.setError("E-mail inválido");
+            tilRegEmail.setError(getString(R.string.error_invalid_email));
             hasError = true;
         }
 
         if (password.isEmpty()) {
-            tilRegPassword.setError("Informe sua senha");
+            tilRegPassword.setError(getString(R.string.error_password_required));
             hasError = true;
         } else if (password.length() < 8) {
-            tilRegPassword.setError("A senha deve ter pelo menos 8 caracteres");
+            tilRegPassword.setError(getString(R.string.error_password_min_8));
             hasError = true;
         }
 
         if (confirmPassword.isEmpty()) {
-            tilConfirmPassword.setError("Confirme sua senha");
+            tilConfirmPassword.setError(getString(R.string.error_confirm_password_required));
             hasError = true;
         } else if (!confirmPassword.equals(password)) {
-            tilConfirmPassword.setError("As senhas não coincidem");
+            tilConfirmPassword.setError(getString(R.string.error_passwords_do_not_match));
             hasError = true;
         }
 
@@ -108,20 +108,20 @@ public class RegisterActivity extends AppCompatActivity {
                 setLoading(false);
 
                 if (response.isSuccessful()) {
-                    UiUtils.showLongToast(RegisterActivity.this, "Cadastro realizado com sucesso! Faça login para continuar.");
+                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_success));
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                     finish();
                 } else if (response.code() == 400 || response.code() == 422) {
-                    UiUtils.showLongToast(RegisterActivity.this, "Não foi possível cadastrar. Verifique se o e-mail já está em uso.");
+                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_email_in_use));
                 } else {
-                    UiUtils.showLongToast(RegisterActivity.this, "Erro ao cadastrar. Código: " + response.code());
+                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_error_code, response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 setLoading(false);
-                UiUtils.showLongToast(RegisterActivity.this, "Falha na conexão. Verifique sua internet.");
+                UiUtils.showLongToast(RegisterActivity.this, getString(R.string.connection_failure_check_internet));
             }
         });
     }
@@ -143,6 +143,6 @@ public class RegisterActivity extends AppCompatActivity {
         tvBackToLogin.setEnabled(!loading);
         btnRegister.setEnabled(!loading);
 
-        btnRegister.setText(loading ? "Criando conta..." : "CADASTRAR");
+        btnRegister.setText(loading ? getString(R.string.register_loading) : getString(R.string.register_button));
     }
 }

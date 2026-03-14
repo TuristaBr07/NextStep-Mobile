@@ -29,22 +29,20 @@
                 android:layout_width="88dp"
                 android:layout_height="88dp"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="Logotipo NextStep"
+                android:contentDescription="@string/login_logo_description"
                 android:src="@drawable/logo_nextstep" />
 
-            <!-- Mantido visualmente alinhado ao modo claro -->
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="NextStep"
+                android:text="@string/login_title"
                 android:textColor="#2E7D32"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <!-- Mantido visualmente alinhado ao modo claro -->
             <TextView
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
@@ -52,7 +50,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Organize as finanças do seu negócio\ne acompanhe sua evolução com clareza."
+                android:text="@string/login_subtitle"
                 android:textColor="#8A948A"
                 android:textSize="15sp" />
 
@@ -67,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Entrar"
+                    android:text="@string/login_card_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -76,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Acesse sua conta para continuar"
+                    android:text="@string/login_card_subtitle"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="14sp" />
 
@@ -86,7 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:hint="E-mail"
+                    android:hint="@string/hint_email"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -120,7 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Senha"
+                    android:hint="@string/hint_password"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -161,7 +159,7 @@
                     android:paddingTop="6dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="6dp"
-                    android:text="Esqueci minha senha"
+                    android:text="@string/forgot_password"
                     android:textColor="@color/ns_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -185,7 +183,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:text="Ainda não tem conta?"
+                    android:text="@string/login_no_account"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="14sp" />
 
@@ -200,21 +198,20 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="12dp"
                     android:paddingBottom="8dp"
-                    android:text="Criar conta"
+                    android:text="@string/create_account"
                     android:textColor="@color/ns_primary_dark"
                     android:textSize="15sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Mantido visualmente alinhado ao modo claro -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="24dp"
                 android:gravity="center"
-                android:text="Feito para MEIs que precisam de controle,\nclareza e crescimento sustentável."
-                android:textColor="#8A948A"
+                android:text="@string/login_footer"
+                android:textColor="@color/ns_text_hint"
                 android:textSize="12sp" />
 
         </LinearLayout>

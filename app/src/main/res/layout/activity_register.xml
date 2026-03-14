@@ -29,7 +29,7 @@
                 android:layout_width="84dp"
                 android:layout_height="84dp"
                 android:layout_gravity="center_horizontal"
-                android:contentDescription="Logotipo NextStep"
+                android:contentDescription="@string/register_logo_description"
                 android:src="@drawable/logo_nextstep" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:text="Criar conta"
+                android:text="@string/register_title"
                 android:textColor="@color/ns_primary_dark"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Cadastre-se para começar a organizar\no financeiro do seu negócio."
+                android:text="@string/register_subtitle"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="14sp" />
 
@@ -66,7 +66,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nome completo"
+                    android:hint="@string/register_full_name_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -90,7 +90,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="E-mail"
+                    android:hint="@string/register_email_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -114,7 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Senha"
+                    android:hint="@string/register_password_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -139,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Confirmar senha"
+                    android:hint="@string/register_confirm_password_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -163,7 +163,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="22dp"
-                    android:text="Cadastrar"
+                    android:text="@string/register_button"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -181,7 +181,7 @@
                     android:paddingTop="8dp"
                     android:paddingEnd="12dp"
                     android:paddingBottom="8dp"
-                    android:text="Já tem uma conta? Faça login"
+                    android:text="@string/register_back_to_login"
                     android:textColor="@color/ns_secondary"
                     android:textStyle="bold" />
             </LinearLayout>

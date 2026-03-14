@@ -23,7 +23,7 @@
             android:id="@+id/tvTransactionsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Histórico de transações"
+            android:text="@string/transactions_title"
             android:textColor="@color/ns_text_primary"
             android:textSize="26sp"
             android:textStyle="bold" />
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Busque, filtre e acompanhe todas as movimentações do seu negócio."
+            android:text="@string/transactions_subtitle"
             android:textColor="@color/ns_text_secondary"
             android:textSize="14sp" />
     </LinearLayout>
@@ -68,7 +68,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:contentDescription="Buscar"
+                    android:contentDescription="@string/transactions_search_description"
                     android:src="@android:drawable/ic_menu_search"
                     app:tint="@color/ns_text_hint" />
 
@@ -79,7 +79,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="Buscar na descrição..."
+                    android:hint="@string/transactions_search_hint"
                     android:inputType="text"
                     android:padding="8dp"
                     android:textColor="@color/ns_text_primary"
@@ -105,7 +105,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tipo"
+                        android:text="@string/transactions_filter_type"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -131,7 +131,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Categoria"
+                        android:text="@string/transactions_filter_category"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -157,7 +157,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Resultados"
+                    android:text="@string/transactions_results_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -166,7 +166,7 @@
                     android:id="@+id/tvResultsHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="toque para editar"
+                    android:text="@string/transactions_edit_hint"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -176,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="0 transações encontradas"
+                android:text="@string/transactions_results_count_default"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="13sp"
                 tools:text="8 transações encontradas" />
@@ -196,7 +196,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:contentDescription="Sem resultados"
+                    android:contentDescription="@string/transactions_empty_title"
                     android:src="@android:drawable/ic_menu_info_details"
                     app:tint="@color/ns_text_hint" />
 
@@ -204,7 +204,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Nenhuma transação encontrada"
+                    android:text="@string/transactions_empty_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:gravity="center"
-                    android:text="Ajuste os filtros ou cadastre uma nova movimentação."
+                    android:text="@string/transactions_empty_subtitle"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp" />
             </LinearLayout>

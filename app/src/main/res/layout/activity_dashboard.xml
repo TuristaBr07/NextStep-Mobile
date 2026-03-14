@@ -36,7 +36,7 @@
                     android:id="@+id/ivLogo"
                     android:layout_width="54dp"
                     android:layout_height="54dp"
-                    android:contentDescription="Avatar ou logotipo"
+                    android:contentDescription="@string/dashboard_logo_description"
                     android:scaleType="centerCrop"
                     android:src="@drawable/logo_nextstep" />
 
@@ -51,7 +51,7 @@
                         android:id="@+id/tvHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Olá, Empreendedor!"
+                        android:text="@string/dashboard_header_default"
                         android:textColor="@color/ns_text_primary"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Visão financeira do seu negócio"
+                        android:text="@string/dashboard_subheader_default"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -83,7 +83,7 @@
                     android:paddingTop="6dp"
                     android:paddingEnd="12dp"
                     android:paddingBottom="6dp"
-                    android:text="Resumo financeiro"
+                    android:text="@string/dashboard_summary_label"
                     android:textColor="@color/ns_secondary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Saldo atual"
+                    android:text="@string/dashboard_balance_label"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="R$ 0,00"
+                    android:text="@string/currency_zero"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Acompanhe seu negócio com clareza e evite surpresas."
+                    android:text="@string/dashboard_summary_subtitle"
                     android:textColor="#E8F5E9"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -135,7 +135,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Receitas"
+                        android:text="@string/dashboard_income_label"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -145,7 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="R$ 0,00"
+                        android:text="@string/currency_zero"
                         android:textColor="@color/ns_success"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -164,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Despesas"
+                        android:text="@string/dashboard_expense_label"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -174,7 +174,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="R$ 0,00"
+                        android:text="@string/currency_zero"
                         android:textColor="@color/ns_error"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -194,7 +194,7 @@
                     android:id="@+id/tvLabelMei"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Limite MEI (R$ 81 mil)"
+                    android:text="@string/dashboard_mei_limit_label"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Controle quanto do teto anual já foi consumido."
+                    android:text="@string/dashboard_mei_limit_subtitle"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp" />
 
@@ -224,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="0% do limite • R$ 0,00 de R$ 81.000,00"
+                    android:text="@string/dashboard_mei_progress_default"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     tools:text="63% do limite • R$ 51.000,00 de R$ 81.000,00" />
@@ -242,7 +242,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fluxo de caixa"
+                    android:text="@string/dashboard_cashflow_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -251,7 +251,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Compare entradas e saídas ao longo do tempo."
+                    android:text="@string/dashboard_cashflow_subtitle"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp" />
 
@@ -274,7 +274,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Últimas transações"
+                    android:text="@string/dashboard_transactions_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -282,7 +282,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Toque para editar"
+                    android:text="@string/dashboard_edit_hint"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -304,7 +304,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="86dp"
-        android:contentDescription="Adicionar nova transação"
+        android:contentDescription="@string/dashboard_add_transaction_description"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/ns_primary_dark"
         app:layout_constraintBottom_toBottomOf="parent"

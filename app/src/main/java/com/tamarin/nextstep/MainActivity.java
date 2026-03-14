@@ -63,18 +63,18 @@ public class MainActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (email.isEmpty()) {
-            tilEmail.setError("Informe seu e-mail");
+            tilEmail.setError(getString(R.string.error_email_required));
             hasError = true;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            tilEmail.setError("E-mail inválido");
+            tilEmail.setError(getString(R.string.error_invalid_email));
             hasError = true;
         }
 
         if (senha.isEmpty()) {
-            tilPassword.setError("Informe sua senha");
+            tilPassword.setError(getString(R.string.error_password_required));
             hasError = true;
         } else if (senha.length() < 6) {
-            tilPassword.setError("A senha deve ter pelo menos 6 caracteres");
+            tilPassword.setError(getString(R.string.error_password_min_6));
             hasError = true;
         }
 
@@ -104,22 +104,22 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (token == null || token.trim().isEmpty()) {
-                        Toast.makeText(MainActivity.this, "Falha ao obter token de sessão.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, getString(R.string.login_token_error), Toast.LENGTH_LONG).show();
                         return;
                     }
 
                     SessionManager.saveSession(token, userId);
 
-                    Toast.makeText(MainActivity.this, "Login realizado com sucesso!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                     openDashboard();
 
                 } else if (response.code() == 400 || response.code() == 401) {
-                    tilEmail.setError("Verifique suas credenciais");
-                    tilPassword.setError("E-mail ou senha inválidos");
+                    tilEmail.setError(getString(R.string.login_invalid_credentials_title));
+                    tilPassword.setError(getString(R.string.login_invalid_credentials_body));
                 } else {
                     Toast.makeText(
                             MainActivity.this,
-                            "Erro ao fazer login. Código: " + response.code(),
+                            getString(R.string.login_error_code, response.code()),
                             Toast.LENGTH_LONG
                     ).show();
                 }
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 setLoading(false);
                 Toast.makeText(
                         MainActivity.this,
-                        "Falha na conexão. Verifique sua internet.",
+                        getString(R.string.connection_failure_check_internet),
                         Toast.LENGTH_LONG
                 ).show();
             }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoading(boolean loading) {
         btnLogin.setEnabled(!loading);
-        btnLogin.setText(loading ? "Entrando..." : getString(R.string.btn_login_text));
+        btnLogin.setText(loading ? getString(R.string.login_loading) : getString(R.string.btn_login_text));
 
         etEmail.setEnabled(!loading);
         etPassword.setEnabled(!loading);

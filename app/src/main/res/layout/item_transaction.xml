@@ -29,7 +29,7 @@
                 android:id="@+id/ivIcon"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:contentDescription="Ícone da transação"
+                android:contentDescription="@string/transaction_icon_description"
                 android:src="@drawable/ic_income" />
         </LinearLayout>
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Descrição da transação"
+                android:text="@string/transaction_item_description_default"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Categoria • 01/01/2025"
+                android:text="@string/transaction_item_category_date_default"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -69,7 +69,7 @@
             android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="R$ 0,00"
+            android:text="@string/currency_zero"
             android:textColor="@color/ns_success"
             android:textSize="16sp"
             android:textStyle="bold"

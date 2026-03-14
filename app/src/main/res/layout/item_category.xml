@@ -27,7 +27,7 @@
                 android:id="@+id/tvCatName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nome Categoria"
+                android:text="@string/category_item_name_default"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Receita"
+                android:text="@string/category_item_type_default"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -48,7 +48,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Excluir categoria"
+            android:contentDescription="@string/category_delete_description"
             android:padding="2dp"
             android:src="@android:drawable/ic_menu_delete"
             app:tint="@color/ns_error" />

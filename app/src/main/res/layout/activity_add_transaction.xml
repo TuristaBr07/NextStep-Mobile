@@ -25,7 +25,7 @@
                 android:id="@+id/tvAddTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nova transação"
+                android:text="@string/add_transaction_title"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Registre uma nova movimentação financeira do seu negócio."
+                android:text="@string/add_transaction_subtitle"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="14sp" />
 
@@ -50,7 +50,7 @@
                     android:id="@+id/tvTypeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de transação"
+                    android:text="@string/transaction_type_label"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -69,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="Categoria"
+                    android:text="@string/transaction_category_label"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -89,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:hint="Descrição"
+                    android:hint="@string/transaction_description_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -97,7 +97,7 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Ex.: pagamento de fornecedor, venda de produto"
+                    app:helperText="@string/transaction_description_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -115,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Valor (R$)"
+                    android:hint="@string/transaction_amount_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -123,7 +123,7 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Aceita ponto ou vírgula como separador decimal"
+                    app:helperText="@string/transaction_amount_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -141,7 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Data"
+                    android:hint="@string/transaction_date_hint"
                     app:boxBackgroundColor="@color/ns_surface_soft"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -149,15 +149,15 @@
                     app:boxCornerRadiusTopStart="16dp"
                     app:boxStrokeColor="@color/ns_primary"
                     app:boxStrokeWidthFocused="2dp"
-                    app:helperText="Toque para escolher no calendário"
+                    app:helperText="@string/transaction_date_helper"
                     app:helperTextTextColor="@color/ns_text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:clickable="true"
+                        android:focusable="false"
                         android:inputType="none"
                         android:textColor="@color/ns_text_primary"
                         android:textColorHint="@color/ns_text_hint" />
@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
                     android:layout_marginTop="26dp"
-                    android:text="Salvar transação"
+                    android:text="@string/save_transaction"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textStyle="bold"

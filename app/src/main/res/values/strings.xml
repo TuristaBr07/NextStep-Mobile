@@ -1,13 +1,174 @@
 <resources>
     <string name="app_name">NextStep</string>
     <string name="app_name_title">NextStep</string>
+
     <string name="hint_email">Email</string>
     <string name="hint_password">Senha</string>
     <string name="btn_login_text">Entrar</string>
+
+    <string name="login_logo_description">Logotipo NextStep</string>
+    <string name="login_title">NextStep</string>
+    <string name="login_subtitle">Organize as finanças do seu negócio\ne acompanhe sua evolução com clareza.</string>
+    <string name="login_card_title">Entrar</string>
+    <string name="login_card_subtitle">Acesse sua conta para continuar</string>
+    <string name="forgot_password">Esqueci minha senha</string>
+    <string name="login_no_account">Ainda não tem conta?</string>
+    <string name="create_account">Criar conta</string>
+    <string name="login_footer">Feito para MEIs que precisam de controle,\nclareza e crescimento sustentável.</string>
+
+    <string name="dashboard_header_default">Olá, Empreendedor!</string>
+    <string name="dashboard_subheader_default">Visão financeira do seu negócio</string>
+    <string name="dashboard_logo_description">Avatar ou logotipo</string>
+    <string name="dashboard_summary_label">Resumo financeiro</string>
+    <string name="dashboard_balance_label">Saldo atual</string>
+    <string name="currency_zero">R$ 0,00</string>
+    <string name="dashboard_summary_subtitle">Acompanhe seu negócio com clareza e evite surpresas.</string>
+    <string name="dashboard_income_label">Receitas</string>
+    <string name="dashboard_expense_label">Despesas</string>
+    <string name="dashboard_mei_limit_label">Limite MEI (R$ 81 mil)</string>
+    <string name="dashboard_mei_limit_subtitle">Controle quanto do teto anual já foi consumido.</string>
+    <string name="dashboard_mei_progress_default">0%% do limite • R$ 0,00 de R$ 81.000,00</string>
+    <string name="dashboard_cashflow_title">Fluxo de caixa</string>
+    <string name="dashboard_cashflow_subtitle">Compare entradas e saídas ao longo do tempo.</string>
+    <string name="dashboard_transactions_title">Últimas transações</string>
+    <string name="dashboard_edit_hint">Toque para editar</string>
+    <string name="dashboard_add_transaction_description">Adicionar nova transação</string>
+
+    <string name="reports_title">Relatórios</string>
+    <string name="reports_subtitle">Analise como suas receitas e despesas estão distribuídas.</string>
+    <string name="reports_type_label">Tipo do relatório</string>
+    <string name="reports_distribution_title">Distribuição por categoria</string>
+    <string name="reports_distribution_subtitle">Veja quais categorias concentram maior volume financeiro.</string>
+    <string name="reports_summary_title">Resumo por categoria</string>
+    <string name="reports_summary_empty">Sem dados por categoria para exibir.</string>
+
+    <string name="chatbot_toolbar_title">Assistente NextStep</string>
+    <string name="chatbot_empty_state">Comece a conversar com o assistente da NextStep.</string>
+    <string name="chatbot_typing">Assistente digitando...</string>
+    <string name="chatbot_message_hint">Digite sua mensagem</string>
+    <string name="chatbot_send_description">Enviar mensagem</string>
+
+    <string name="transactions_title">Histórico de transações</string>
+    <string name="transactions_subtitle">Busque, filtre e acompanhe todas as movimentações do seu negócio.</string>
+    <string name="transactions_search_hint">Buscar na descrição...</string>
+    <string name="transactions_search_description">Buscar</string>
+    <string name="transactions_filter_type">Tipo</string>
+    <string name="transactions_filter_category">Categoria</string>
+    <string name="transactions_results_title">Resultados</string>
+    <string name="transactions_edit_hint">toque para editar</string>
+    <string name="transactions_results_count_default">0 transações encontradas</string>
+    <string name="transactions_empty_title">Nenhuma transação encontrada</string>
+    <string name="transactions_empty_subtitle">Ajuste os filtros ou cadastre uma nova movimentação.</string>
+
+    <string name="add_transaction_title">Nova transação</string>
+    <string name="add_transaction_subtitle">Registre uma nova movimentação financeira do seu negócio.</string>
+    <string name="transaction_type_label">Tipo de transação</string>
+    <string name="transaction_category_label">Categoria</string>
+    <string name="transaction_description_hint">Descrição</string>
+    <string name="transaction_description_helper">Ex.: pagamento de fornecedor, venda de produto</string>
+    <string name="transaction_amount_hint">Valor (R$)</string>
+    <string name="transaction_amount_helper">Aceita ponto ou vírgula como separador decimal</string>
+    <string name="transaction_date_hint">Data</string>
+    <string name="transaction_date_helper">Toque para escolher no calendário</string>
+    <string name="save_transaction">Salvar transação</string>
+
+    <string name="edit_transaction_title">Editar transação</string>
+    <string name="edit_transaction_subtitle">Atualize as informações ou exclua esta movimentação.</string>
+    <string name="edit_transaction_description_helper">Edite a descrição da movimentação</string>
+    <string name="edit_transaction_type_label">Tipo de movimentação</string>
+    <string name="edit_transaction_income">Entrada</string>
+    <string name="edit_transaction_expense">Saída</string>
+    <string name="edit_transaction_save">Salvar alterações</string>
+    <string name="edit_transaction_risk_actions">Ações de risco</string>
+    <string name="edit_transaction_delete">Excluir transação</string>
+
+    <string name="settings_title">Configurações</string>
+    <string name="settings_subtitle">Gerencie seus dados, preferências e categorias.</string>
+    <string name="settings_profile_photo_description">Foto de perfil</string>
+    <string name="settings_change_photo">Toque na foto para alterar</string>
+    <string name="settings_profile_title">Meu perfil</string>
+    <string name="settings_profile_name_hint">Nome completo</string>
+    <string name="settings_profile_company_hint">Nome da empresa (opcional)</string>
+    <string name="settings_save_profile">Salvar perfil</string>
+    <string name="settings_categories_title">Gerenciar categorias</string>
+    <string name="settings_categories_subtitle">Crie e remova categorias para organizar melhor seu fluxo de caixa.</string>
+    <string name="settings_new_category_hint">Nova categoria</string>
+    <string name="settings_new_category_helper">Ex.: Transporte, Alimentação, Serviços</string>
+    <string name="settings_add_category">Adicionar categoria</string>
+    <string name="settings_category_count_default">0 categorias cadastradas</string>
+    <string name="settings_logout">Sair da conta</string>
+
+    <string name="transaction_icon_description">Ícone da transação</string>
+    <string name="transaction_item_description_default">Descrição da transação</string>
+    <string name="transaction_item_category_date_default">Categoria • 01/01/2025</string>
+
+    <string name="category_item_name_default">Nome Categoria</string>
+    <string name="category_item_type_default">Receita</string>
+    <string name="category_delete_description">Excluir categoria</string>
+
+    <string name="register_logo_description">Logotipo NextStep</string>
+    <string name="register_title">Criar conta</string>
+    <string name="register_subtitle">Cadastre-se para começar a organizar\no financeiro do seu negócio.</string>
+    <string name="register_full_name_hint">Nome completo</string>
+    <string name="register_email_hint">E-mail</string>
+    <string name="register_password_hint">Senha</string>
+    <string name="register_confirm_password_hint">Confirmar senha</string>
+    <string name="register_button">Cadastrar</string>
+    <string name="register_back_to_login">Já tem uma conta? Faça login</string>
+
+    <string name="forgot_logo_description">Logotipo NextStep</string>
+    <string name="forgot_title">Recuperar senha</string>
+    <string name="forgot_subtitle">Informe seu e-mail cadastrado e enviaremos as instruções para redefinir sua senha.</string>
+    <string name="forgot_email_hint">Seu e-mail</string>
+    <string name="forgot_send_link">Enviar link</string>
+    <string name="forgot_back_to_login">Voltar ao login</string>
+
+    <string name="mei_detail_company_default">Nome da Empresa</string>
+    <string name="mei_detail_cnpj_default">CNPJ: 00.000.000/0001-00</string>
+    <string name="mei_detail_risk_title">Análise de Risco (IA)</string>
+    <string name="mei_detail_risk_default">Risco Alto</string>
+    <string name="mei_detail_revenue_default">Faturamento: R$ 0,00</string>
+    <string name="mei_detail_back">Voltar</string>
+    <string name="mei_detail_cnpj_format">CNPJ: %1$s</string>
+    <string name="mei_detail_revenue_format">Faturamento: R$ %1$s</string>
+
+    <string name="mei_item_company_default">Nome da Empresa</string>
+    <string name="mei_item_cnpj_default">00.000.000/0001-00</string>
+    <string name="mei_item_risk_default">Baixo</string>
+    <string name="mei_item_icon_description">Ícone da empresa</string>
+
+    <string name="error_email_required">Informe seu e-mail</string>
+    <string name="error_invalid_email">E-mail inválido</string>
+    <string name="error_password_required">Informe sua senha</string>
+    <string name="error_password_min_6">A senha deve ter pelo menos 6 caracteres</string>
+    <string name="error_full_name_required">Informe seu nome completo</string>
+    <string name="error_password_min_8">A senha deve ter pelo menos 8 caracteres</string>
+    <string name="error_confirm_password_required">Confirme sua senha</string>
+    <string name="error_passwords_do_not_match">As senhas não coincidem</string>
+    <string name="error_message_required">Digite uma mensagem</string>
+
+    <string name="login_loading">Entrando...</string>
+    <string name="login_token_error">Falha ao obter token de sessão.</string>
+    <string name="login_success">Login realizado com sucesso!</string>
+    <string name="login_invalid_credentials_title">Verifique suas credenciais</string>
+    <string name="login_invalid_credentials_body">E-mail ou senha inválidos</string>
+    <string name="login_error_code">Erro ao fazer login. Código: %1$d</string>
+    <string name="connection_failure_check_internet">Falha na conexão. Verifique sua internet.</string>
+
+    <string name="register_loading">Criando conta...</string>
+    <string name="register_success">Cadastro realizado com sucesso! Faça login para continuar.</string>
+    <string name="register_email_in_use">Não foi possível cadastrar. Verifique se o e-mail já está em uso.</string>
+    <string name="register_error_code">Erro ao cadastrar. Código: %1$d</string>
+
+    <string name="forgot_loading">Enviando...</string>
+    <string name="forgot_success">Se o e-mail existir, você receberá instruções para redefinir a senha.</string>
+    <string name="forgot_error_generic">Não foi possível processar a solicitação agora.</string>
+
     <string-array name="transaction_types">
         <item>Receita</item>
         <item>Despesa</item>
     </string-array>
+
     <string-array name="filter_types">
         <item>Todos</item>
         <item>Receita</item>

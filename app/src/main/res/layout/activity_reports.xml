@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Relatórios"
+                android:text="@string/reports_title"
                 android:textColor="@color/ns_text_primary"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Analise como suas receitas e despesas estão distribuídas."
+                android:text="@string/reports_subtitle"
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="14sp" />
 
@@ -49,7 +49,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tipo do relatório"
+                    android:text="@string/reports_type_label"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -77,7 +77,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Distribuição por categoria"
+                    android:text="@string/reports_distribution_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -86,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Veja quais categorias concentram maior volume financeiro."
+                    android:text="@string/reports_distribution_subtitle"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp" />
 
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Resumo por categoria"
+                    android:text="@string/reports_summary_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Sem dados por categoria para exibir."
+                    android:text="@string/reports_summary_empty"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp"
                     android:visibility="gone" />
