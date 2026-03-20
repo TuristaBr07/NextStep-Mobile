@@ -4,55 +4,68 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.PATCH;
+import retrofit2.http.PUT;
 import retrofit2.http.DELETE;
-import retrofit2.http.Query;
+import retrofit2.http.Path;
 
 public interface SupabaseApi {
 
-    // --- AUTENTICAÇÃO ---
-    @POST("auth/v1/token?grant_type=password")
+    // ---------------------------------------------------
+    // AUTENTICAÇÃO
+    // ---------------------------------------------------
+    @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
-    @POST("auth/v1/signup")
+    @POST("auth/register")
     Call<Void> register(@Body SignUpRequest request);
 
-    @POST("auth/v1/recover")
-    Call<Void> recoverPassword(@Body RecoverRequest request);
-
-    // --- PERFIL ---
-    @GET("rest/v1/profiles?select=*")
-    Call<List<Profile>> getProfile(@Query("id") String idQuery);
-
-    @Headers("Prefer: return=representation")
-    @PATCH("rest/v1/profiles")
-    Call<List<Profile>> updateProfile(@Query("id") String idQuery, @Body Profile profile);
-
-    // --- TRANSAÇÕES ---
-    @GET("rest/v1/transactions?select=*&order=date.desc")
+    // ---------------------------------------------------
+    // TRANSAÇÕES & INTELIGÊNCIA FINANCEIRA
+    // ---------------------------------------------------
+    @GET("transacoes")
     Call<List<Transaction>> getTransactions();
 
-    @Headers("Prefer: return=representation")
-    @POST("rest/v1/transactions")
-    Call<List<Transaction>> createTransaction(@Body Transaction transaction);
+    @GET("transacoes/resumo")
+    Call<TransactionSummary> getTransactionSummary();
 
-    @Headers("Prefer: return=representation")
-    @PATCH("rest/v1/transactions")
-    Call<List<Transaction>> updateTransaction(@Query("id") String idQuery, @Body Transaction transaction);
+    @GET("transacoes/relatorio")
+    Call<List<CategoryReport>> getCategoryReports();
 
-    @DELETE("rest/v1/transactions")
-    Call<Void> deleteTransaction(@Query("id") String idQuery);
+    @POST("transacoes")
+    Call<Transaction> createTransaction(@Body Transaction transaction);
 
-    // --- CATEGORIAS ---
-    @GET("rest/v1/categories?select=*")
+    @PUT("transacoes/{id}")
+    Call<Transaction> updateTransaction(@Path("id") Long id, @Body Transaction transaction);
+
+    @DELETE("transacoes/{id}")
+    Call<Void> deleteTransaction(@Path("id") Long id);
+
+    // ---------------------------------------------------
+    // CATEGORIAS
+    // ---------------------------------------------------
+    @GET("categorias")
     Call<List<Category>> getCategories();
 
-    @Headers("Prefer: return=representation")
-    @POST("rest/v1/categories")
-    Call<List<Category>> createCategory(@Body Category category);
+    @POST("categorias")
+    Call<Category> createCategory(@Body Category category);
 
-    @DELETE("rest/v1/categories")
-    Call<Void> deleteCategory(@Query("id") String idQuery);
+    @DELETE("categorias/{id}")
+    Call<Void> deleteCategory(@Path("id") Long id);
+
+    // ---------------------------------------------------
+    // PERFIL
+    // ---------------------------------------------------
+    @GET("perfis/{id}")
+    Call<List<Profile>> getProfile(@Path("id") String userId);
+
+    @PUT("perfis/{id}")
+    Call<List<Profile>> updateProfile(@Path("id") String userId, @Body Profile profile);
+
+    // ---------------------------------------------------
+    // INTELIGÊNCIA ARTIFICIAL (CÉREBRO NEXTSTEP)
+    // ---------------------------------------------------
+    @POST("chatbot")
+    Call<ChatResponseDTO> sendMessageToChatbot(@Body ChatRequestDTO request);
+
 }

@@ -4,7 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class SignUpRequest {
     private String email;
+
+    // A mágica acontece aqui: traduzimos "password" para "senha" no JSON
+    @SerializedName("senha")
     private String password;
+
     private UserData data;
 
     public SignUpRequest(String email, String password, String fullName) {

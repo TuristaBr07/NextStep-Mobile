@@ -14,7 +14,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static Retrofit retrofit;
+
+    // NOTA: Mais tarde podemos renomear "SupabaseApi" para "NextStepApi" para ficar mais coerente,
+    // mas por agora mantemos o mesmo nome para não quebrar as outras classes.
     private static SupabaseApi api;
+
+    // O endereço mágico que o emulador usa para chegar ao "localhost" do seu computador
+    private static final String BASE_URL = "http://10.0.2.2:8081/";
 
     private RetrofitClient() {
         // Evita instanciação
@@ -30,7 +36,7 @@ public class RetrofitClient {
     private static Retrofit getRetrofit() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(getBaseUrl())
+                    .baseUrl(BASE_URL)
                     .client(buildHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
@@ -54,39 +60,35 @@ public class RetrofitClient {
                         } catch (Exception ignored) {
                         }
 
+                        // Removemos a apikey do Supabase. Agora apenas dizemos que enviamos JSON.
                         Request.Builder requestBuilder = original.newBuilder()
-                                .header("apikey", BuildConfig.SUPABASE_KEY)
                                 .header("Content-Type", "application/json");
 
+                        // Se o utilizador já fez login e tem o Token JWT, anexa-o ao cabeçalho!
                         if (token != null && !token.trim().isEmpty()) {
                             requestBuilder.header("Authorization", "Bearer " + token);
-                        } else {
-                            requestBuilder.header("Authorization", "Bearer " + BuildConfig.SUPABASE_KEY);
                         }
 
-                        return chain.proceed(requestBuilder.build());
+                        Response response = chain.proceed(requestBuilder.build());
+
+                        // MÁGICA DA EXPULSÃO AUTOMÁTICA
+                        // Se o servidor barrar o acesso (401 Expirado ou 403 Proibido), limpamos a sessão na hora
+                        if (response.code() == 401 || response.code() == 403) {
+                            try {
+                                SessionManager.clear();
+                            } catch (Exception ignored) {
+                            }
+                        }
+
+                        return response;
                     }
                 });
 
-        if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addInterceptor(logging);
-        }
+        // Mantém o Logging (muito útil para ver os erros no Logcat do Android Studio)
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        builder.addInterceptor(logging);
 
         return builder.build();
-    }
-
-    private static String getBaseUrl() {
-        String url = BuildConfig.SUPABASE_URL;
-        if (url == null || url.trim().isEmpty()) {
-            throw new IllegalStateException("SUPABASE_URL não foi configurada.");
-        }
-
-        if (!url.endsWith("/")) {
-            url += "/";
-        }
-
-        return url;
     }
 }

@@ -1,8 +1,11 @@
 package com.tamarin.nextstep;
 
 import android.app.DatePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -72,25 +75,46 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 updateCategorySpinner();
             }
 
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                // No-op
             }
         });
     }
 
     private void setupDateField() {
-        etDate.setFocusable(false);
+        etDate.setFocusable(true);
+        etDate.setFocusableInTouchMode(true);
         etDate.setClickable(true);
         etDate.setLongClickable(false);
+        etDate.setCursorVisible(false);
+        etDate.setKeyListener(null);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            etDate.setShowSoftInputOnFocus(false);
+        }
+
         etDate.setOnClickListener(v -> showDatePicker());
+
         etDate.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+            if (hasFocus && etDate.isEnabled()) {
                 showDatePicker();
             }
+        });
+
+        etDate.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP
+                    && (keyCode == KeyEvent.KEYCODE_ENTER
+                    || keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                    || keyCode == KeyEvent.KEYCODE_SPACE)) {
+                showDatePicker();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -111,7 +135,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    String formatted = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                    String formatted = String.format(
+                            Locale.getDefault(),
+                            "%02d/%02d/%04d",
+                            dayOfMonth,
+                            month + 1,
+                            year
+                    );
                     etDate.setText(formatted);
                     tilDate.setError(null);
                 },
@@ -131,13 +161,21 @@ public class AddTransactionActivity extends AppCompatActivity {
                     categories = response.body();
                     updateCategorySpinner();
                 } else {
-                    Toast.makeText(AddTransactionActivity.this, "Erro ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            AddTransactionActivity.this,
+                            getString(R.string.error_loading_categories),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-                Toast.makeText(AddTransactionActivity.this, "Falha ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        AddTransactionActivity.this,
+                        getString(R.string.error_connection_loading_categories),
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
@@ -145,17 +183,20 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void updateCategorySpinner() {
         String selectedType = spinnerType.getSelectedItem() != null
                 ? spinnerType.getSelectedItem().toString()
-                : "Receita";
+                : getString(R.string.transaction_type_income);
 
         List<String> categoryNames = new ArrayList<>();
         for (Category category : categories) {
+            // TRAVA DE SEGURANÇA: Só adiciona se o tipo bater E o nome não for nulo nem vazio
             if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
-                categoryNames.add(category.getName());
+                if (category.getName() != null && !category.getName().trim().isEmpty()) {
+                    categoryNames.add(category.getName());
+                }
             }
         }
 
         if (categoryNames.isEmpty()) {
-            categoryNames.add("Sem categoria");
+            categoryNames.add(getString(R.string.no_category));
         }
 
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
@@ -179,31 +220,31 @@ public class AddTransactionActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (TextUtils.isEmpty(description)) {
-            tilDescription.setError("Informe uma descrição");
+            tilDescription.setError(getString(R.string.error_transaction_description_required));
             hasError = true;
         }
 
         if (TextUtils.isEmpty(amountText)) {
-            tilAmount.setError("Informe o valor");
+            tilAmount.setError(getString(R.string.error_transaction_amount_required));
             hasError = true;
         } else {
             try {
                 double amount = Double.parseDouble(amountText.replace(",", "."));
                 if (amount <= 0) {
-                    tilAmount.setError("O valor deve ser maior que zero");
+                    tilAmount.setError(getString(R.string.error_transaction_amount_positive));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilAmount.setError("Valor inválido");
+                tilAmount.setError(getString(R.string.error_transaction_amount_invalid));
                 hasError = true;
             }
         }
 
         if (TextUtils.isEmpty(dateText)) {
-            tilDate.setError("Informe a data");
+            tilDate.setError(getString(R.string.error_transaction_date_required));
             hasError = true;
         } else if (!isValidDate(dateText)) {
-            tilDate.setError("Use o formato DD/MM/AAAA");
+            tilDate.setError(getString(R.string.error_transaction_date_format));
             hasError = true;
         }
 
@@ -225,27 +266,23 @@ public class AddTransactionActivity extends AppCompatActivity {
         transaction.setDate(formatDateToApi(dateText));
         transaction.setUserId(SessionManager.getUserId());
 
-        RetrofitClient.getApi().createTransaction(transaction).enqueue(new Callback<List<Transaction>>() {
+        RetrofitClient.getApi().createTransaction(transaction).enqueue(new Callback<Transaction>() {
             @Override
-            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
-                setLoading(false);
-
-                if (response.isSuccessful()) {
-                    Toast.makeText(AddTransactionActivity.this, "Transação criada com sucesso!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else if (response.code() == 401) {
-                    Toast.makeText(AddTransactionActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show();
-                    SessionManager.clear();
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(AddTransactionActivity.this, "Transação salva com sucesso!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(AddTransactionActivity.this, "Erro ao salvar transação.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddTransactionActivity.this, "Erro ao salvar: " + response.code(), Toast.LENGTH_SHORT).show();
+                    setLoading(false);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Transaction>> call, Throwable t) {
+            public void onFailure(Call<Transaction> call, Throwable t) {
+                Toast.makeText(AddTransactionActivity.this, "Falha na rede: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 setLoading(false);
-                Toast.makeText(AddTransactionActivity.this, "Falha de conexão.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -253,7 +290,11 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void setLoading(boolean loading) {
         isSaving = loading;
         btnSaveTransaction.setEnabled(!loading);
-        btnSaveTransaction.setText(loading ? "Salvando..." : "Salvar transação");
+        btnSaveTransaction.setText(
+                loading
+                        ? getString(R.string.transaction_saving)
+                        : getString(R.string.save_transaction)
+        );
 
         spinnerType.setEnabled(!loading);
         spinnerCategory.setEnabled(!loading);

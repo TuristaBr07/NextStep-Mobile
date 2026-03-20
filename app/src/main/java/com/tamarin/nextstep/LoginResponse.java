@@ -4,11 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
 
-    @SerializedName("access_token")
+    // 1. Mudamos para "token" (como o Spring Boot envia)
+    @SerializedName("token")
     private String accessToken;
 
-    @SerializedName("user")
-    private User user; // Adicionamos isso aqui!
+    // 2. Lemos o ID e o email diretamente da raiz do JSON do Spring Boot
+    @SerializedName("idUsuario")
+    private String idUsuario;
+
+    @SerializedName("email")
+    private String email;
 
     public String getAccessToken() {
         return accessToken;
@@ -18,11 +23,12 @@ public class LoginResponse {
         this.accessToken = accessToken;
     }
 
+    // 3. Truque: Mantemos o método getUser() intacto para não quebrar o resto do seu App!
+    // Ele simplesmente pega os campos soltos acima e monta o objeto User na hora.
     public User getUser() {
+        User user = new User();
+        user.setId(idUsuario);
+        user.setEmail(email);
         return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

@@ -22,15 +22,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tamarin.nextstep.chatbot.ChatbotApi;
-import com.tamarin.nextstep.chatbot.ChatbotRequest;
-import com.tamarin.nextstep.chatbot.ChatbotResponse;
-import com.tamarin.nextstep.chatbot.ChatbotRetrofitClient;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,19 +63,20 @@ public class ChatbotActivity extends AppCompatActivity {
         tvChatEmptyState = findViewById(R.id.tvChatEmptyState);
         tvTypingIndicator = findViewById(R.id.tvTypingIndicator);
 
-        toolbar.setTitle("Assistente NextStep");
+        toolbar.setTitle("Assistente NextStep IA");
         toolbar.inflateMenu(R.menu.chatbot_toolbar_menu);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setOnMenuItemClickListener(this::handleToolbarMenuClick);
 
         rvChatMessages.setLayoutManager(new LinearLayoutManager(this));
+        // Presumo que o seu ChatMessageAdapter e ChatMessage continuam iguais no projeto
         adapter = new ChatMessageAdapter(messages);
         rvChatMessages.setAdapter(adapter);
 
         restoreChatHistory();
 
         if (messages.isEmpty()) {
-            addBotMessage(buildWelcomeMessage(), false);
+            addBotMessage("Olá! Sou a Inteligência Artificial da NextStep.\n\nEstou conectado ao sistema e pronto para ajudar. Você pode me pedir para registrar despesas, receitas, ou tirar dúvidas sobre organização financeira!", false);
         }
 
         btnSendMessage.setOnClickListener(v -> sendMessage());
@@ -118,22 +114,11 @@ public class ChatbotActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         clearPersistedChatHistory();
 
-        addBotMessage(buildWelcomeMessage(), true);
+        addBotMessage("Histórico limpo! Como posso te ajudar agora?", true);
         showTypingIndicator(false);
         updateEmptyState();
 
         Toast.makeText(this, "Conversa limpa com sucesso.", Toast.LENGTH_SHORT).show();
-    }
-
-    private String buildWelcomeMessage() {
-        if (ChatbotRetrofitClient.isConfigured()) {
-            return "Olá! Eu sou o assistente da NextStep.\n\n" +
-                    "Já estou preparado para integração HTTP com o microserviço externo. Você pode me perguntar sobre MEI, faturamento, despesas, receitas e organização financeira.";
-        }
-
-        return "Olá! Eu sou o assistente da NextStep.\n\n" +
-                "Nesta versão, o endpoint externo ainda não foi configurado no app. Por isso, vou responder em modo local até a integração real ser ativada.\n\n" +
-                "Você pode me perguntar, por exemplo, sobre limite do MEI, despesas, receitas, impostos e organização financeira.";
     }
 
     private void sendMessage() {
@@ -149,6 +134,8 @@ public class ChatbotActivity extends AppCompatActivity {
         tilChatMessage.setError(null);
         addUserMessage(userText);
         etChatMessage.setText("");
+
+        // Dispara a requisição real para o Spring Boot!
         requestBotReply(userText);
     }
 
@@ -156,59 +143,31 @@ public class ChatbotActivity extends AppCompatActivity {
         setSendingState(true);
         showTypingIndicator(true);
 
-        ChatbotApi chatbotApi = ChatbotRetrofitClient.getApi();
+        ChatRequestDTO requestDTO = new ChatRequestDTO(userText);
 
-        if (chatbotApi == null) {
-            simulateLocalFallback(userText);
-            return;
-        }
-
-        String userId = SessionManager.getUserId();
-        ChatbotRequest request = new ChatbotRequest(userText, userId, "android");
-
-        chatbotApi.sendMessage(request).enqueue(new Callback<ChatbotResponse>() {
+        // Chama o nosso RetrofitClient oficial, que já manda o Token JWT no cabeçalho
+        RetrofitClient.getApi().sendMessageToChatbot(requestDTO).enqueue(new Callback<ChatResponseDTO>() {
             @Override
-            public void onResponse(Call<ChatbotResponse> call, Response<ChatbotResponse> response) {
+            public void onResponse(Call<ChatResponseDTO> call, Response<ChatResponseDTO> response) {
                 setSendingState(false);
                 showTypingIndicator(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    String reply = response.body().extractBestReply();
-
-                    if (reply != null && !reply.isEmpty()) {
-                        addBotMessage(reply, true);
-                        return;
-                    }
+                    // Pega a resposta processada pela OpenAI lá no servidor
+                    String reply = response.body().getReply();
+                    addBotMessage(reply, true);
+                } else {
+                    addBotMessage("Houve um problema de comunicação com os servidores da NextStep (Erro " + response.code() + ").", true);
                 }
-
-                addBotMessage(buildMockReply(userText), true);
-                Toast.makeText(
-                        ChatbotActivity.this,
-                        "Resposta externa indisponível. Usando modo local.",
-                        Toast.LENGTH_SHORT
-                ).show();
             }
 
             @Override
-            public void onFailure(Call<ChatbotResponse> call, Throwable t) {
+            public void onFailure(Call<ChatResponseDTO> call, Throwable t) {
                 setSendingState(false);
                 showTypingIndicator(false);
-                addBotMessage(buildMockReply(userText), true);
-                Toast.makeText(
-                        ChatbotActivity.this,
-                        "Falha ao conectar com o assistente externo. Usando modo local.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                addBotMessage("Falha na rede ao contactar a IA: " + t.getMessage(), true);
             }
         });
-    }
-
-    private void simulateLocalFallback(String userText) {
-        handler.postDelayed(() -> {
-            setSendingState(false);
-            showTypingIndicator(false);
-            addBotMessage(buildMockReply(userText), true);
-        }, 1000);
     }
 
     private void setSendingState(boolean sending) {
@@ -226,29 +185,6 @@ public class ChatbotActivity extends AppCompatActivity {
 
     private void showTypingIndicator(boolean visible) {
         tvTypingIndicator.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    private String buildMockReply(String userText) {
-        String lower = userText.toLowerCase(Locale.ROOT);
-
-        if (lower.contains("mei") || lower.contains("limite")) {
-            return "Dica NextStep: acompanhe o faturamento acumulado do ano para evitar ultrapassar o limite do MEI de R$ 81.000,00.";
-        }
-
-        if (lower.contains("despesa") || lower.contains("gasto")) {
-            return "Uma boa prática é separar despesas pessoais das despesas do negócio e classificar cada lançamento corretamente.";
-        }
-
-        if (lower.contains("receita") || lower.contains("entrada")) {
-            return "Você pode registrar cada entrada assim que ela acontecer. Isso melhora os relatórios e o controle do caixa.";
-        }
-
-        if (lower.contains("das") || lower.contains("imposto")) {
-            return "Lembrete importante: acompanhar obrigações como o DAS reduz risco de atraso e ajuda na organização financeira.";
-        }
-
-        return "Entendi sua mensagem: \"" + userText + "\".\n\n" +
-                "Neste momento, estou usando a resposta local do app. Assim que o endpoint Python estiver pronto, esta tela já poderá consumir a resposta externa.";
     }
 
     private void addUserMessage(String text) {

@@ -126,7 +126,8 @@ public class SettingsActivity extends AppCompatActivity {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.trim().isEmpty()) return;
 
-        RetrofitClient.getApi().getProfile("eq." + userId).enqueue(new Callback<List<Profile>>() {
+        // Reativado e removido o "eq."
+        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -194,7 +195,8 @@ public class SettingsActivity extends AppCompatActivity {
         Profile profileUpdate = new Profile(name, company);
         profileUpdate.setAvatar(currentAvatarBase64);
 
-        RetrofitClient.getApi().updateProfile("eq." + userId, profileUpdate).enqueue(new Callback<List<Profile>>() {
+        // Reativado e removido o "eq."
+        RetrofitClient.getApi().updateProfile(userId, profileUpdate).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
                 setProfileLoading(false);
@@ -286,9 +288,9 @@ public class SettingsActivity extends AppCompatActivity {
         newCat.setType(type);
         newCat.setUserId(userId);
 
-        RetrofitClient.getApi().createCategory(newCat).enqueue(new Callback<List<Category>>() {
+        RetrofitClient.getApi().createCategory(newCat).enqueue(new Callback<Category>() {
             @Override
-            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+            public void onResponse(Call<Category> call, Response<Category> response) {
                 setCategoryLoading(false);
 
                 if (response.isSuccessful()) {
@@ -305,7 +307,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Category>> call, Throwable t) {
+            public void onFailure(Call<Category> call, Throwable t) {
                 setCategoryLoading(false);
                 Toast.makeText(SettingsActivity.this, "Falha de conexão ao adicionar categoria.", Toast.LENGTH_SHORT).show();
             }
@@ -322,7 +324,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void deleteCategory(Category cat) {
-        RetrofitClient.getApi().deleteCategory("eq." + cat.getId()).enqueue(new Callback<Void>() {
+        RetrofitClient.getApi().deleteCategory(Long.valueOf(String.valueOf(cat.getId()))).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {

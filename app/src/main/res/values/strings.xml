@@ -164,6 +164,43 @@
     <string name="forgot_success">Se o e-mail existir, você receberá instruções para redefinir a senha.</string>
     <string name="forgot_error_generic">Não foi possível processar a solicitação agora.</string>
 
+    <string name="transaction_date_content_description">Campo de data da transação. Toque para selecionar uma data.</string>
+
+    <string name="error_loading_categories">Erro ao carregar categorias.</string>
+    <string name="error_connection_loading_categories">Falha ao carregar categorias.</string>
+    <string name="error_connection_generic">Falha de conexão.</string>
+
+    <string name="no_category">Sem categoria</string>
+    <string name="transaction_type_income">Receita</string>
+    <string name="transaction_type_expense">Despesa</string>
+
+    <string name="error_transaction_description_required">Informe uma descrição</string>
+    <string name="error_transaction_amount_required">Informe o valor</string>
+    <string name="error_transaction_amount_positive">O valor deve ser maior que zero</string>
+    <string name="error_transaction_amount_invalid">Valor inválido</string>
+    <string name="error_transaction_date_required">Informe a data</string>
+    <string name="error_transaction_date_format">Use o formato DD/MM/AAAA</string>
+
+    <string name="transaction_created_success">Transação criada com sucesso!</string>
+    <string name="transaction_updated_success">Transação atualizada com sucesso!</string>
+    <string name="transaction_deleted_success">Transação excluída com sucesso!</string>
+
+    <string name="error_session_expired_login_again">Sessão expirada. Faça login novamente.</string>
+    <string name="error_session_expired">Sessão expirada.</string>
+
+    <string name="error_saving_transaction">Erro ao salvar transação.</string>
+    <string name="error_updating_transaction">Erro ao atualizar transação.</string>
+    <string name="error_deleting_transaction">Erro ao excluir transação.</string>
+    <string name="error_invalid_transaction_id">ID da transação inválido.</string>
+
+    <string name="delete_transaction_title">Excluir transação</string>
+    <string name="delete_transaction_message">Deseja realmente excluir esta transação?</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_delete">Excluir</string>
+
+    <string name="transaction_saving">Salvando...</string>
+    <string name="transaction_deleting">Excluindo...</string>
+
     <string-array name="transaction_types">
         <item>Receita</item>
         <item>Despesa</item>

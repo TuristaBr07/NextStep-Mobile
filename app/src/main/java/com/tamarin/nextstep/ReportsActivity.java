@@ -1,5 +1,6 @@
 package com.tamarin.nextstep;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -39,7 +40,9 @@ public class ReportsActivity extends AppCompatActivity {
     private PieChart pieChart;
     private LinearLayout layoutCategorySummary;
     private TextView tvSummaryEmpty;
-    private List<Transaction> allTransactions = new ArrayList<>();
+
+    // Agora usamos o dado agrupado do servidor!
+    private List<CategoryReport> reportData = new ArrayList<>();
 
     private final int[] chartColors = new int[]{
             0xFF2E7D32, // verde escuro
@@ -73,7 +76,7 @@ public class ReportsActivity extends AppCompatActivity {
             }
         });
 
-        loadTransactions();
+        loadReportData();
     }
 
     private void setupChart() {
@@ -119,16 +122,19 @@ public class ReportsActivity extends AppCompatActivity {
         pieChart.animateY(800);
     }
 
-    private void loadTransactions() {
-        RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
+    private void loadReportData() {
+        RetrofitClient.getApi().getCategoryReports().enqueue(new Callback<List<CategoryReport>>() {
             @Override
-            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+            public void onResponse(Call<List<CategoryReport>> call, Response<List<CategoryReport>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    allTransactions = response.body();
+                    reportData = response.body();
                     processChartData();
                 } else if (response.code() == 401) {
                     Toast.makeText(ReportsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
+                    Intent intent = new Intent(ReportsActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(ReportsActivity.this, "Erro ao carregar relatórios.", Toast.LENGTH_SHORT).show();
@@ -137,7 +143,7 @@ public class ReportsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Transaction>> call, Throwable t) {
+            public void onFailure(Call<List<CategoryReport>> call, Throwable t) {
                 Toast.makeText(ReportsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
                 showEmptySummary();
             }
@@ -147,7 +153,7 @@ public class ReportsActivity extends AppCompatActivity {
     private void processChartData() {
         if (pieChart == null) return;
 
-        if (allTransactions == null || allTransactions.isEmpty()) {
+        if (reportData == null || reportData.isEmpty()) {
             pieChart.clear();
             pieChart.setCenterText("Sem dados");
             pieChart.invalidate();
@@ -161,12 +167,12 @@ public class ReportsActivity extends AppCompatActivity {
 
         HashMap<String, Float> categoryTotals = new HashMap<>();
 
-        for (Transaction tx : allTransactions) {
-            String type = tx.getType() != null ? tx.getType() : "";
-            String category = tx.getCategory() != null && !tx.getCategory().trim().isEmpty()
-                    ? tx.getCategory()
+        for (CategoryReport cr : reportData) {
+            String type = cr.getType() != null ? cr.getType() : "";
+            String category = cr.getCategory() != null && !cr.getCategory().trim().isEmpty()
+                    ? cr.getCategory()
                     : "Outros";
-            float amount = tx.getAmount() != null ? tx.getAmount().floatValue() : 0f;
+            float amount = (float) cr.getTotal();
 
             boolean matchType = typeFilter.equals("Todos") || type.equalsIgnoreCase(typeFilter);
 

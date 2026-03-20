@@ -65,6 +65,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private void recoverPassword(String email) {
         setLoading(true);
 
+        // TODO: Quando criarmos a rota de recuperação no Spring Boot, reativaremos este bloco.
+        /*
         RecoverRequest request = new RecoverRequest(email);
 
         RetrofitClient.getApi().recoverPassword(request).enqueue(new Callback<Void>() {
@@ -95,6 +97,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 );
             }
         });
+        */
+
+        // Comportamento temporário: avisar o usuário e voltar para o login
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            setLoading(false);
+            UiUtils.showLongToast(
+                    ForgotPasswordActivity.this,
+                    "Recuperação de senha em desenvolvimento no novo servidor."
+            );
+            finish();
+        }, 1000); // Aguarda 1 segundo para simular o carregamento e não ser instantâneo demais
     }
 
     private void setLoading(boolean loading) {

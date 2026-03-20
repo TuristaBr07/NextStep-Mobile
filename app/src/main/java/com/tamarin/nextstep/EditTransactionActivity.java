@@ -1,15 +1,18 @@
 package com.tamarin.nextstep;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,8 +21,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,9 +38,10 @@ public class EditTransactionActivity extends AppCompatActivity {
     private Spinner spinnerCategory;
     private Button btnSave, btnDelete;
 
-    private Long transactionId;
-    private boolean isProcessing = false;
     private List<Category> categories = new ArrayList<>();
+    private boolean isProcessing = false;
+
+    private Long transactionId;
     private String initialType = "Receita";
     private String initialCategory = "";
     private String initialDate = "";
@@ -80,14 +84,34 @@ public class EditTransactionActivity extends AppCompatActivity {
     }
 
     private void setupDateField() {
-        etDate.setFocusable(false);
+        etDate.setFocusable(true);
+        etDate.setFocusableInTouchMode(true);
         etDate.setClickable(true);
         etDate.setLongClickable(false);
+        etDate.setCursorVisible(false);
+        etDate.setKeyListener(null);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            etDate.setShowSoftInputOnFocus(false);
+        }
+
         etDate.setOnClickListener(v -> showDatePicker());
+
         etDate.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+            if (hasFocus && etDate.isEnabled()) {
                 showDatePicker();
             }
+        });
+
+        etDate.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP
+                    && (keyCode == KeyEvent.KEYCODE_ENTER
+                    || keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                    || keyCode == KeyEvent.KEYCODE_SPACE)) {
+                showDatePicker();
+                return true;
+            }
+            return false;
         });
     }
 
@@ -108,7 +132,13 @@ public class EditTransactionActivity extends AppCompatActivity {
         DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    String formatted = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year);
+                    String formatted = String.format(
+                            Locale.getDefault(),
+                            "%02d/%02d/%04d",
+                            dayOfMonth,
+                            month + 1,
+                            year
+                    );
                     etDate.setText(formatted);
                     tilDate.setError(null);
                 },
@@ -129,7 +159,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             String category = getIntent().getStringExtra("EXTRA_CATEGORY");
             String date = getIntent().getStringExtra("EXTRA_DATE");
 
-            initialType = type != null ? type : "Receita";
+            initialType = type != null ? type : getString(R.string.transaction_type_income);
             initialCategory = category != null ? category : "";
             initialDate = formatDateForDisplay(date);
 
@@ -137,7 +167,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             etAmount.setText(amount != null ? String.valueOf(amount).replace(".", ",") : "");
             etDate.setText(initialDate);
 
-            if (initialType.equalsIgnoreCase("Despesa")
+            if (initialType.equalsIgnoreCase(getString(R.string.transaction_type_expense))
                     || initialType.equalsIgnoreCase("Saída")
                     || initialType.equalsIgnoreCase("expense")) {
                 rbExpense.setChecked(true);
@@ -155,13 +185,21 @@ public class EditTransactionActivity extends AppCompatActivity {
                     categories = response.body();
                     updateCategorySpinner(getSelectedType());
                 } else {
-                    Toast.makeText(EditTransactionActivity.this, "Erro ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            EditTransactionActivity.this,
+                            getString(R.string.error_loading_categories),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-                Toast.makeText(EditTransactionActivity.this, "Falha ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        EditTransactionActivity.this,
+                        getString(R.string.error_connection_loading_categories),
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
@@ -176,7 +214,7 @@ public class EditTransactionActivity extends AppCompatActivity {
         }
 
         if (categoryNames.isEmpty()) {
-            categoryNames.add("Sem categoria");
+            categoryNames.add(getString(R.string.no_category));
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -194,7 +232,9 @@ public class EditTransactionActivity extends AppCompatActivity {
     }
 
     private String getSelectedType() {
-        return rbExpense.isChecked() ? "Despesa" : "Receita";
+        return rbExpense.isChecked()
+                ? getString(R.string.transaction_type_expense)
+                : getString(R.string.transaction_type_income);
     }
 
     private void validateAndSave() {
@@ -207,31 +247,31 @@ public class EditTransactionActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (TextUtils.isEmpty(description)) {
-            tilDescription.setError("Informe uma descrição");
+            tilDescription.setError(getString(R.string.error_transaction_description_required));
             hasError = true;
         }
 
         if (TextUtils.isEmpty(amountText)) {
-            tilAmount.setError("Informe o valor");
+            tilAmount.setError(getString(R.string.error_transaction_amount_required));
             hasError = true;
         } else {
             try {
                 double amount = Double.parseDouble(amountText.replace(",", "."));
                 if (amount <= 0) {
-                    tilAmount.setError("O valor deve ser maior que zero");
+                    tilAmount.setError(getString(R.string.error_transaction_amount_positive));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilAmount.setError("Valor inválido");
+                tilAmount.setError(getString(R.string.error_transaction_amount_invalid));
                 hasError = true;
             }
         }
 
         if (TextUtils.isEmpty(dateText)) {
-            tilDate.setError("Informe a data");
+            tilDate.setError(getString(R.string.error_transaction_date_required));
             hasError = true;
         } else if (!isValidDate(dateText)) {
-            tilDate.setError("Use o formato DD/MM/AAAA");
+            tilDate.setError(getString(R.string.error_transaction_date_format));
             hasError = true;
         }
 
@@ -244,7 +284,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
     private void saveTransaction(String description, String amountText, String dateText) {
         if (transactionId == null) {
-            Toast.makeText(this, "ID da transação inválido.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_invalid_transaction_id), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -256,72 +296,92 @@ public class EditTransactionActivity extends AppCompatActivity {
         transaction.setType(getSelectedType());
         transaction.setCategory(spinnerCategory.getSelectedItem() != null
                 ? spinnerCategory.getSelectedItem().toString()
-                : "Sem categoria");
+                : getString(R.string.no_category));
         transaction.setDate(formatDateToApi(dateText));
 
-        RetrofitClient.getApi().updateTransaction("eq." + transactionId, transaction).enqueue(new Callback<List<Transaction>>() {
+        // Corrigido para passar o transactionId como Long puro, sem o "eq."
+        RetrofitClient.getApi().updateTransaction(transactionId, transaction).enqueue(new Callback<Transaction>() {
             @Override
-            public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
-                setProcessing(false, true);
+            public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                setProcessing(false, true); // Retira o estado de processamento
 
-                if (response.isSuccessful()) {
-                    Toast.makeText(EditTransactionActivity.this, "Transação atualizada com sucesso!", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null) {
+                    // Toast.makeText(EditTransactionActivity.this, "Transação atualizada!", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
                     finish();
                 } else if (response.code() == 401) {
-                    Toast.makeText(EditTransactionActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditTransactionActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(EditTransactionActivity.this, "Erro ao atualizar transação.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditTransactionActivity.this, getString(R.string.error_saving_transaction), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Transaction>> call, Throwable t) {
+            public void onFailure(Call<Transaction> call, Throwable t) {
                 setProcessing(false, true);
-                Toast.makeText(EditTransactionActivity.this, "Falha de conexão.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditTransactionActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void confirmDelete() {
         new AlertDialog.Builder(this)
-                .setTitle("Excluir transação")
-                .setMessage("Deseja realmente excluir esta transação?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Excluir", (dialog, which) -> deleteTransaction())
+                .setTitle(getString(R.string.delete_transaction_title))
+                .setMessage(getString(R.string.delete_transaction_message))
+                .setNegativeButton(getString(R.string.action_cancel), null)
+                .setPositiveButton(getString(R.string.action_delete), (dialog, which) -> deleteTransaction())
                 .show();
     }
 
     private void deleteTransaction() {
         if (transactionId == null) {
-            Toast.makeText(this, "ID da transação inválido.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_invalid_transaction_id), Toast.LENGTH_SHORT).show();
             return;
         }
 
         setProcessing(true, false);
 
-        RetrofitClient.getApi().deleteTransaction("eq." + transactionId).enqueue(new Callback<Void>() {
+        // Corrigido para passar o transactionId como Long puro, sem o "eq."
+        RetrofitClient.getApi().deleteTransaction(transactionId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 setProcessing(false, false);
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(EditTransactionActivity.this, "Transação excluída com sucesso!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            EditTransactionActivity.this,
+                            getString(R.string.transaction_deleted_success),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    setResult(RESULT_OK); // Adicionado para atualizar a lista ao voltar
                     finish();
                 } else if (response.code() == 401) {
-                    Toast.makeText(EditTransactionActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            EditTransactionActivity.this,
+                            getString(R.string.error_session_expired),
+                            Toast.LENGTH_SHORT
+                    ).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(EditTransactionActivity.this, "Erro ao excluir transação.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            EditTransactionActivity.this,
+                            getString(R.string.error_deleting_transaction),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 setProcessing(false, false);
-                Toast.makeText(EditTransactionActivity.this, "Falha de conexão.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        EditTransactionActivity.this,
+                        getString(R.string.error_connection_generic),
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
     }
@@ -339,17 +399,17 @@ public class EditTransactionActivity extends AppCompatActivity {
         btnDelete.setEnabled(!processing);
 
         if (!processing) {
-            btnSave.setText("Salvar alterações");
-            btnDelete.setText("Excluir transação");
+            btnSave.setText(getString(R.string.edit_transaction_save));
+            btnDelete.setText(getString(R.string.edit_transaction_delete));
             return;
         }
 
         if (savingMode) {
-            btnSave.setText("Salvando...");
-            btnDelete.setText("Excluir transação");
+            btnSave.setText(getString(R.string.transaction_saving));
+            btnDelete.setText(getString(R.string.edit_transaction_delete));
         } else {
-            btnSave.setText("Salvar alterações");
-            btnDelete.setText("Excluindo...");
+            btnSave.setText(getString(R.string.edit_transaction_save));
+            btnDelete.setText(getString(R.string.transaction_deleting));
         }
     }
 

@@ -94,7 +94,8 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fetchTransactions();
+        fetchSummary(); // Agora buscamos a matemática do servidor
+        fetchTransactions(); // Buscamos a lista para o gráfico e histórico
         fetchUserProfile();
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
@@ -132,6 +133,22 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    private void fetchSummary() {
+        RetrofitClient.getApi().getTransactionSummary().enqueue(new Callback<TransactionSummary>() {
+            @Override
+            public void onResponse(Call<TransactionSummary> call, Response<TransactionSummary> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updateKPIs(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TransactionSummary> call, Throwable t) {
+                // Falha silenciosa: se falhar, os valores ficam zerados
+            }
+        });
+    }
+
     private void fetchTransactions() {
         RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
             @Override
@@ -140,58 +157,27 @@ public class DashboardActivity extends AppCompatActivity {
                     transactionList = response.body();
                     adapter = new TransactionAdapter(transactionList);
                     rvTransactions.setAdapter(adapter);
-                    calculateKPIs();
-                } else {
-                    if (response.code() == 401) {
-                        Toast.makeText(
-                                DashboardActivity.this,
-                                "Sessão expirada. Faça login novamente.",
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                        SessionManager.clear();
-
-                        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(
-                                DashboardActivity.this,
-                                "Erro ao carregar dados",
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
+                    drawChart(); // Desenhamos o gráfico com a lista
+                } else if (response.code() == 401) {
+                    Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
+                    SessionManager.clear();
+                    Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                Toast.makeText(
-                        DashboardActivity.this,
-                        "Sem conexão com internet",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Toast.makeText(DashboardActivity.this, "Sem conexão com internet", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void calculateKPIs() {
-        if (transactionList == null) return;
-
-        double totalReceita = 0.0;
-        double totalDespesa = 0.0;
-
-        for (Transaction tx : transactionList) {
-            String type = tx.getType();
-
-            if (type != null && (type.equalsIgnoreCase("Receita") || type.equalsIgnoreCase("income"))) {
-                totalReceita += tx.getAmount();
-            } else {
-                totalDespesa += tx.getAmount();
-            }
-        }
-
-        double saldo = totalReceita - totalDespesa;
+    private void updateKPIs(TransactionSummary summary) {
+        double totalReceita = summary.getReceitas();
+        double totalDespesa = summary.getDespesas();
+        double saldo = summary.getSaldo();
 
         tvSaldo.setText(formatCurrency(saldo));
         tvReceita.setText(formatCurrency(totalReceita));
@@ -227,8 +213,6 @@ public class DashboardActivity extends AppCompatActivity {
                     )
             );
         }
-
-        drawChart();
     }
 
     private void setupChartAppearance() {
@@ -347,7 +331,7 @@ public class DashboardActivity extends AppCompatActivity {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.isEmpty()) return;
 
-        RetrofitClient.getApi().getProfile("eq." + userId).enqueue(new Callback<List<Profile>>() {
+        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -375,7 +359,6 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
-                // Falha silenciosa para não impactar a experiência
             }
         });
     }
