@@ -16,8 +16,8 @@
         android:usesCleartextTraffic="true">
 
         <activity
-        android:name=".ChatbotActivity"
-        android:exported="false" />
+            android:name=".ChatbotActivity"
+            android:exported="false" />
 
         <activity
             android:name=".DashboardActivity"

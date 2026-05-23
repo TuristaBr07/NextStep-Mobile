@@ -108,13 +108,18 @@ public class RegisterActivity extends AppCompatActivity {
                 setLoading(false);
 
                 if (response.isSuccessful()) {
-                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_success));
+                    UiUtils.showLongToast(
+                            RegisterActivity.this,
+                            "Conta criada com sucesso. Faça login e complete seu perfil em Configurações."
+                    );
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                     finish();
-                } else if (response.code() == 400 || response.code() == 422) {
-                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_email_in_use));
+                } else if (response.code() == 400 || response.code() == 409 || response.code() == 422) {
+                    String message = ApiErrorUtils.getErrorMessage(response, getString(R.string.register_email_in_use));
+                    UiUtils.showLongToast(RegisterActivity.this, message);
                 } else {
-                    UiUtils.showLongToast(RegisterActivity.this, getString(R.string.register_error_code, response.code()));
+                    String message = ApiErrorUtils.getErrorMessage(response, getString(R.string.register_error_code, response.code()));
+                    UiUtils.showLongToast(RegisterActivity.this, message);
                 }
             }
 

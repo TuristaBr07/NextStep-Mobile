@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tvForgotPassword, tvGoToRegister;
 
+    private boolean isLoading = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ForgotPasswordActivity.class))
         );
 
-        btnLogin.setOnClickListener(v -> attemptLogin());
+        btnLogin.setOnClickListener(v -> {
+            if (!isLoading) {
+                attemptLogin();
+            }
+        });
     }
 
     private void attemptLogin() {
@@ -96,32 +102,29 @@ public class MainActivity extends AppCompatActivity {
                 setLoading(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    String token = response.body().getAccessToken();
-                    String userId = "";
-
-                    if (response.body().getUser() != null && response.body().getUser().getId() != null) {
-                        userId = response.body().getUser().getId();
-                    }
+                    LoginResponse loginResponse = response.body();
+                    String token = loginResponse.getAccessToken();
+                    String userId = loginResponse.getIdUsuario();
+                    String responseEmail = loginResponse.getEmail();
 
                     if (token == null || token.trim().isEmpty()) {
                         Toast.makeText(MainActivity.this, getString(R.string.login_token_error), Toast.LENGTH_LONG).show();
                         return;
                     }
 
-                    SessionManager.saveSession(token, userId);
+                    SessionManager.saveSession(token, userId, responseEmail);
 
                     Toast.makeText(MainActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                     openDashboard();
-
                 } else if (response.code() == 400 || response.code() == 401) {
                     tilEmail.setError(getString(R.string.login_invalid_credentials_title));
                     tilPassword.setError(getString(R.string.login_invalid_credentials_body));
                 } else {
-                    Toast.makeText(
-                            MainActivity.this,
-                            getString(R.string.login_error_code, response.code()),
-                            Toast.LENGTH_LONG
-                    ).show();
+                    String message = ApiErrorUtils.getErrorMessage(
+                            response,
+                            getString(R.string.login_error_code, response.code())
+                    );
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setLoading(boolean loading) {
+        isLoading = loading;
         btnLogin.setEnabled(!loading);
         btnLogin.setText(loading ? getString(R.string.login_loading) : getString(R.string.btn_login_text));
 
@@ -154,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openDashboard() {
         Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }

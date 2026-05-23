@@ -2,13 +2,17 @@ package com.tamarin.nextstep;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Resposta do endpoint POST /auth/login.
+ *
+ * O backend retorna: token, idUsuario e email. O método getUser() foi mantido
+ * para preservar compatibilidade com telas que já esperavam um objeto User.
+ */
 public class LoginResponse {
 
-    // 1. Mudamos para "token" (como o Spring Boot envia)
     @SerializedName("token")
     private String accessToken;
 
-    // 2. Lemos o ID e o email diretamente da raiz do JSON do Spring Boot
     @SerializedName("idUsuario")
     private String idUsuario;
 
@@ -23,8 +27,22 @@ public class LoginResponse {
         this.accessToken = accessToken;
     }
 
-    // 3. Truque: Mantemos o método getUser() intacto para não quebrar o resto do seu App!
-    // Ele simplesmente pega os campos soltos acima e monta o objeto User na hora.
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public User getUser() {
         User user = new User();
         user.setId(idUsuario);

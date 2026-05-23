@@ -35,7 +35,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private TextInputLayout tilDescription, tilAmount, tilDate;
     private Button btnSaveTransaction;
 
-    private List<Category> categories = new ArrayList<>();
+    private List<Category> categories = new ArrayList<>( );
     private boolean isSaving = false;
 
     @Override

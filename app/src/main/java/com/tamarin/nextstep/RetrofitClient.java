@@ -11,84 +11,74 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitClient {
+/**
+ * Cliente HTTP único do aplicativo.
+ *
+ * No emulador Android, 10.0.2.2 aponta para o localhost do computador.
+ * Se você testar em celular físico, troque BASE_URL pelo IP da máquina onde
+ * o backend Spring Boot estiver rodando, por exemplo: http://192.168.0.10:8081/.
+ */
+public final class RetrofitClient {
 
-    private static Retrofit retrofit;
-
-    // NOTA: Mais tarde podemos renomear "SupabaseApi" para "NextStepApi" para ficar mais coerente,
-    // mas por agora mantemos o mesmo nome para não quebrar as outras classes.
-    private static SupabaseApi api;
-
-    // O endereço mágico que o emulador usa para chegar ao "localhost" do seu computador
     private static final String BASE_URL = "http://10.0.2.2:8081/";
 
-    private RetrofitClient() {
-        // Evita instanciação
+    private static Retrofit retrofit;
+    private static NextStepApi api;
+
+    private RetrofitClient( ) {
     }
 
-    public static SupabaseApi getApi() {
+    public static synchronized NextStepApi getApi() {
         if (api == null) {
-            api = getRetrofit().create(SupabaseApi.class);
+            api = getRetrofit().create(NextStepApi.class);
         }
         return api;
     }
 
-    private static Retrofit getRetrofit() {
+    private static synchronized Retrofit getRetrofit() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(buildHttpClient())
+                    .client(createHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return retrofit;
     }
 
-    private static OkHttpClient buildHttpClient() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+    private static OkHttpClient createHttpClient() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        return new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request original = chain.request();
+                .addInterceptor(new AuthInterceptor())
+                .addInterceptor(logging)
+                .build();
+    }
 
-                        String token = null;
-                        try {
-                            token = SessionManager.getToken();
-                        } catch (Exception ignored) {
-                        }
+    private static class AuthInterceptor implements Interceptor {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            Request.Builder builder = original.newBuilder()
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json");
 
-                        // Removemos a apikey do Supabase. Agora apenas dizemos que enviamos JSON.
-                        Request.Builder requestBuilder = original.newBuilder()
-                                .header("Content-Type", "application/json");
+            String token = SessionManager.getToken();
+            if (token != null && !token.trim().isEmpty()) {
+                builder.header("Authorization", "Bearer " + token.trim());
+            }
 
-                        // Se o utilizador já fez login e tem o Token JWT, anexa-o ao cabeçalho!
-                        if (token != null && !token.trim().isEmpty()) {
-                            requestBuilder.header("Authorization", "Bearer " + token);
-                        }
+            Response response = chain.proceed(builder.build());
 
-                        Response response = chain.proceed(requestBuilder.build());
+            if (response.code() == 401 || response.code() == 403) {
+                SessionManager.clear();
+            }
 
-                        // MÁGICA DA EXPULSÃO AUTOMÁTICA
-                        // Se o servidor barrar o acesso (401 Expirado ou 403 Proibido), limpamos a sessão na hora
-                        if (response.code() == 401 || response.code() == 403) {
-                            try {
-                                SessionManager.clear();
-                            } catch (Exception ignored) {
-                            }
-                        }
-
-                        return response;
-                    }
-                });
-
-        // Mantém o Logging (muito útil para ver os erros no Logcat do Android Studio)
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        builder.addInterceptor(logging);
-
-        return builder.build();
+            return response;
+        }
     }
 }
