@@ -6,13 +6,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +48,15 @@ public class DashboardActivity extends AppCompatActivity {
 
     private static final double LIMITE_MEI = 81000.0;
 
+    // Variáveis de controlo de cache
+    private static long lastFetchTime = 0;
+    private static final long CACHE_EXPIRATION_MS = 30000; // 30 segundos
+
+    // Controlo de estado de Loading (Fase 2)
+    private LinearLayout layoutLoading;
+    private NestedScrollView scrollDashboard;
+    private int pendingRequests = 0;
+
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
     private List<Transaction> transactionList = new ArrayList<>();
@@ -64,6 +76,10 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        // Binding do estado de loading
+        layoutLoading = findViewById(R.id.layoutLoading);
+        scrollDashboard = findViewById(R.id.scrollDashboard);
 
         rvTransactions = findViewById(R.id.rvTransactions);
         tvSaldo = findViewById(R.id.tvSaldo);
@@ -94,13 +110,47 @@ public class DashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        fetchSummary(); // Agora buscamos a matemática do servidor
-        fetchTransactions(); // Buscamos a lista para o gráfico e histórico
-        fetchUserProfile();
+
+        long currentTime = System.currentTimeMillis();
+
+        if (transactionList.isEmpty() || (currentTime - lastFetchTime > CACHE_EXPIRATION_MS)) {
+            // Inicia o carregamento e espera por 3 requisições
+            pendingRequests = 3;
+            showLoading();
+
+            fetchSummary();
+            fetchTransactions();
+            fetchUserProfile();
+
+            lastFetchTime = currentTime;
+        }
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         if (bottomNav != null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
+        }
+    }
+
+    public static void forceRefresh() {
+        lastFetchTime = 0;
+    }
+
+    // Métodos de Controlo de UI do Loading
+    private void showLoading() {
+        if (layoutLoading != null && scrollDashboard != null) {
+            layoutLoading.setVisibility(View.VISIBLE);
+            scrollDashboard.setVisibility(View.GONE);
+        }
+    }
+
+    private void checkAndHideLoading() {
+        pendingRequests--;
+        if (pendingRequests <= 0) {
+            pendingRequests = 0; // Prevenção de segurança
+            if (layoutLoading != null && scrollDashboard != null) {
+                layoutLoading.setVisibility(View.GONE);
+                scrollDashboard.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -140,11 +190,12 @@ public class DashboardActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     updateKPIs(response.body());
                 }
+                checkAndHideLoading();
             }
 
             @Override
             public void onFailure(Call<TransactionSummary> call, Throwable t) {
-                // Falha silenciosa: se falhar, os valores ficam zerados
+                checkAndHideLoading();
             }
         });
     }
@@ -157,7 +208,7 @@ public class DashboardActivity extends AppCompatActivity {
                     transactionList = response.body();
                     adapter = new TransactionAdapter(transactionList);
                     rvTransactions.setAdapter(adapter);
-                    drawChart(); // Desenhamos o gráfico com a lista
+                    drawChart();
                 } else if (response.code() == 401) {
                     Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
                     SessionManager.clear();
@@ -165,11 +216,54 @@ public class DashboardActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
+                checkAndHideLoading();
             }
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
                 Toast.makeText(DashboardActivity.this, "Sem conexão com internet", Toast.LENGTH_SHORT).show();
+                checkAndHideLoading();
+            }
+        });
+    }
+
+    private void fetchUserProfile() {
+        String userId = SessionManager.getUserId();
+        if (userId == null || userId.isEmpty()) {
+            checkAndHideLoading();
+            return;
+        }
+
+        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
+            @Override
+            public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    Profile p = response.body().get(0);
+
+                    if (p.getFullName() != null && !p.getFullName().isEmpty()) {
+                        String firstName = p.getFullName().split(" ")[0];
+                        tvHeader.setText("Olá, " + firstName + "!");
+                    }
+
+                    if (p.getCompanyName() != null && !p.getCompanyName().isEmpty()) {
+                        tvSubHeader.setText("Visão financeira de " + p.getCompanyName());
+                    } else {
+                        tvSubHeader.setText("Visão financeira do seu negócio");
+                    }
+
+                    if (p.getAvatar() != null && !p.getAvatar().isEmpty()) {
+                        Bitmap bitmap = decodeBase64ToBitmap(p.getAvatar());
+                        if (bitmap != null) {
+                            ivLogo.setImageBitmap(bitmap);
+                        }
+                    }
+                }
+                checkAndHideLoading();
+            }
+
+            @Override
+            public void onFailure(Call<List<Profile>> call, Throwable t) {
+                checkAndHideLoading();
             }
         });
     }
@@ -325,42 +419,6 @@ public class DashboardActivity extends AppCompatActivity {
 
         lineChart.animateX(700);
         lineChart.invalidate();
-    }
-
-    private void fetchUserProfile() {
-        String userId = SessionManager.getUserId();
-        if (userId == null || userId.isEmpty()) return;
-
-        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
-            @Override
-            public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    Profile p = response.body().get(0);
-
-                    if (p.getFullName() != null && !p.getFullName().isEmpty()) {
-                        String firstName = p.getFullName().split(" ")[0];
-                        tvHeader.setText("Olá, " + firstName + "!");
-                    }
-
-                    if (p.getCompanyName() != null && !p.getCompanyName().isEmpty()) {
-                        tvSubHeader.setText("Visão financeira de " + p.getCompanyName());
-                    } else {
-                        tvSubHeader.setText("Visão financeira do seu negócio");
-                    }
-
-                    if (p.getAvatar() != null && !p.getAvatar().isEmpty()) {
-                        Bitmap bitmap = decodeBase64ToBitmap(p.getAvatar());
-                        if (bitmap != null) {
-                            ivLogo.setImageBitmap(bitmap);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Profile>> call, Throwable t) {
-            }
-        });
     }
 
     private String formatCurrency(double value) {

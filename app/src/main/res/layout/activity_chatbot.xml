@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/ns_background">
 
+    <!-- CORRIGIDO: era app:navigationIcon="@android:drawable/ic_media_previous" (ícone de player) -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarChatbot"
         android:layout_width="0dp"
@@ -16,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@android:drawable/ic_media_previous"
+        app:navigationIcon="?attr/homeAsUpIndicator"
         app:navigationIconTint="@color/ns_text_primary"
         app:titleCentered="false" />
 

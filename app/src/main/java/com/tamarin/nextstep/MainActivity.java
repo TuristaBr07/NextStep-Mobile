@@ -3,12 +3,14 @@ package com.tamarin.nextstep;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -20,10 +22,11 @@ public class MainActivity extends AppCompatActivity {
 
     private TextInputEditText etEmail, etPassword;
     private TextInputLayout tilEmail, tilPassword;
-    private Button btnLogin;
+    private MaterialButton btnLogin;
     private TextView tvForgotPassword, tvGoToRegister;
 
     private boolean isLoading = false;
+    private CircularProgressDrawable progressDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvGoToRegister = findViewById(R.id.tvGoToRegister);
+
+        // Configurar o spinner de carregamento para o botão
+        progressDrawable = new CircularProgressDrawable(this);
+        progressDrawable.setStyle(CircularProgressDrawable.DEFAULT);
+        progressDrawable.setColorSchemeColors(ContextCompat.getColor(this, android.R.color.white));
+        progressDrawable.setCenterRadius(24f);
+        progressDrawable.setStrokeWidth(6f);
 
         tvGoToRegister.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RegisterActivity.class))
@@ -143,7 +153,18 @@ public class MainActivity extends AppCompatActivity {
     private void setLoading(boolean loading) {
         isLoading = loading;
         btnLogin.setEnabled(!loading);
-        btnLogin.setText(loading ? getString(R.string.login_loading) : getString(R.string.btn_login_text));
+
+        if (loading) {
+            btnLogin.setText(getString(R.string.login_loading));
+            progressDrawable.start();
+            btnLogin.setIcon(progressDrawable);
+            btnLogin.setIconPadding(16);
+            btnLogin.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
+        } else {
+            btnLogin.setText(getString(R.string.btn_login_text));
+            progressDrawable.stop();
+            btnLogin.setIcon(null);
+        }
 
         etEmail.setEnabled(!loading);
         etPassword.setEnabled(!loading);

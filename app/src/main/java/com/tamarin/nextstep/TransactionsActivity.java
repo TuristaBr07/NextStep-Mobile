@@ -5,7 +5,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -14,6 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +31,8 @@ import retrofit2.Response;
 
 public class TransactionsActivity extends AppCompatActivity {
 
-    private EditText etSearch;
+    private TextInputLayout tilSearch;
+    private TextInputEditText etSearch;
     private Spinner spinnerFilterType;
     private Spinner spinnerFilterCategory;
     private RecyclerView rvAllTransactions;
@@ -46,6 +49,7 @@ public class TransactionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
+        tilSearch = findViewById(R.id.tilSearch);
         etSearch = findViewById(R.id.etSearch);
         spinnerFilterType = findViewById(R.id.spinnerFilterType);
         spinnerFilterCategory = findViewById(R.id.spinnerFilterCategory);
@@ -136,20 +140,22 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void setupFilters() {
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        if (etSearch != null) {
+            etSearch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                applyFilters();
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    applyFilters();
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
 
         spinnerFilterType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -175,7 +181,7 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void applyFilters() {
-        String textFilter = etSearch.getText() != null
+        String textFilter = (etSearch != null && etSearch.getText() != null)
                 ? etSearch.getText().toString().toLowerCase().trim()
                 : "";
 

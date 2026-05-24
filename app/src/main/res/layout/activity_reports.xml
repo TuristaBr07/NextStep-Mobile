@@ -90,10 +90,11 @@
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="13sp" />
 
+                <!-- CORRIGIDO: era 420dp — muito alto para telas pequenas (360dp de largura) -->
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartReports"
                     android:layout_width="match_parent"
-                    android:layout_height="420dp"
+                    android:layout_height="260dp"
                     android:layout_marginTop="14dp" />
 
                 <TextView

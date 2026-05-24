@@ -32,6 +32,7 @@
                 android:contentDescription="@string/login_logo_description"
                 android:src="@drawable/logo_nextstep" />
 
+            <!-- CORRIGIDO: era android:textColor="#2E7D32" (hardcoded) -->
             <TextView
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
@@ -39,10 +40,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:text="@string/login_title"
-                android:textColor="#2E7D32"
+                android:textColor="@color/ns_primary"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+            <!-- CORRIGIDO: era android:textColor="#8A948A" (hardcoded) -->
             <TextView
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
@@ -51,7 +53,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="@string/login_subtitle"
-                android:textColor="#8A948A"
+                android:textColor="@color/ns_text_hint"
                 android:textSize="15sp" />
 
             <LinearLayout

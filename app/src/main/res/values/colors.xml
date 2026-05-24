@@ -28,5 +28,6 @@
     <color name="ns_error">#C62828</color>
     <color name="ns_success">#2E7D32</color>
 
+    <!-- Alias de compatibilidade — mantido para não quebrar código legado -->
     <color name="colorTextSecondary">#5F6B5F</color>
 </resources>
