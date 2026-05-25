@@ -271,6 +271,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(AddTransactionActivity.this, "Transação salva com sucesso!", Toast.LENGTH_SHORT).show();
+                    DashboardActivity.forceRefresh();
                     setResult(RESULT_OK);
                     finish();
                 } else {
