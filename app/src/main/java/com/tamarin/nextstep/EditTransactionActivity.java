@@ -307,6 +307,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     // Toast.makeText(EditTransactionActivity.this, "Transação atualizada!", Toast.LENGTH_SHORT).show();
+                    DashboardActivity.forceRefresh();
                     setResult(RESULT_OK);
                     finish();
                 } else if (response.code() == 401) {
@@ -355,6 +356,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                             getString(R.string.transaction_deleted_success),
                             Toast.LENGTH_SHORT
                     ).show();
+                    DashboardActivity.forceRefresh();
                     setResult(RESULT_OK); // Adicionado para atualizar a lista ao voltar
                     finish();
                 } else if (response.code() == 401) {
