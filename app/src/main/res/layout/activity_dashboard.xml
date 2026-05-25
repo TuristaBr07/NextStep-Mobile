@@ -11,7 +11,7 @@
     <View
         android:id="@+id/topHeaderBackground"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="220dp"
         android:background="@color/ns_primary_dark"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,75 +52,83 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:paddingBottom="24dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_start"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="24dp"
-                android:paddingTop="28dp"
-                android:paddingEnd="24dp"
-                android:paddingBottom="24dp">
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="24dp" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:cardCornerRadius="25dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <ImageView
-                        android:id="@+id/ivLogo"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/dashboard_logo_description"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/logo_nextstep" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/dashboard_header_default"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="-0.02"/>
-
-                    <TextView
-                        android:id="@+id/tvSubHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/dashboard_subheader_default"
-                        android:textColor="#B2DFDB"
-                        android:textSize="13sp" />
-                </LinearLayout>
-            </LinearLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="24dp" />
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+                android:id="@+id/cvAvatar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guide_start">
+
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logo_nextstep" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/dashboard_header_default"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.02"
+                app:layout_constraintTop_toTopOf="@id/cvAvatar"
+                app:layout_constraintStart_toEndOf="@id/cvAvatar"
+                app:layout_constraintEnd_toEndOf="@id/guide_end" />
+
+            <TextView
+                android:id="@+id/tvSubHeader"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/dashboard_subheader_default"
+                android:textColor="#D1FAE5"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/tvHeader"
+                app:layout_constraintStart_toEndOf="@id/cvAvatar"
+                app:layout_constraintEnd_toEndOf="@id/guide_end" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSaldo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 app:cardBackgroundColor="@color/ns_surface"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="12dp"
-                app:strokeWidth="0dp">
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/cvAvatar"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -128,64 +136,58 @@
                     android:orientation="vertical"
                     android:padding="24dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_soft_pill"
-                            android:paddingStart="12dp"
-                            android:paddingTop="6dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="6dp"
-                            android:text="@string/dashboard_summary_label"
-                            android:textColor="@color/ns_primary_dark"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                        android:background="@drawable/bg_soft_pill"
+                        android:paddingStart="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="6dp"
+                        android:text="@string/dashboard_summary_label"
+                        android:textColor="@color/ns_primary_dark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="24dp"
                         android:text="@string/dashboard_balance_label"
                         android:textColor="@color/ns_text_secondary"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvSaldo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
                         android:text="@string/currency_zero"
                         android:textColor="@color/ns_text_primary"
-                        android:textSize="34sp"
+                        android:textSize="36sp"
                         android:textStyle="bold"
                         android:letterSpacing="-0.03" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/dashboard_summary_subtitle"
                         android:textColor="@color/ns_text_hint"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/rowKpis"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:baselineAligned="false"
+                app:layout_constraintTop_toBottomOf="@id/cardSaldo"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
@@ -194,21 +196,21 @@
                     android:layout_marginEnd="8dp"
                     app:cardBackgroundColor="@color/ns_surface"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp"
+                    app:cardElevation="2dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="18dp">
+                        android:padding="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/dashboard_income_label"
                             android:textColor="@color/ns_text_secondary"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -218,8 +220,9 @@
                             android:layout_marginTop="8dp"
                             android:text="@string/currency_zero"
                             android:textColor="@color/ns_success"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="-0.02"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -230,21 +233,21 @@
                     android:layout_marginStart="8dp"
                     app:cardBackgroundColor="@color/ns_surface"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp"
+                    app:cardElevation="2dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="18dp">
+                        android:padding="20dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/dashboard_expense_label"
                             android:textColor="@color/ns_text_secondary"
-                            android:textSize="12sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -254,20 +257,25 @@
                             android:layout_marginTop="8dp"
                             android:text="@string/currency_zero"
                             android:textColor="@color/ns_error"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="-0.02"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+                android:id="@+id/cardMei"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/ns_surface"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/rowKpis"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -287,7 +295,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/dashboard_mei_limit_subtitle"
                         android:textColor="@color/ns_text_secondary"
                         android:textSize="13sp" />
@@ -296,35 +304,38 @@
                         android:id="@+id/pbMeiLimit"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"
+                        android:layout_height="8dp"
                         android:layout_marginTop="16dp"
                         android:max="100"
                         android:progress="0"
-                        android:progressBackgroundTint="@color/ns_border"
+                        android:progressBackgroundTint="@color/ns_surface_soft"
                         android:progressTint="@color/ns_primary" />
 
                     <TextView
                         android:id="@+id/tvMeiProgressValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/dashboard_mei_progress_default"
                         android:textColor="@color/ns_text_secondary"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
                         tools:text="63% do limite • R$ 51.000,00 de R$ 81.000,00" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+                android:id="@+id/cardGraph"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="16dp"
                 app:cardBackgroundColor="@color/ns_surface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp">
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp"
+                app:layout_constraintTop_toBottomOf="@id/cardMei"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -337,72 +348,58 @@
                         android:layout_height="wrap_content"
                         android:text="@string/dashboard_cashflow_title"
                         android:textColor="@color/ns_text_primary"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/dashboard_cashflow_subtitle"
                         android:textColor="@color/ns_text_secondary"
-                        android:textSize="13sp" />
+                        android:textSize="14sp" />
 
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/lineChartDashboard"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
-                        android:layout_marginTop="16dp" />
+                        android:layout_height="240dp"
+                        android:layout_marginTop="20dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvListaTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvListaTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dashboard_transactions_title"
-                    android:textColor="@color/ns_text_primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dashboard_edit_hint"
-                    android:textColor="@color/ns_primary"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_marginTop="32dp"
+                android:text="@string/dashboard_transactions_title"
+                android:textColor="@color/ns_text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/cardGraph"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTransactions"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_transaction" />
+                tools:listitem="@layout/item_transaction"
+                app:layout_constraintTop_toBottomOf="@id/tvListaTitle"
+                app:layout_constraintStart_toStartOf="@id/guide_start"
+                app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:contentDescription="@string/dashboard_add_transaction_description"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/ns_primary_dark"
@@ -416,7 +413,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ns_surface"
-        app:elevation="16dp"
+        app:elevation="24dp"
         app:itemIconTint="@color/ns_text_secondary"
         app:itemTextColor="@color/ns_text_secondary"
         app:layout_constraintBottom_toBottomOf="parent"
