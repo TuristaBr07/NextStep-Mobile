@@ -6,23 +6,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,9 +32,9 @@ import retrofit2.Response;
 public class EditTransactionActivity extends AppCompatActivity {
 
     private TextInputEditText etDescription, etAmount, etDate;
-    private TextInputLayout tilDescription, tilAmount, tilDate;
-    private RadioButton rbIncome, rbExpense;
-    private Spinner spinnerCategory;
+    private TextInputLayout tilDescription, tilAmount, tilDate, tilCategory;
+    private MaterialButtonToggleGroup toggleGroupType;
+    private AutoCompleteTextView actvCategory;
     private Button btnSave, btnDelete;
 
     private List<Category> categories = new ArrayList<>();
@@ -57,9 +56,9 @@ public class EditTransactionActivity extends AppCompatActivity {
         tilDescription = findViewById(R.id.tilDescription);
         tilAmount = findViewById(R.id.tilAmount);
         tilDate = findViewById(R.id.tilDate);
-        rbIncome = findViewById(R.id.rbIncome);
-        rbExpense = findViewById(R.id.rbExpense);
-        spinnerCategory = findViewById(R.id.spinnerCategory);
+        tilCategory = findViewById(R.id.tilCategory);
+        toggleGroupType = findViewById(R.id.toggleGroupType);
+        actvCategory = findViewById(R.id.actvCategory);
         btnSave = findViewById(R.id.btnSave);
         btnDelete = findViewById(R.id.btnDelete);
 
@@ -67,8 +66,11 @@ public class EditTransactionActivity extends AppCompatActivity {
         readExtras();
         loadCategories();
 
-        rbIncome.setOnClickListener(v -> updateCategorySpinner(getSelectedType()));
-        rbExpense.setOnClickListener(v -> updateCategorySpinner(getSelectedType()));
+        toggleGroupType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                updateCategoryDropdown(getSelectedType());
+            }
+        });
 
         btnSave.setOnClickListener(v -> {
             if (!isProcessing) {
@@ -170,9 +172,9 @@ public class EditTransactionActivity extends AppCompatActivity {
             if (initialType.equalsIgnoreCase(getString(R.string.transaction_type_expense))
                     || initialType.equalsIgnoreCase("Saída")
                     || initialType.equalsIgnoreCase("expense")) {
-                rbExpense.setChecked(true);
+                toggleGroupType.check(R.id.btnTypeExpense);
             } else {
-                rbIncome.setChecked(true);
+                toggleGroupType.check(R.id.btnTypeIncome);
             }
         }
     }
@@ -183,7 +185,7 @@ public class EditTransactionActivity extends AppCompatActivity {
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
-                    updateCategorySpinner(getSelectedType());
+                    updateCategoryDropdown(getSelectedType());
                 } else {
                     Toast.makeText(
                             EditTransactionActivity.this,
@@ -204,12 +206,14 @@ public class EditTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateCategorySpinner(String selectedType) {
+    private void updateCategoryDropdown(String selectedType) {
         List<String> categoryNames = new ArrayList<>();
 
         for (Category category : categories) {
             if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
-                categoryNames.add(category.getName());
+                if (category.getName() != null && !category.getName().trim().isEmpty()) {
+                    categoryNames.add(category.getName());
+                }
             }
         }
 
@@ -219,20 +223,19 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_dropdown_item_1line,
                 categoryNames
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(adapter);
+        actvCategory.setAdapter(adapter);
 
         int selectedIndex = categoryNames.indexOf(initialCategory);
-        if (selectedIndex >= 0) {
-            spinnerCategory.setSelection(selectedIndex);
-        }
+        String textToSet = selectedIndex >= 0 ? categoryNames.get(selectedIndex) : categoryNames.get(0);
+        actvCategory.setText(textToSet, false);
+        tilCategory.setError(null);
     }
 
     private String getSelectedType() {
-        return rbExpense.isChecked()
+        return toggleGroupType.getCheckedButtonId() == R.id.btnTypeExpense
                 ? getString(R.string.transaction_type_expense)
                 : getString(R.string.transaction_type_income);
     }
@@ -294,19 +297,17 @@ public class EditTransactionActivity extends AppCompatActivity {
         transaction.setDescription(description);
         transaction.setAmount(Double.parseDouble(amountText.replace(",", ".")));
         transaction.setType(getSelectedType());
-        transaction.setCategory(spinnerCategory.getSelectedItem() != null
-                ? spinnerCategory.getSelectedItem().toString()
+        transaction.setCategory(actvCategory.getText() != null
+                ? actvCategory.getText().toString().trim()
                 : getString(R.string.no_category));
         transaction.setDate(formatDateToApi(dateText));
 
-        // Corrigido para passar o transactionId como Long puro, sem o "eq."
         RetrofitClient.getApi().updateTransaction(transactionId, transaction).enqueue(new Callback<Transaction>() {
             @Override
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
-                setProcessing(false, true); // Retira o estado de processamento
+                setProcessing(false, true);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // Toast.makeText(EditTransactionActivity.this, "Transação atualizada!", Toast.LENGTH_SHORT).show();
                     DashboardActivity.forceRefresh();
                     setResult(RESULT_OK);
                     finish();
@@ -344,7 +345,6 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         setProcessing(true, false);
 
-        // Corrigido para passar o transactionId como Long puro, sem o "eq."
         RetrofitClient.getApi().deleteTransaction(transactionId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -357,7 +357,7 @@ public class EditTransactionActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT
                     ).show();
                     DashboardActivity.forceRefresh();
-                    setResult(RESULT_OK); // Adicionado para atualizar a lista ao voltar
+                    setResult(RESULT_OK);
                     finish();
                 } else if (response.code() == 401) {
                     Toast.makeText(
@@ -394,9 +394,10 @@ public class EditTransactionActivity extends AppCompatActivity {
         etDescription.setEnabled(!processing);
         etAmount.setEnabled(!processing);
         etDate.setEnabled(!processing);
-        rbIncome.setEnabled(!processing);
-        rbExpense.setEnabled(!processing);
-        spinnerCategory.setEnabled(!processing);
+        for (int i = 0; i < toggleGroupType.getChildCount(); i++) {
+            toggleGroupType.getChildAt(i).setEnabled(!processing);
+        }
+        actvCategory.setEnabled(!processing);
         btnSave.setEnabled(!processing);
         btnDelete.setEnabled(!processing);
 

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -63,13 +64,13 @@ public class ChatbotActivity extends AppCompatActivity {
         tvChatEmptyState = findViewById(R.id.tvChatEmptyState);
         tvTypingIndicator = findViewById(R.id.tvTypingIndicator);
 
-        toolbar.setTitle("Assistente NextStep IA");
         toolbar.inflateMenu(R.menu.chatbot_toolbar_menu);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setOnMenuItemClickListener(this::handleToolbarMenuClick);
 
+        setupSuggestionChips();
+
         rvChatMessages.setLayoutManager(new LinearLayoutManager(this));
-        // Presumo que o seu ChatMessageAdapter e ChatMessage continuam iguais no projeto
         adapter = new ChatMessageAdapter(messages);
         rvChatMessages.setAdapter(adapter);
 
@@ -84,6 +85,25 @@ public class ChatbotActivity extends AppCompatActivity {
         updateEmptyState();
         showTypingIndicator(false);
         setSendingState(false);
+    }
+
+    private void setupSuggestionChips() {
+        Chip chip1 = findViewById(R.id.chipSuggestion1);
+        Chip chip2 = findViewById(R.id.chipSuggestion2);
+        Chip chip3 = findViewById(R.id.chipSuggestion3);
+        Chip chip4 = findViewById(R.id.chipSuggestion4);
+
+        View.OnClickListener chipClickListener = v -> {
+            String text = ((Chip) v).getText().toString();
+            etChatMessage.setText(text);
+            etChatMessage.setSelection(text.length());
+            sendMessage();
+        };
+
+        chip1.setOnClickListener(chipClickListener);
+        chip2.setOnClickListener(chipClickListener);
+        chip3.setOnClickListener(chipClickListener);
+        chip4.setOnClickListener(chipClickListener);
     }
 
     @Override
@@ -135,7 +155,6 @@ public class ChatbotActivity extends AppCompatActivity {
         addUserMessage(userText);
         etChatMessage.setText("");
 
-        // Dispara a requisição real para o Spring Boot!
         requestBotReply(userText);
     }
 
@@ -145,7 +164,6 @@ public class ChatbotActivity extends AppCompatActivity {
 
         ChatRequestDTO requestDTO = new ChatRequestDTO(userText);
 
-        // Chama o nosso RetrofitClient oficial, que já manda o Token JWT no cabeçalho
         RetrofitClient.getApi().sendMessageToChatbot(requestDTO).enqueue(new Callback<ChatResponseDTO>() {
             @Override
             public void onResponse(Call<ChatResponseDTO> call, Response<ChatResponseDTO> response) {
@@ -153,7 +171,6 @@ public class ChatbotActivity extends AppCompatActivity {
                 showTypingIndicator(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    // Pega a resposta processada pela OpenAI lá no servidor
                     String reply = response.body().getReply();
                     addBotMessage(reply, true);
                 } else {

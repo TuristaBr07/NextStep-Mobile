@@ -84,33 +84,68 @@
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
-                    <Spinner
-                        android:id="@+id/spinnerType"
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/toggleGroupType"
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_filter_box"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp" />
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
 
-                    <TextView
-                        android:id="@+id/tvCategoryLabel"
-                        android:layout_width="wrap_content"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTypeIncome"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:text="@string/transaction_type_income"
+                            android:textAllCaps="false"
+                            android:textSize="15sp"
+                            app:strokeColor="@color/ns_primary"
+                            app:strokeWidth="1.5dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTypeExpense"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:text="@string/transaction_type_expense"
+                            android:textAllCaps="false"
+                            android:textSize="15sp"
+                            app:strokeColor="@color/ns_primary"
+                            app:strokeWidth="1.5dp" />
+
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilCategory"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:text="@string/transaction_category_label"
-                        android:textColor="@color/ns_text_secondary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:hint="@string/transaction_category_label"
+                        app:boxBackgroundColor="@color/ns_surface_soft"
+                        app:boxCornerRadiusBottomEnd="16dp"
+                        app:boxCornerRadiusBottomStart="16dp"
+                        app:boxCornerRadiusTopEnd="16dp"
+                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxStrokeColor="@color/ns_primary"
+                        app:boxStrokeWidthFocused="2dp">
 
-                    <Spinner
-                        android:id="@+id/spinnerCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_filter_box"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp" />
+                        <AutoCompleteTextView
+                            android:id="@+id/actvCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:paddingTop="18dp"
+                            android:paddingBottom="18dp"
+                            android:textColor="@color/ns_text_primary"
+                            android:textColorHint="@color/ns_text_hint" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilDescription"

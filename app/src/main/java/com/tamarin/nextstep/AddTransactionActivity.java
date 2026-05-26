@@ -5,14 +5,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -30,12 +30,13 @@ import retrofit2.Response;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
-    private Spinner spinnerType, spinnerCategory;
+    private MaterialButtonToggleGroup toggleGroupType;
+    private AutoCompleteTextView actvCategory;
     private TextInputEditText etDescription, etAmount, etDate;
-    private TextInputLayout tilDescription, tilAmount, tilDate;
+    private TextInputLayout tilCategory, tilDescription, tilAmount, tilDate;
     private Button btnSaveTransaction;
 
-    private List<Category> categories = new ArrayList<>( );
+    private List<Category> categories = new ArrayList<>();
     private boolean isSaving = false;
 
     @Override
@@ -43,17 +44,18 @@ public class AddTransactionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
 
-        spinnerType = findViewById(R.id.spinnerType);
-        spinnerCategory = findViewById(R.id.spinnerCategory);
+        toggleGroupType = findViewById(R.id.toggleGroupType);
+        actvCategory = findViewById(R.id.actvCategory);
         etDescription = findViewById(R.id.etDescription);
         etAmount = findViewById(R.id.etAmount);
         etDate = findViewById(R.id.etDate);
+        tilCategory = findViewById(R.id.tilCategory);
         tilDescription = findViewById(R.id.tilDescription);
         tilAmount = findViewById(R.id.tilAmount);
         tilDate = findViewById(R.id.tilDate);
         btnSaveTransaction = findViewById(R.id.btnSaveTransaction);
 
-        setupTypeSpinner();
+        setupTypeToggle();
         setupDateField();
         loadCategories();
 
@@ -64,24 +66,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void setupTypeSpinner() {
-        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.transaction_types,
-                android.R.layout.simple_spinner_item
-        );
-        typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerType.setAdapter(typeAdapter);
-
-        spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                updateCategorySpinner();
-            }
-
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                // No-op
+    private void setupTypeToggle() {
+        toggleGroupType.check(R.id.btnTypeIncome);
+        toggleGroupType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                updateCategoryDropdown();
             }
         });
     }
@@ -159,7 +148,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
-                    updateCategorySpinner();
+                    updateCategoryDropdown();
                 } else {
                     Toast.makeText(
                             AddTransactionActivity.this,
@@ -180,14 +169,11 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateCategorySpinner() {
-        String selectedType = spinnerType.getSelectedItem() != null
-                ? spinnerType.getSelectedItem().toString()
-                : getString(R.string.transaction_type_income);
+    private void updateCategoryDropdown() {
+        String selectedType = getSelectedType();
 
         List<String> categoryNames = new ArrayList<>();
         for (Category category : categories) {
-            // TRAVA DE SEGURANÇA: Só adiciona se o tipo bater E o nome não for nulo nem vazio
             if (category.getType() != null && category.getType().equalsIgnoreCase(selectedType)) {
                 if (category.getName() != null && !category.getName().trim().isEmpty()) {
                     categoryNames.add(category.getName());
@@ -199,20 +185,27 @@ public class AddTransactionActivity extends AppCompatActivity {
             categoryNames.add(getString(R.string.no_category));
         }
 
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_dropdown_item_1line,
                 categoryNames
         );
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
+        actvCategory.setAdapter(adapter);
+        actvCategory.setText(categoryNames.get(0), false);
+        tilCategory.setError(null);
+    }
+
+    private String getSelectedType() {
+        return toggleGroupType.getCheckedButtonId() == R.id.btnTypeExpense
+                ? getString(R.string.transaction_type_expense)
+                : getString(R.string.transaction_type_income);
     }
 
     private void validateAndSave() {
         clearErrors();
 
-        String type = spinnerType.getSelectedItem() != null ? spinnerType.getSelectedItem().toString() : "";
-        String category = spinnerCategory.getSelectedItem() != null ? spinnerCategory.getSelectedItem().toString() : "";
+        String type = getSelectedType();
+        String category = actvCategory.getText() != null ? actvCategory.getText().toString().trim() : "";
         String description = etDescription.getText() != null ? etDescription.getText().toString().trim() : "";
         String amountText = etAmount.getText() != null ? etAmount.getText().toString().trim() : "";
         String dateText = etDate.getText() != null ? etDate.getText().toString().trim() : "";
@@ -297,8 +290,10 @@ public class AddTransactionActivity extends AppCompatActivity {
                         : getString(R.string.save_transaction)
         );
 
-        spinnerType.setEnabled(!loading);
-        spinnerCategory.setEnabled(!loading);
+        for (int i = 0; i < toggleGroupType.getChildCount(); i++) {
+            toggleGroupType.getChildAt(i).setEnabled(!loading);
+        }
+        actvCategory.setEnabled(!loading);
         etDescription.setEnabled(!loading);
         etAmount.setEnabled(!loading);
         etDate.setEnabled(!loading);
