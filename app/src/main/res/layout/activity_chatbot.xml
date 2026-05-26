@@ -9,19 +9,86 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarChatbot"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/ns_surface"
+        android:layout_height="72dp"
+        android:background="@drawable/bg_dashboard_header"
+        android:elevation="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Assistente NextStep"
-        app:titleTextColor="@color/ns_text_primary" />
+        app:navigationIcon="@drawable/ic_ai_brain"
+        app:title="C&#233;rebro NextStep"
+        app:subtitle="Assistente Financeiro com IA"
+        app:titleTextColor="@color/white"
+        app:subtitleTextColor="#D1FAE5" />
+
+    <HorizontalScrollView
+        android:id="@+id/scrollSuggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbarChatbot">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSuggestion1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Gastei R$ 50 de gasolina"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                app:chipBackgroundColor="@color/ns_surface"
+                app:chipStrokeColor="@color/ns_primary"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSuggestion2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Recebi R$ 500 de cliente"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                app:chipBackgroundColor="@color/ns_surface"
+                app:chipStrokeColor="@color/ns_primary"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSuggestion3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Como est&#225; meu saldo?"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                app:chipBackgroundColor="@color/ns_surface"
+                app:chipStrokeColor="@color/ns_primary"
+                app:chipStrokeWidth="1dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSuggestion4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dica financeira para MEI"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                app:chipBackgroundColor="@color/ns_surface"
+                app:chipStrokeColor="@color/ns_primary"
+                app:chipStrokeWidth="1dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChatMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/toolbarChatbot"
+        app:layout_constraintTop_toBottomOf="@id/scrollSuggestions"
         app:layout_constraintBottom_toTopOf="@id/inputLayout" />
 
     <TextView
@@ -31,7 +98,7 @@
         android:text="Inicie uma conversa!"
         android:textColor="@color/ns_text_secondary"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbarChatbot"
+        app:layout_constraintTop_toBottomOf="@id/scrollSuggestions"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/inputLayout" />
@@ -40,7 +107,7 @@
         android:id="@+id/tvTypingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Assistente está digitando..."
+        android:text="Assistente est&#225; digitando..."
         android:textColor="@color/ns_primary"
         android:visibility="gone"
         android:padding="8dp"
@@ -53,7 +120,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ns_surface"
-        android:padding="16dp"
+        android:elevation="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -62,11 +132,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:hint="Digite uma mensagem..."
+            android:hint="Descreva uma transa&#231;&#227;o ou fa&#231;a uma pergunta..."
             app:boxCornerRadiusBottomEnd="24dp"
             app:boxCornerRadiusBottomStart="24dp"
             app:boxCornerRadiusTopEnd="24dp"
             app:boxCornerRadiusTopStart="24dp"
+            app:boxStrokeColor="@color/ns_primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnSendMessage"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,10 +153,11 @@
 
         <ImageButton
             android:id="@+id/btnSendMessage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:background="@drawable/bg_chat_send_button"
-            android:src="@android:drawable/ic_menu_send"
+            android:src="@drawable/ic_send"
+            android:contentDescription="Enviar mensagem"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
