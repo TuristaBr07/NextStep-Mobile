@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -48,13 +49,12 @@ public class DashboardActivity extends AppCompatActivity {
 
     private static final double LIMITE_MEI = 81000.0;
 
-    // Variáveis de controlo de cache
     private static long lastFetchTime = 0;
-    private static final long CACHE_EXPIRATION_MS = 30000; // 30 segundos
+    private static final long CACHE_EXPIRATION_MS = 30000;
 
-    // Controlo de estado de Loading (Fase 2)
     private LinearLayout layoutLoading;
     private NestedScrollView scrollDashboard;
+    private SwipeRefreshLayout swipeRefreshDashboard;
     private int pendingRequests = 0;
 
     private RecyclerView rvTransactions;
@@ -77,9 +77,9 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Binding do estado de loading
         layoutLoading = findViewById(R.id.layoutLoading);
         scrollDashboard = findViewById(R.id.scrollDashboard);
+        swipeRefreshDashboard = findViewById(R.id.swipeRefreshDashboard);
 
         rvTransactions = findViewById(R.id.rvTransactions);
         tvSaldo = findViewById(R.id.tvSaldo);
@@ -91,6 +91,11 @@ public class DashboardActivity extends AppCompatActivity {
         ivLogo = findViewById(R.id.ivLogo);
         pbMeiLimit = findViewById(R.id.pbMeiLimit);
         lineChart = findViewById(R.id.lineChartDashboard);
+
+        swipeRefreshDashboard.setColorSchemeColors(
+                ContextCompat.getColor(this, R.color.ns_primary)
+        );
+        swipeRefreshDashboard.setOnRefreshListener(this::triggerRefresh);
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setHasFixedSize(true);
@@ -114,7 +119,6 @@ public class DashboardActivity extends AppCompatActivity {
         long currentTime = System.currentTimeMillis();
 
         if (transactionList.isEmpty() || (currentTime - lastFetchTime > CACHE_EXPIRATION_MS)) {
-            // Inicia o carregamento e espera por 3 requisições
             pendingRequests = 3;
             showLoading();
 
@@ -135,7 +139,14 @@ public class DashboardActivity extends AppCompatActivity {
         lastFetchTime = 0;
     }
 
-    // Métodos de Controlo de UI do Loading
+    private void triggerRefresh() {
+        lastFetchTime = 0;
+        pendingRequests = 3;
+        fetchSummary();
+        fetchTransactions();
+        fetchUserProfile();
+    }
+
     private void showLoading() {
         if (layoutLoading != null && scrollDashboard != null) {
             layoutLoading.setVisibility(View.VISIBLE);
@@ -146,7 +157,10 @@ public class DashboardActivity extends AppCompatActivity {
     private void checkAndHideLoading() {
         pendingRequests--;
         if (pendingRequests <= 0) {
-            pendingRequests = 0; // Prevenção de segurança
+            pendingRequests = 0;
+            if (swipeRefreshDashboard != null) {
+                swipeRefreshDashboard.setRefreshing(false);
+            }
             if (layoutLoading != null && scrollDashboard != null) {
                 layoutLoading.setVisibility(View.GONE);
                 scrollDashboard.setVisibility(View.VISIBLE);
