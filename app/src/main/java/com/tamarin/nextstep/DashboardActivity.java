@@ -67,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvHeader;
     private TextView tvSubHeader;
     private TextView tvMeiProgressValue;
+    private TextView tvVerTodas;
 
     private ImageView ivLogo;
     private ProgressBar pbMeiLimit;
@@ -88,6 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
         tvHeader = findViewById(R.id.tvHeader);
         tvSubHeader = findViewById(R.id.tvSubHeader);
         tvMeiProgressValue = findViewById(R.id.tvMeiProgressValue);
+        tvVerTodas = findViewById(R.id.tvVerTodas);
         ivLogo = findViewById(R.id.ivLogo);
         pbMeiLimit = findViewById(R.id.pbMeiLimit);
         lineChart = findViewById(R.id.lineChartDashboard);
@@ -99,6 +101,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setHasFixedSize(true);
+
+        if (tvVerTodas != null) {
+            tvVerTodas.setOnClickListener(v ->
+                    startActivity(new Intent(DashboardActivity.this, TransactionsActivity.class)));
+        }
 
         FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
         if (fabAdd != null) {
@@ -220,7 +227,17 @@ public class DashboardActivity extends AppCompatActivity {
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     transactionList = response.body();
-                    adapter = new TransactionAdapter(transactionList);
+
+                    List<Transaction> sortedRecent = new ArrayList<>(transactionList);
+                    sortedRecent.sort((a, b) -> {
+                        String da = a.getDate() != null ? a.getDate() : "";
+                        String db = b.getDate() != null ? b.getDate() : "";
+                        return db.compareTo(da);
+                    });
+                    List<Transaction> recentFive = new ArrayList<>(
+                            sortedRecent.subList(0, Math.min(5, sortedRecent.size())));
+
+                    adapter = new TransactionAdapter(recentFive);
                     rvTransactions.setAdapter(adapter);
                     drawChart();
                 } else if (response.code() == 401) {

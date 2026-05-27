@@ -31,6 +31,7 @@
     <string name="dashboard_cashflow_title">Fluxo de caixa</string>
     <string name="dashboard_cashflow_subtitle">Compare entradas e saídas ao longo do tempo.</string>
     <string name="dashboard_transactions_title">Últimas transações</string>
+    <string name="dashboard_see_all">Ver todas</string>
     <string name="dashboard_edit_hint">Toque para editar</string>
     <string name="dashboard_add_transaction_description">Adicionar nova transação</string>
 
@@ -42,10 +43,10 @@
     <string name="reports_summary_title">Resumo por categoria</string>
     <string name="reports_summary_empty">Sem dados por categoria para exibir.</string>
 
-    <string name="chatbot_toolbar_title">Assistente NextStep</string>
-    <string name="chatbot_toolbar_subtitle">Assistente Financeiro com IA</string>
+    <string name="chatbot_toolbar_title">NextStep IA</string>
+    <string name="chatbot_toolbar_subtitle">Copiloto financeiro</string>
     <string name="chatbot_empty_state">Comece a conversar com o assistente da NextStep.</string>
-    <string name="chatbot_typing">Assistente digitando...</string>
+    <string name="chatbot_typing">IA digitando…</string>
     <string name="chatbot_message_hint">Digite sua mensagem</string>
     <string name="chatbot_send_description">Enviar mensagem</string>
 
@@ -157,7 +158,7 @@
     <string name="connection_failure_check_internet">Falha na conexão. Verifique sua internet.</string>
 
     <string name="register_loading">Criando conta...</string>
-    <string name="register_success">Cadastro realizado com sucesso! Faça login para continuar.</string>
+    <string name="register_success">Cadastro realizado! Verifique seu e-mail para ativar a conta.</string>
     <string name="register_email_in_use">Não foi possível cadastrar. Verifique se o e-mail já está em uso.</string>
     <string name="register_error_code">Erro ao cadastrar. Código: %1$d</string>
 
@@ -201,6 +202,14 @@
 
     <string name="transaction_saving">Salvando...</string>
     <string name="transaction_deleting">Excluindo...</string>
+
+    <string name="email_verification_title">Verifique seu e-mail</string>
+    <string name="email_verification_subtitle">Enviamos um link de confirmação para o e-mail cadastrado. Clique no link para ativar sua conta.</string>
+    <string name="email_verification_resend">Reenviar e-mail</string>
+    <string name="email_verification_resending">Reenviando...</string>
+    <string name="email_verification_resent">E-mail reenviado! Verifique sua caixa de entrada.</string>
+    <string name="email_not_verified_title">E-mail não verificado</string>
+    <string name="email_not_verified_body">Confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.</string>
 
     <string-array name="transaction_types">
         <item>Receita</item>

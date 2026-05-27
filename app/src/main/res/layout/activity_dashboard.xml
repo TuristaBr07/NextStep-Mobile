@@ -116,7 +116,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
                     android:text="@string/dashboard_subheader_default"
-                    android:textColor="#D1FAE5"
+                    android:textColor="@color/ns_header_text_soft"
                     android:textSize="14sp"
                     app:layout_constraintTop_toBottomOf="@id/tvHeader"
                     app:layout_constraintStart_toEndOf="@id/cvAvatar"
@@ -325,7 +325,7 @@
                             android:textColor="@color/ns_text_secondary"
                             android:textSize="13sp"
                             android:textStyle="bold"
-                            tools:text="63% do limite • R$ 51.000,00 de R$ 81.000,00" />
+                            tools:text="63%% do limite • R$ 51.000,00 de R$ 81.000,00" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -372,18 +372,37 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvListaTitle"
+                <LinearLayout
+                    android:id="@+id/rowTransactionsHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="@string/dashboard_transactions_title"
-                    android:textColor="@color/ns_text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     app:layout_constraintTop_toBottomOf="@id/cardGraph"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintEnd_toEndOf="@id/guide_end" />
+                    app:layout_constraintEnd_toEndOf="@id/guide_end">
+
+                    <TextView
+                        android:id="@+id/tvListaTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/dashboard_transactions_title"
+                        android:textColor="@color/ns_text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvVerTodas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_see_all"
+                        android:textColor="@color/ns_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:padding="8dp" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvTransactions"
@@ -392,7 +411,7 @@
                     android:layout_marginTop="16dp"
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/item_transaction"
-                    app:layout_constraintTop_toBottomOf="@id/tvListaTitle"
+                    app:layout_constraintTop_toBottomOf="@id/rowTransactionsHeader"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_end" />
 

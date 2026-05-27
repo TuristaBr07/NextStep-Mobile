@@ -13,11 +13,11 @@
         android:background="@drawable/bg_dashboard_header"
         android:elevation="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_ai_brain"
+        app:navigationIcon="@drawable/ic_arrow_back"
         app:title="@string/chatbot_toolbar_title"
         app:subtitle="@string/chatbot_toolbar_subtitle"
         app:titleTextColor="@color/white"
-        app:subtitleTextColor="#D1FAE5" />
+        app:subtitleTextColor="@color/ns_header_text_soft" />
 
     <HorizontalScrollView
         android:id="@+id/scrollSuggestions"
@@ -107,7 +107,7 @@
         android:id="@+id/tvTypingIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Assistente est&#225; digitando..."
+        android:text="@string/chatbot_typing"
         android:textColor="@color/ns_primary"
         android:visibility="gone"
         android:padding="8dp"
