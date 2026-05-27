@@ -14,8 +14,8 @@
         android:elevation="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_ai_brain"
-        app:title="C&#233;rebro NextStep"
-        app:subtitle="Assistente Financeiro com IA"
+        app:title="@string/chatbot_toolbar_title"
+        app:subtitle="@string/chatbot_toolbar_subtitle"
         app:titleTextColor="@color/white"
         app:subtitleTextColor="#D1FAE5" />
 

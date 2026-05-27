@@ -43,6 +43,7 @@
     <string name="reports_summary_empty">Sem dados por categoria para exibir.</string>
 
     <string name="chatbot_toolbar_title">Assistente NextStep</string>
+    <string name="chatbot_toolbar_subtitle">Assistente Financeiro com IA</string>
     <string name="chatbot_empty_state">Comece a conversar com o assistente da NextStep.</string>
     <string name="chatbot_typing">Assistente digitando...</string>
     <string name="chatbot_message_hint">Digite sua mensagem</string>
