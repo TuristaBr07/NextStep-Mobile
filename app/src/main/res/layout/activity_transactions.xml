@@ -53,11 +53,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!--
-                CORRIGIDO: era EditText simples dentro de um LinearLayout manual.
-                Substituído por TextInputLayout com endIconMode="clear_text" para
-                botão de limpar, acessibilidade e estilo consistente com o resto do app.
-            -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilSearch"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -75,7 +70,7 @@
                 app:endIconMode="clear_text"
                 app:endIconTint="@color/ns_text_hint"
                 app:hintTextColor="@color/ns_text_secondary"
-                app:startIconDrawable="@android:drawable/ic_menu_search"
+                app:startIconDrawable="@drawable/ic_search"
                 app:startIconTint="@color/ns_text_hint">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -88,64 +83,66 @@
                     android:textColorHint="@color/ns_text_hint" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFilterType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                app:singleSelection="true"
+                app:selectionRequired="true">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterAll"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_filter_box"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:checked="true"
+                    android:text="Todos" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/transactions_filter_type"
-                        android:textColor="@color/ns_text_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <Spinner
-                        android:id="@+id/spinnerFilterType"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@android:color/transparent"
-                        android:entries="@array/filter_types" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterIncome"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_filter_box"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:text="@string/transaction_type_income" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/transactions_filter_category"
-                        android:textColor="@color/ns_text_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilterExpense"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transaction_type_expense" />
 
-                    <Spinner
-                        android:id="@+id/spinnerFilterCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@android:color/transparent" />
-                </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFilterCategory"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/transactions_filter_category"
+                app:boxBackgroundColor="@color/ns_surface"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxStrokeColor="@color/ns_border"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="@color/ns_text_secondary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/actvFilterCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="none"
+                    android:textColor="@color/ns_text_primary"
+                    android:textColorHint="@color/ns_text_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -195,17 +192,9 @@
                 android:padding="28dp"
                 android:visibility="gone">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="@string/transactions_empty_title"
-                    android:src="@android:drawable/ic_menu_info_details"
-                    app:tint="@color/ns_text_hint" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:text="@string/transactions_empty_title"
                     android:textColor="@color/ns_text_primary"
                     android:textSize="16sp"

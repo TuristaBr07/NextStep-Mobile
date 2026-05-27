@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -33,8 +34,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
-    private Spinner spinnerFilterType;
-    private Spinner spinnerFilterCategory;
+    private ChipGroup chipGroupFilterType;
+    private AutoCompleteTextView actvFilterCategory;
     private RecyclerView rvAllTransactions;
     private LinearLayout layoutEmptyState;
     private TextView tvResultsCount;
@@ -51,8 +52,8 @@ public class TransactionsActivity extends AppCompatActivity {
 
         tilSearch = findViewById(R.id.tilSearch);
         etSearch = findViewById(R.id.etSearch);
-        spinnerFilterType = findViewById(R.id.spinnerFilterType);
-        spinnerFilterCategory = findViewById(R.id.spinnerFilterCategory);
+        chipGroupFilterType = findViewById(R.id.chipGroupFilterType);
+        actvFilterCategory = findViewById(R.id.actvFilterCategory);
         rvAllTransactions = findViewById(R.id.rvAllTransactions);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
         tvResultsCount = findViewById(R.id.tvResultsCount);
@@ -122,13 +123,13 @@ public class TransactionsActivity extends AppCompatActivity {
                         }
                     }
 
-                    android.widget.ArrayAdapter<String> catAdapter = new android.widget.ArrayAdapter<>(
+                    ArrayAdapter<String> catAdapter = new ArrayAdapter<>(
                             TransactionsActivity.this,
-                            android.R.layout.simple_spinner_item,
+                            android.R.layout.simple_dropdown_item_1line,
                             categoryNames
                     );
-                    catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerFilterCategory.setAdapter(catAdapter);
+                    actvFilterCategory.setAdapter(catAdapter);
+                    actvFilterCategory.setText("Todas", false);
                 }
             }
 
@@ -157,27 +158,9 @@ public class TransactionsActivity extends AppCompatActivity {
             });
         }
 
-        spinnerFilterType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                applyFilters();
-            }
+        chipGroupFilterType.setOnCheckedStateChangeListener((group, checkedIds) -> applyFilters());
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spinnerFilterCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                applyFilters();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        actvFilterCategory.setOnItemClickListener((parent, view, position, id) -> applyFilters());
     }
 
     private void applyFilters() {
@@ -185,13 +168,20 @@ public class TransactionsActivity extends AppCompatActivity {
                 ? etSearch.getText().toString().toLowerCase().trim()
                 : "";
 
-        String typeFilter = spinnerFilterType.getSelectedItem() != null
-                ? spinnerFilterType.getSelectedItem().toString()
-                : "Todos";
+        int checkedChipId = chipGroupFilterType.getCheckedChipId();
+        String typeFilter;
+        if (checkedChipId == R.id.chipFilterIncome) {
+            typeFilter = getString(R.string.transaction_type_income);
+        } else if (checkedChipId == R.id.chipFilterExpense) {
+            typeFilter = getString(R.string.transaction_type_expense);
+        } else {
+            typeFilter = "Todos";
+        }
 
-        String categoryFilter = spinnerFilterCategory.getSelectedItem() != null
-                ? spinnerFilterCategory.getSelectedItem().toString()
+        String categoryFilter = (actvFilterCategory.getText() != null)
+                ? actvFilterCategory.getText().toString().trim()
                 : "Todas";
+        if (categoryFilter.isEmpty()) categoryFilter = "Todas";
 
         filteredTransactions.clear();
 
