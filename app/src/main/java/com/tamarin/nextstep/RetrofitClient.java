@@ -11,21 +11,14 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Cliente HTTP único do aplicativo.
- *
- * No emulador Android, 10.0.2.2 aponta para o localhost do computador.
- * Se você testar em celular físico, troque BASE_URL pelo IP da máquina onde
- * o backend Spring Boot estiver rodando, por exemplo: http://192.168.0.10:8081/.
- */
 public final class RetrofitClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:8081/";
+    private static final String BASE_URL = "https://back-endnextstep-production.up.railway.app/";
 
     private static Retrofit retrofit;
     private static NextStepApi api;
 
-    private RetrofitClient( ) {
+    private RetrofitClient() {
     }
 
     public static synchronized NextStepApi getApi() {
