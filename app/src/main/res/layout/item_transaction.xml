@@ -1,71 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="4dp"
-    android:paddingVertical="12dp">
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/ns_surface"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:rippleColor="@color/ns_primary_light"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
-        android:id="@+id/iconContainer"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="@string/transaction_icon_description" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="12dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvAmount"
-        app:layout_constraintStart_toEndOf="@id/iconContainer"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="14dp">
+
+        <LinearLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/transaction_icon_description" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvAmount"
+            app:layout_constraintStart_toEndOf="@id/iconContainer"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:letterSpacing="-0.01"
+                android:maxLines="1"
+                android:textColor="@color/ns_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/ns_text_secondary"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tvDescription"
+            android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:letterSpacing="-0.02"
             android:textColor="@color/ns_text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:letterSpacing="-0.01" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tvCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/ns_text_secondary"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/ns_text_primary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:letterSpacing="-0.02"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

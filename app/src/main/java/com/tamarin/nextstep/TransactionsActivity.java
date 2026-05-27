@@ -11,8 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,6 +41,7 @@ public class TransactionsActivity extends AppCompatActivity {
     private RecyclerView rvAllTransactions;
     private LinearLayout layoutEmptyState;
     private TextView tvResultsCount;
+    private SwipeRefreshLayout swipeRefreshTransactions;
 
     private TransactionAdapter adapter;
     private List<Transaction> allTransactions = new ArrayList<>();
@@ -57,6 +60,15 @@ public class TransactionsActivity extends AppCompatActivity {
         rvAllTransactions = findViewById(R.id.rvAllTransactions);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
         tvResultsCount = findViewById(R.id.tvResultsCount);
+        swipeRefreshTransactions = findViewById(R.id.swipeRefreshTransactions);
+
+        swipeRefreshTransactions.setColorSchemeColors(
+                ContextCompat.getColor(this, R.color.ns_primary)
+        );
+        swipeRefreshTransactions.setOnRefreshListener(() -> {
+            loadTransactions();
+            loadCategories();
+        });
 
         rvAllTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvAllTransactions.setHasFixedSize(true);
@@ -78,6 +90,7 @@ public class TransactionsActivity extends AppCompatActivity {
         RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                swipeRefreshTransactions.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     allTransactions = response.body();
                     applyFilters();
@@ -97,6 +110,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                swipeRefreshTransactions.setRefreshing(false);
                 Toast.makeText(TransactionsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
                 allTransactions.clear();
                 filteredTransactions.clear();

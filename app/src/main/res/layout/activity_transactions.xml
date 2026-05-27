@@ -38,187 +38,193 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshTransactions"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerContainer">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilSearch"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/transactions_search_hint"
-                app:boxBackgroundColor="@color/ns_surface"
-                app:boxCornerRadiusBottomEnd="14dp"
-                app:boxCornerRadiusBottomStart="14dp"
-                app:boxCornerRadiusTopEnd="14dp"
-                app:boxCornerRadiusTopStart="14dp"
-                app:boxStrokeColor="@color/ns_border"
-                app:boxStrokeWidth="1dp"
-                app:boxStrokeWidthFocused="2dp"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/ns_text_hint"
-                app:hintTextColor="@color/ns_text_secondary"
-                app:startIconDrawable="@drawable/ic_search"
-                app:startIconTint="@color/ns_text_hint">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:inputType="text"
-                    android:textColor="@color/ns_text_primary"
-                    android:textColorHint="@color/ns_text_hint" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupFilterType"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:singleSelection="true"
-                app:selectionRequired="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFilterAll"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Todos" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFilterIncome"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/transaction_type_income" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFilterExpense"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/transaction_type_expense" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilFilterCategory"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="@string/transactions_filter_category"
-                app:boxBackgroundColor="@color/ns_surface"
-                app:boxCornerRadiusBottomEnd="14dp"
-                app:boxCornerRadiusBottomStart="14dp"
-                app:boxCornerRadiusTopEnd="14dp"
-                app:boxCornerRadiusTopStart="14dp"
-                app:boxStrokeColor="@color/ns_border"
-                app:boxStrokeWidth="1dp"
-                app:boxStrokeWidthFocused="2dp"
-                app:hintTextColor="@color/ns_text_secondary">
-
-                <AutoCompleteTextView
-                    android:id="@+id/actvFilterCategory"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:inputType="none"
-                    android:textColor="@color/ns_text_primary"
-                    android:textColorHint="@color/ns_text_hint" />
-            </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvResultsTitle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/transactions_results_title"
-                    android:textColor="@color/ns_text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvResultsHint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/transactions_edit_hint"
-                    android:textColor="@color/ns_text_secondary"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvResultsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/transactions_results_count_default"
-                android:textColor="@color/ns_text_secondary"
-                android:textSize="13sp"
-                tools:text="8 transações encontradas" />
-
-            <LinearLayout
-                android:id="@+id/layoutEmptyState"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/bg_dashboard_card"
-                android:elevation="2dp"
-                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="28dp"
-                android:visibility="gone">
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilSearch"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/transactions_empty_title"
-                    android:textColor="@color/ns_text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:hint="@string/transactions_search_hint"
+                    app:boxBackgroundColor="@color/ns_surface"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxStrokeColor="@color/ns_border"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/ns_text_hint"
+                    app:hintTextColor="@color/ns_text_secondary"
+                    app:startIconDrawable="@drawable/ic_search"
+                    app:startIconTint="@color/ns_text_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:inputType="text"
+                        android:textColor="@color/ns_text_primary"
+                        android:textColorHint="@color/ns_text_hint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupFilterType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFilterAll"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Todos" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFilterIncome"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transaction_type_income" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFilterExpense"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transaction_type_expense" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFilterCategory"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/transactions_filter_category"
+                    app:boxBackgroundColor="@color/ns_surface"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxStrokeColor="@color/ns_border"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/ns_text_secondary">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvFilterCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:inputType="none"
+                        android:textColor="@color/ns_text_primary"
+                        android:textColorHint="@color/ns_text_hint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvResultsTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/transactions_results_title"
+                        android:textColor="@color/ns_text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvResultsHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transactions_edit_hint"
+                        android:textColor="@color/ns_text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvResultsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:gravity="center"
-                    android:text="@string/transactions_empty_subtitle"
+                    android:text="@string/transactions_results_count_default"
                     android:textColor="@color/ns_text_secondary"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    tools:text="8 transações encontradas" />
+
+                <LinearLayout
+                    android:id="@+id/layoutEmptyState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/bg_dashboard_card"
+                    android:elevation="2dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="28dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/transactions_empty_title"
+                        android:textColor="@color/ns_text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
+                        android:text="@string/transactions_empty_subtitle"
+                        android:textColor="@color/ns_text_secondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAllTransactions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_transaction" />
+
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvAllTransactions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_transaction" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
