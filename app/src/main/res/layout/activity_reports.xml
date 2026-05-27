@@ -100,7 +100,9 @@
                             android:layout_weight="1"
                             android:text="Todos"
                             android:textAllCaps="false"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
+                            android:textColor="@color/report_btn_text"
+                            app:backgroundTint="@color/report_btn_bg"
                             app:strokeColor="@color/ns_primary"
                             app:strokeWidth="1.5dp" />
 
@@ -112,7 +114,9 @@
                             android:layout_weight="1"
                             android:text="@string/transaction_type_income"
                             android:textAllCaps="false"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
+                            android:textColor="@color/report_btn_text"
+                            app:backgroundTint="@color/report_btn_bg"
                             app:strokeColor="@color/ns_primary"
                             app:strokeWidth="1.5dp" />
 
@@ -124,7 +128,9 @@
                             android:layout_weight="1"
                             android:text="@string/transaction_type_expense"
                             android:textAllCaps="false"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
+                            android:textColor="@color/report_btn_text"
+                            app:backgroundTint="@color/report_btn_bg"
                             app:strokeColor="@color/ns_primary"
                             app:strokeWidth="1.5dp" />
 

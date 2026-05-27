@@ -102,21 +102,36 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="Todos" />
+                        android:text="Todos"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFilterIncome"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/transaction_type_income" />
+                        android:text="@string/transaction_type_income"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFilterExpense"
                         style="@style/Widget.MaterialComponents.Chip.Filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/transaction_type_expense" />
+                        android:text="@string/transaction_type_expense"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
 
                 </com.google.android.material.chip.ChipGroup>
 

@@ -180,6 +180,8 @@
                     android:text="@string/transaction_type_income"
                     android:textAllCaps="false"
                     android:textSize="15sp"
+                    android:textColor="@color/report_btn_text"
+                    app:backgroundTint="@color/report_btn_bg"
                     app:strokeColor="@color/ns_primary"
                     app:strokeWidth="1.5dp" />
 
@@ -192,6 +194,8 @@
                     android:text="@string/transaction_type_expense"
                     android:textAllCaps="false"
                     android:textSize="15sp"
+                    android:textColor="@color/report_btn_text"
+                    app:backgroundTint="@color/report_btn_bg"
                     app:strokeColor="@color/ns_primary"
                     app:strokeWidth="1.5dp" />
 
