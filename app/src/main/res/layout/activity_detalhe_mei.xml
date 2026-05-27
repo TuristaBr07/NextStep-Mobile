@@ -3,38 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/ns_background"
     android:padding="24dp">
 
     <TextView
         android:id="@+id/tvDetalheNome"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/mei_detail_company_default"
-        android:textColor="#333333"
+        android:textColor="@color/ns_text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvDetalheCnpj"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/mei_detail_cnpj_default"
-        android:textColor="#757575"
+        android:textColor="@color/ns_text_secondary"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDetalheNome" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardMeiDetail"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:cardBackgroundColor="#F5F5F5"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/ns_surface"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDetalheCnpj">
 
@@ -42,13 +47,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/mei_detail_risk_title"
-                android:textColor="#333333"
+                android:textColor="@color/ns_text_primary"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -57,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/mei_detail_risk_default"
-                android:textColor="#D32F2F"
+                android:textColor="@color/ns_error"
                 android:textSize="20sp" />
 
             <TextView
@@ -65,18 +71,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/mei_detail_revenue_default" />
+                android:text="@string/mei_detail_revenue_default"
+                android:textColor="@color/ns_text_secondary"
+                android:textSize="14sp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnVoltar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="#000000"
         android:text="@string/mei_detail_back"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/ns_primary"
+        app:cornerRadius="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
