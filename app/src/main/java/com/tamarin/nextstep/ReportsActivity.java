@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +16,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -36,21 +35,20 @@ public class ReportsActivity extends AppCompatActivity {
     private static final int MAX_VISIBLE_CATEGORIES = 5;
     private static final Locale LOCALE_PT_BR = new Locale("pt", "BR");
 
-    private Spinner spinnerReportType;
+    private MaterialButtonToggleGroup toggleGroupReportType;
     private PieChart pieChart;
     private LinearLayout layoutCategorySummary;
     private TextView tvSummaryEmpty;
 
-    // Agora usamos o dado agrupado do servidor!
     private List<CategoryReport> reportData = new ArrayList<>();
 
     private final int[] chartColors = new int[]{
-            0xFF2E7D32, // verde escuro
-            0xFF1565C0, // azul
-            0xFFF9A825, // amarelo
-            0xFFD32F2F, // vermelho
-            0xFF8E24AA, // roxo
-            0xFF00897B  // teal
+            0xFF2E7D32,
+            0xFF1565C0,
+            0xFFF9A825,
+            0xFFD32F2F,
+            0xFF8E24AA,
+            0xFF00897B
     };
 
     @Override
@@ -58,25 +56,31 @@ public class ReportsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports);
 
-        spinnerReportType = findViewById(R.id.spinnerReportType);
+        toggleGroupReportType = findViewById(R.id.toggleGroupReportType);
         pieChart = findViewById(R.id.pieChartReports);
         layoutCategorySummary = findViewById(R.id.layoutCategorySummary);
         tvSummaryEmpty = findViewById(R.id.tvSummaryEmpty);
 
         setupChart();
 
-        spinnerReportType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        toggleGroupReportType.check(R.id.btnReportAll);
+        toggleGroupReportType.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
                 processChartData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
         loadReportData();
+    }
+
+    private String getSelectedTypeFilter() {
+        int checkedId = toggleGroupReportType.getCheckedButtonId();
+        if (checkedId == R.id.btnReportIncome) {
+            return getString(R.string.transaction_type_income);
+        } else if (checkedId == R.id.btnReportExpense) {
+            return getString(R.string.transaction_type_expense);
+        }
+        return "Todos";
     }
 
     private void setupChart() {
@@ -161,9 +165,7 @@ public class ReportsActivity extends AppCompatActivity {
             return;
         }
 
-        String typeFilter = spinnerReportType.getSelectedItem() != null
-                ? spinnerReportType.getSelectedItem().toString()
-                : "Todos";
+        String typeFilter = getSelectedTypeFilter();
 
         HashMap<String, Float> categoryTotals = new HashMap<>();
 
@@ -233,12 +235,6 @@ public class ReportsActivity extends AppCompatActivity {
         PieDataSet dataSet = new PieDataSet(finalEntries, "");
         dataSet.setSliceSpace(4f);
         dataSet.setSelectionShift(8f);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
-        dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
-        dataSet.setValueLinePart1Length(0f);
-        dataSet.setValueLinePart2Length(0f);
-        dataSet.setValueLineWidth(0f);
-        dataSet.setUsingSliceColorAsValueLineColor(false);
         dataSet.setColors(chartColors);
         dataSet.setDrawValues(false);
 
@@ -319,9 +315,7 @@ public class ReportsActivity extends AppCompatActivity {
         LinearLayout textBlock = new LinearLayout(this);
         textBlock.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams textBlockParams = new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
         );
         textBlock.setLayoutParams(textBlockParams);
 
@@ -364,9 +358,9 @@ public class ReportsActivity extends AppCompatActivity {
     }
 
     private String buildCenterText(String typeFilter) {
-        if ("Receita".equals(typeFilter)) {
+        if (getString(R.string.transaction_type_income).equals(typeFilter)) {
             return "Receitas por\ncategoria";
-        } else if ("Despesa".equals(typeFilter)) {
+        } else if (getString(R.string.transaction_type_expense).equals(typeFilter)) {
             return "Despesas por\ncategoria";
         }
         return "Total por\ncategoria";

@@ -9,7 +9,6 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextInputEditText etProfileName, etProfileCompany, etNewCatName;
     private TextInputLayout tilProfileName, tilProfileCompany, tilNewCatName;
     private Button btnSaveProfile, btnAddCat, btnLogout;
-    private Spinner spinnerCatType;
+    private MaterialButtonToggleGroup toggleGroupCatType;
     private ImageView ivAvatar;
     private TextView tvCategoryCount;
 
@@ -88,13 +88,15 @@ public class SettingsActivity extends AppCompatActivity {
         tilProfileCompany = findViewById(R.id.tilProfileCompany);
         tilNewCatName = findViewById(R.id.tilNewCatName);
 
-        spinnerCatType = findViewById(R.id.spinnerCatType);
+        toggleGroupCatType = findViewById(R.id.toggleGroupCatType);
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnAddCat = findViewById(R.id.btnAddCat);
         btnLogout = findViewById(R.id.btnLogout);
         rvCategoriesSettings = findViewById(R.id.rvCategoriesSettings);
         ivAvatar = findViewById(R.id.ivAvatar);
         tvCategoryCount = findViewById(R.id.tvCategoryCount);
+
+        toggleGroupCatType.check(R.id.btnCatIncome);
 
         rvCategoriesSettings.setLayoutManager(new LinearLayoutManager(this));
         rvCategoriesSettings.setHasFixedSize(true);
@@ -126,7 +128,6 @@ public class SettingsActivity extends AppCompatActivity {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.trim().isEmpty()) return;
 
-        // Reativado e removido o "eq."
         RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
@@ -195,7 +196,6 @@ public class SettingsActivity extends AppCompatActivity {
         Profile profileUpdate = new Profile(name, company);
         profileUpdate.setAvatar(currentAvatarBase64);
 
-        // Reativado e removido o "eq."
         RetrofitClient.getApi().updateProfile(userId, profileUpdate).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
@@ -249,7 +249,9 @@ public class SettingsActivity extends AppCompatActivity {
         clearCategoryErrors();
 
         String name = etNewCatName.getText() != null ? etNewCatName.getText().toString().trim() : "";
-        String type = spinnerCatType.getSelectedItem() != null ? spinnerCatType.getSelectedItem().toString() : "";
+        String type = toggleGroupCatType.getCheckedButtonId() == R.id.btnCatExpense
+                ? getString(R.string.transaction_type_expense)
+                : getString(R.string.transaction_type_income);
 
         if (name.isEmpty()) {
             tilNewCatName.setError("Informe o nome da categoria");
@@ -365,7 +367,6 @@ public class SettingsActivity extends AppCompatActivity {
         isSavingProfile = loading;
         btnSaveProfile.setEnabled(!loading);
         btnSaveProfile.setText(loading ? "Salvando..." : "Salvar perfil");
-
         etProfileName.setEnabled(!loading);
         etProfileCompany.setEnabled(!loading);
         ivAvatar.setEnabled(!loading);
@@ -375,9 +376,10 @@ public class SettingsActivity extends AppCompatActivity {
         isAddingCategory = loading;
         btnAddCat.setEnabled(!loading);
         btnAddCat.setText(loading ? "Adicionando..." : "Adicionar categoria");
-
         etNewCatName.setEnabled(!loading);
-        spinnerCatType.setEnabled(!loading);
+        for (int i = 0; i < toggleGroupCatType.getChildCount(); i++) {
+            toggleGroupCatType.getChildAt(i).setEnabled(!loading);
+        }
     }
 
     private void clearProfileErrors() {

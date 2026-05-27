@@ -48,12 +48,6 @@
                     app:cardCornerRadius="56dp"
                     app:cardElevation="4dp">
 
-                    <!--
-                        CORRIGIDO: era android:src="@drawable/logo_nextstep"
-                        O logo do produto não deve ser usado como avatar de usuário.
-                        Substitua pelo Glide/Picasso para carregar a foto real do usuário.
-                        O placeholder abaixo é o ícone genérico de pessoa do sistema.
-                    -->
                     <ImageView
                         android:id="@+id/ivAvatar"
                         android:layout_width="match_parent"
@@ -168,15 +162,39 @@
                 android:textColor="@color/ns_text_secondary"
                 android:textSize="13sp" />
 
-            <Spinner
-                android:id="@+id/spinnerCatType"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleGroupCatType"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_filter_box"
-                android:entries="@array/transaction_types"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCatIncome"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:text="@string/transaction_type_income"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    app:strokeColor="@color/ns_primary"
+                    app:strokeWidth="1.5dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCatExpense"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:text="@string/transaction_type_expense"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    app:strokeColor="@color/ns_primary"
+                    app:strokeWidth="1.5dp" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilNewCatName"
