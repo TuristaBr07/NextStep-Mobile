@@ -231,7 +231,9 @@
     <!-- Meta nas configurações -->
     <string name="settings_goal_title">Meta mensal de receita</string>
     <string name="settings_goal_subtitle">Defina quanto deseja faturar por mês. O progresso aparece no painel.</string>
-    <string name="settings_goal_hint">Valor da meta (ex: 5000.00)</string>
+    <string name="settings_goal_hint">Valor da meta (ex: 5.000,00)</string>
+    <string name="settings_categories_subtitle_short">Organize suas movimentações</string>
+    <string name="settings_goal_subtitle_short">Acompanhe no painel principal</string>
     <string name="settings_goal_save">Salvar meta</string>
     <string name="settings_goal_saved">Meta salva com sucesso!</string>
     <string name="settings_goal_cleared">Meta removida.</string>

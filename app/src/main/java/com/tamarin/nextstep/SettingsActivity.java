@@ -65,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                         Bitmap resizedImage = resizeBitmap(selectedImage, 400);
                         ivAvatar.setImageBitmap(resizedImage);
+                        ivAvatar.setImageTintList(null);
+                        ivAvatar.setPadding(0, 0, 0, 0);
                         currentAvatarBase64 = encodeImageToBase64(resizedImage);
 
                         Toast.makeText(this, "Foto pronta para salvar no perfil.", Toast.LENGTH_SHORT).show();
@@ -178,6 +180,8 @@ public class SettingsActivity extends AppCompatActivity {
                         Bitmap bitmap = decodeBase64ToBitmap(currentAvatarBase64);
                         if (bitmap != null) {
                             ivAvatar.setImageBitmap(bitmap);
+                            ivAvatar.setImageTintList(null);
+                            ivAvatar.setPadding(0, 0, 0, 0);
                         }
                     }
                 }
