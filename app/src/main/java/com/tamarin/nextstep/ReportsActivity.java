@@ -134,21 +134,21 @@ public class ReportsActivity extends AppCompatActivity {
                     reportData = response.body();
                     processChartData();
                 } else if (response.code() == 401) {
-                    Toast.makeText(ReportsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReportsActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     Intent intent = new Intent(ReportsActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(ReportsActivity.this, "Erro ao carregar relatórios.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReportsActivity.this, getString(R.string.error_load_reports), Toast.LENGTH_SHORT).show();
                     showEmptySummary();
                 }
             }
 
             @Override
             public void onFailure(Call<List<CategoryReport>> call, Throwable t) {
-                Toast.makeText(ReportsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReportsActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
                 showEmptySummary();
             }
         });

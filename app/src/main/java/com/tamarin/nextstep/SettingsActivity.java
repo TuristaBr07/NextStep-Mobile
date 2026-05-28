@@ -59,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
                         if (selectedImage == null) {
-                            Toast.makeText(this, "Não foi possível carregar a imagem.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.error_image_load), Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -69,9 +69,9 @@ public class SettingsActivity extends AppCompatActivity {
                         ivAvatar.setPadding(0, 0, 0, 0);
                         currentAvatarBase64 = encodeImageToBase64(resizedImage);
 
-                        Toast.makeText(this, "Foto pronta para salvar no perfil.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.photo_ready_to_save), Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        Toast.makeText(this, "Erro ao carregar a imagem", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error_image_load), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -189,7 +189,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
-                Toast.makeText(SettingsActivity.this, "Erro ao carregar perfil.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, getString(R.string.error_load_profile), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -203,12 +203,12 @@ public class SettingsActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (name.isEmpty()) {
-            tilProfileName.setError("Informe seu nome");
+            tilProfileName.setError(getString(R.string.error_name_required));
             hasError = true;
         }
 
         if (company.length() > 60) {
-            tilProfileCompany.setError("Use no máximo 60 caracteres");
+            tilProfileCompany.setError(getString(R.string.error_company_max_length));
             hasError = true;
         }
 
@@ -222,7 +222,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveProfile(String name, String company) {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.trim().isEmpty()) {
-            Toast.makeText(this, "Sessão inválida.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_session_invalid), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -237,20 +237,20 @@ public class SettingsActivity extends AppCompatActivity {
                 setProfileLoading(false);
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(SettingsActivity.this, "Perfil atualizado!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.profile_updated_success), Toast.LENGTH_SHORT).show();
                 } else if (response.code() == 401) {
-                    Toast.makeText(SettingsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "Erro ao atualizar perfil", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_update_profile), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
                 setProfileLoading(false);
-                Toast.makeText(SettingsActivity.this, "Falha de conexão ao salvar perfil.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_save_profile), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -265,7 +265,7 @@ public class SettingsActivity extends AppCompatActivity {
                     rvCategoriesSettings.setAdapter(adapter);
                     updateCategoryCount();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "Erro ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_loading_categories), Toast.LENGTH_SHORT).show();
                     categoryList.clear();
                     updateCategoryCount();
                 }
@@ -273,7 +273,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-                Toast.makeText(SettingsActivity.this, "Falha ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_loading_categories), Toast.LENGTH_SHORT).show();
                 categoryList.clear();
                 updateCategoryCount();
             }
@@ -289,12 +289,12 @@ public class SettingsActivity extends AppCompatActivity {
                 : getString(R.string.transaction_type_income);
 
         if (name.isEmpty()) {
-            tilNewCatName.setError("Informe o nome da categoria");
+            tilNewCatName.setError(getString(R.string.error_category_name_required));
             return;
         }
 
         if (name.length() < 2) {
-            tilNewCatName.setError("Use pelo menos 2 caracteres");
+            tilNewCatName.setError(getString(R.string.error_category_name_min));
             return;
         }
 
@@ -303,7 +303,7 @@ public class SettingsActivity extends AppCompatActivity {
                     && category.getType() != null
                     && category.getName().trim().equalsIgnoreCase(name)
                     && category.getType().trim().equalsIgnoreCase(type)) {
-                tilNewCatName.setError("Essa categoria já existe para esse tipo");
+                tilNewCatName.setError(getString(R.string.error_category_duplicate));
                 return;
             }
         }
@@ -314,7 +314,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void addCategory(String name, String type) {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.trim().isEmpty()) {
-            Toast.makeText(this, "Sessão inválida.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_session_invalid), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -333,30 +333,30 @@ public class SettingsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     etNewCatName.setText("");
                     loadCategories();
-                    Toast.makeText(SettingsActivity.this, "Categoria adicionada!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.category_added_success), Toast.LENGTH_SHORT).show();
                 } else if (response.code() == 401) {
-                    Toast.makeText(SettingsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "Erro ao adicionar categoria.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_add_category), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Category> call, Throwable t) {
                 setCategoryLoading(false);
-                Toast.makeText(SettingsActivity.this, "Falha de conexão ao adicionar categoria.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_add_category), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void confirmDeleteCategory(Category cat) {
         new AlertDialog.Builder(this)
-                .setTitle("Remover categoria")
-                .setMessage("Deseja remover a categoria \"" + cat.getName() + "\"?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Remover", (dialog, which) -> deleteCategory(cat))
+                .setTitle(getString(R.string.dialog_remove_category_title))
+                .setMessage(getString(R.string.dialog_remove_category_message, cat.getName()))
+                .setNegativeButton(getString(R.string.action_cancel), null)
+                .setPositiveButton(getString(R.string.action_remove), (dialog, which) -> deleteCategory(cat))
                 .show();
     }
 
@@ -366,29 +366,29 @@ public class SettingsActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     loadCategories();
-                    Toast.makeText(SettingsActivity.this, "Categoria removida!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.category_removed_success), Toast.LENGTH_SHORT).show();
                 } else if (response.code() == 401) {
-                    Toast.makeText(SettingsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "Erro ao remover categoria.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, getString(R.string.error_remove_category), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(SettingsActivity.this, "Falha de conexão ao remover categoria.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_remove_category), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void confirmLogout() {
         new AlertDialog.Builder(this)
-                .setTitle("Sair da conta")
-                .setMessage("Deseja realmente encerrar sua sessão?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Sair", (dialog, which) -> {
+                .setTitle(getString(R.string.dialog_logout_title))
+                .setMessage(getString(R.string.dialog_logout_message))
+                .setNegativeButton(getString(R.string.action_cancel), null)
+                .setPositiveButton(getString(R.string.settings_logout), (dialog, which) -> {
                     SessionManager.clear();
                     Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -401,7 +401,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void setProfileLoading(boolean loading) {
         isSavingProfile = loading;
         btnSaveProfile.setEnabled(!loading);
-        btnSaveProfile.setText(loading ? "Salvando..." : "Salvar perfil");
+        btnSaveProfile.setText(loading ? getString(R.string.profile_saving) : getString(R.string.settings_save_profile));
         etProfileName.setEnabled(!loading);
         etProfileCompany.setEnabled(!loading);
         ivAvatar.setEnabled(!loading);
@@ -410,7 +410,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void setCategoryLoading(boolean loading) {
         isAddingCategory = loading;
         btnAddCat.setEnabled(!loading);
-        btnAddCat.setText(loading ? "Adicionando..." : "Adicionar categoria");
+        btnAddCat.setText(loading ? getString(R.string.category_adding) : getString(R.string.settings_add_category));
         etNewCatName.setEnabled(!loading);
         for (int i = 0; i < toggleGroupCatType.getChildCount(); i++) {
             toggleGroupCatType.getChildAt(i).setEnabled(!loading);
@@ -431,11 +431,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         int count = categoryList != null ? categoryList.size() : 0;
         if (count == 0) {
-            tvCategoryCount.setText("Nenhuma categoria cadastrada");
+            tvCategoryCount.setText(getString(R.string.categories_empty));
         } else if (count == 1) {
-            tvCategoryCount.setText("1 categoria cadastrada");
+            tvCategoryCount.setText(getString(R.string.categories_count_single));
         } else {
-            tvCategoryCount.setText(count + " categorias cadastradas");
+            tvCategoryCount.setText(getString(R.string.categories_count_plural, count));
         }
     }
 

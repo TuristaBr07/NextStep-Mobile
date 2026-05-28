@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ── TextInputLayout base ──────────────────────────────── -->
+    <style name="NS.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/ns_surface_soft</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_md</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_md</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_md</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_md</item>
+        <item name="boxStrokeColor">@color/ns_primary</item>
+        <item name="boxStrokeWidth">@dimen/stroke_width</item>
+        <item name="boxStrokeWidthFocused">@dimen/stroke_width_focus</item>
+        <item name="hintTextColor">@color/ns_text_secondary</item>
+    </style>
+
+    <!-- TextInputLayout para telas de autenticação (raio maior) -->
+    <style name="NS.TextInput.Auth" parent="NS.TextInput">
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_lg</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_lg</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_lg</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_lg</item>
+    </style>
+
+    <!-- ── MaterialButton primário ───────────────────────────── -->
+    <style name="NS.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/ns_primary</item>
+        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/btn_height_md</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Botão primário para telas de autenticação (altura maior) -->
+    <style name="NS.Button.Primary.Auth" parent="NS.Button.Primary">
+        <item name="android:layout_height">@dimen/btn_height_xl</item>
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="cornerRadius">@dimen/radius_lg</item>
+    </style>
+
+    <!-- Botão de risco/perigo (outline vermelho) -->
+    <style name="NS.Button.Danger" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ns_error</item>
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textStyle">bold</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="iconTint">@color/ns_error</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">10dp</item>
+        <item name="iconSize">@dimen/icon_md</item>
+        <item name="rippleColor">@color/ns_error</item>
+    </style>
+
+    <!-- ── MaterialButton toggle (group) ─────────────────────── -->
+    <style name="NS.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/btn_height_sm</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:textColor">@color/report_btn_text</item>
+        <item name="backgroundTint">@color/report_btn_bg</item>
+        <item name="strokeColor">@color/ns_primary</item>
+        <item name="strokeWidth">@dimen/chip_stroke_width</item>
+    </style>
+
+    <!-- ── MaterialCardView padrão ───────────────────────────── -->
+    <style name="NS.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/ns_surface</item>
+        <item name="cardCornerRadius">@dimen/radius_xl</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <!-- Card da zona de risco/perigo (borda vermelha) -->
+    <style name="NS.Card.Danger" parent="NS.Card">
+        <item name="cardElevation">@dimen/elevation_none</item>
+        <item name="strokeColor">@color/ns_error</item>
+        <item name="strokeWidth">@dimen/stroke_width</item>
+    </style>
+
+    <!-- ── Títulos de página ──────────────────────────────────── -->
+    <style name="NS.Text.PageTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ns_text_primary</item>
+        <item name="android:textSize">@dimen/text_hero</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NS.Text.PageSubtitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ns_text_secondary</item>
+        <item name="android:textSize">@dimen/text_md</item>
+    </style>
+
+    <style name="NS.Text.SectionTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ns_text_primary</item>
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NS.Text.SectionSubtitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ns_text_secondary</item>
+        <item name="android:textSize">@dimen/text_xs</item>
+    </style>
+
+</resources>

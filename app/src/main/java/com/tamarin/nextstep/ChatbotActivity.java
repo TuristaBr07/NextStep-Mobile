@@ -122,10 +122,10 @@ public class ChatbotActivity extends AppCompatActivity {
 
     private void confirmClearChat() {
         new AlertDialog.Builder(this)
-                .setTitle("Limpar conversa")
-                .setMessage("Deseja apagar todo o histórico desta conversa?")
-                .setNegativeButton("Cancelar", null)
-                .setPositiveButton("Limpar", (dialog, which) -> clearChatHistory())
+                .setTitle(getString(R.string.dialog_clear_chat_title))
+                .setMessage(getString(R.string.dialog_clear_chat_message))
+                .setNegativeButton(getString(R.string.action_cancel), null)
+                .setPositiveButton(getString(R.string.action_clear), (dialog, which) -> clearChatHistory())
                 .show();
     }
 
@@ -138,7 +138,7 @@ public class ChatbotActivity extends AppCompatActivity {
         showTypingIndicator(false);
         updateEmptyState();
 
-        Toast.makeText(this, "Conversa limpa com sucesso.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.chat_cleared_success), Toast.LENGTH_SHORT).show();
     }
 
     private void sendMessage() {
@@ -147,7 +147,7 @@ public class ChatbotActivity extends AppCompatActivity {
                 : "";
 
         if (TextUtils.isEmpty(userText)) {
-            tilChatMessage.setError("Digite uma mensagem");
+            tilChatMessage.setError(getString(R.string.error_message_required));
             return;
         }
 
@@ -182,7 +182,7 @@ public class ChatbotActivity extends AppCompatActivity {
             public void onFailure(Call<ChatResponseDTO> call, Throwable t) {
                 setSendingState(false);
                 showTypingIndicator(false);
-                addBotMessage("Falha na rede ao contactar a IA: " + t.getMessage(), true);
+                addBotMessage(getString(R.string.error_ai_network, t.getMessage()), true);
             }
         });
     }

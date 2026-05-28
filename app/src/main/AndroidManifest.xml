@@ -16,7 +16,7 @@
         android:roundIcon="@drawable/logo_nextstep"
         android:supportsRtl="true"
         android:theme="@style/Theme.NextStep"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="false">
 
         <activity
             android:name=".OnboardingActivity"

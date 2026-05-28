@@ -1,6 +1,8 @@
 package com.tamarin.nextstep;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +24,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private TextView tvBackToLoginFromForgot;
 
     private boolean isLoading = false;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable pendingRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +105,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         */
 
         // Comportamento temporário: avisar o usuário e voltar para o login
-        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+        pendingRunnable = () -> {
             setLoading(false);
             UiUtils.showLongToast(
                     ForgotPasswordActivity.this,
-                    "Recuperação de senha em desenvolvimento no novo servidor."
+                    getString(R.string.forgot_in_development)
             );
             finish();
-        }, 1000); // Aguarda 1 segundo para simular o carregamento e não ser instantâneo demais
+        };
+        handler.postDelayed(pendingRunnable, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pendingRunnable != null) {
+            handler.removeCallbacks(pendingRunnable);
+        }
     }
 
     private void setLoading(boolean loading) {

@@ -254,7 +254,7 @@ public class DashboardActivity extends AppCompatActivity {
                     updateComparison(transactionList);
                     updateGoalCard();
                 } else if (response.code() == 401) {
-                    Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DashboardActivity.this, getString(R.string.error_session_expired_login_again), Toast.LENGTH_LONG).show();
                     SessionManager.clear();
                     Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -265,7 +265,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
-                Toast.makeText(DashboardActivity.this, "Sem conexão com internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DashboardActivity.this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
                 checkAndHideLoading();
             }
         });
@@ -286,13 +286,13 @@ public class DashboardActivity extends AppCompatActivity {
 
                     if (p.getFullName() != null && !p.getFullName().isEmpty()) {
                         String firstName = p.getFullName().split(" ")[0];
-                        tvHeader.setText("Olá, " + firstName + "!");
+                        tvHeader.setText(getString(R.string.dashboard_greeting_name, firstName));
                     }
 
                     if (p.getCompanyName() != null && !p.getCompanyName().isEmpty()) {
-                        tvSubHeader.setText("Visão financeira de " + p.getCompanyName());
+                        tvSubHeader.setText(getString(R.string.dashboard_company_subtitle, p.getCompanyName()));
                     } else {
-                        tvSubHeader.setText("Visão financeira do seu negócio");
+                        tvSubHeader.setText(getString(R.string.dashboard_subheader_default));
                     }
 
                     if (p.getAvatar() != null && !p.getAvatar().isEmpty()) {
@@ -354,7 +354,7 @@ public class DashboardActivity extends AppCompatActivity {
         int textSecondary = ContextCompat.getColor(this, R.color.ns_text_secondary);
         int border = ContextCompat.getColor(this, R.color.ns_border);
 
-        lineChart.setNoDataText("Sem dados para exibir no gráfico.");
+        lineChart.setNoDataText(getString(R.string.chart_no_data));
         lineChart.setNoDataTextColor(textSecondary);
         lineChart.getDescription().setEnabled(false);
         lineChart.setDrawGridBackground(false);

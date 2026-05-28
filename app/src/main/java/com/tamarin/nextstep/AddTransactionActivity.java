@@ -263,19 +263,19 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(AddTransactionActivity.this, "Transação salva com sucesso!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddTransactionActivity.this, getString(R.string.transaction_created_success), Toast.LENGTH_SHORT).show();
                     DashboardActivity.forceRefresh();
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(AddTransactionActivity.this, "Erro ao salvar: " + response.code(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddTransactionActivity.this, getString(R.string.error_save_transaction_code, response.code()), Toast.LENGTH_SHORT).show();
                     setLoading(false);
                 }
             }
 
             @Override
             public void onFailure(Call<Transaction> call, Throwable t) {
-                Toast.makeText(AddTransactionActivity.this, "Falha na rede: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, getString(R.string.error_network_save, t.getMessage()), Toast.LENGTH_SHORT).show();
                 setLoading(false);
             }
         });

@@ -107,11 +107,11 @@ public class TransactionsActivity extends AppCompatActivity {
                     allTransactions = response.body();
                     applyFilters();
                 } else if (response.code() == 401) {
-                    Toast.makeText(TransactionsActivity.this, "Sessão expirada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TransactionsActivity.this, getString(R.string.error_session_expired), Toast.LENGTH_SHORT).show();
                     SessionManager.clear();
                     finish();
                 } else {
-                    Toast.makeText(TransactionsActivity.this, "Erro ao carregar transações.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TransactionsActivity.this, getString(R.string.error_load_transactions), Toast.LENGTH_SHORT).show();
                     allTransactions.clear();
                     filteredTransactions.clear();
                     adapter.notifyDataSetChanged();
@@ -123,7 +123,7 @@ public class TransactionsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
                 swipeRefreshTransactions.setRefreshing(false);
-                Toast.makeText(TransactionsActivity.this, "Erro de conexão", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TransactionsActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
                 allTransactions.clear();
                 filteredTransactions.clear();
                 adapter.notifyDataSetChanged();
@@ -141,7 +141,7 @@ public class TransactionsActivity extends AppCompatActivity {
                     categories = response.body();
 
                     List<String> categoryNames = new ArrayList<>();
-                    categoryNames.add("Todas");
+                    categoryNames.add(getString(R.string.filter_category_all));
 
                     for (Category cat : categories) {
                         if (cat.getName() != null && !cat.getName().trim().isEmpty()) {
@@ -155,13 +155,13 @@ public class TransactionsActivity extends AppCompatActivity {
                             categoryNames
                     );
                     actvFilterCategory.setAdapter(catAdapter);
-                    actvFilterCategory.setText("Todas", false);
+                    actvFilterCategory.setText(getString(R.string.filter_category_all), false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-                Toast.makeText(TransactionsActivity.this, "Erro ao carregar categorias.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TransactionsActivity.this, getString(R.string.error_loading_categories), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -297,11 +297,11 @@ public class TransactionsActivity extends AppCompatActivity {
 
         int count = filteredTransactions.size();
         if (count == 0) {
-            tvResultsCount.setText("Nenhuma transação encontrada");
+            tvResultsCount.setText(getString(R.string.transactions_empty_title));
         } else if (count == 1) {
-            tvResultsCount.setText("1 transação encontrada");
+            tvResultsCount.setText(getString(R.string.transactions_count_single));
         } else {
-            tvResultsCount.setText(count + " transações encontradas");
+            tvResultsCount.setText(getString(R.string.transactions_count_plural, count));
         }
     }
 

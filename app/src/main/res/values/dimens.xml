@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ── Espaçamentos ──────────────────────────────────────── -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">20dp</dimen>
+    <dimen name="spacing_xxl">24dp</dimen>
+    <dimen name="spacing_huge">32dp</dimen>
+    <dimen name="spacing_section">18dp</dimen>
+
+    <!-- ── Padding de tela e cards ───────────────────────────── -->
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="guide_margin">24dp</dimen>
+    <dimen name="guide_margin_lg">32dp</dimen>
+
+    <!-- ── Raios de arredondamento ───────────────────────────── -->
+    <dimen name="radius_xs">3dp</dimen>
+    <dimen name="radius_sm">10dp</dimen>
+    <dimen name="radius_md">14dp</dimen>
+    <dimen name="radius_lg">16dp</dimen>
+    <dimen name="radius_xl">20dp</dimen>
+    <dimen name="radius_xxl">24dp</dimen>
+    <dimen name="radius_badge">15dp</dimen>
+    <dimen name="radius_circle">50dp</dimen>
+    <dimen name="radius_avatar">48dp</dimen>
+    <dimen name="radius_onboarding_btn">26dp</dimen>
+
+    <!-- ── Elevação ───────────────────────────────────────────── -->
+    <dimen name="elevation_none">0dp</dimen>
+    <dimen name="elevation_card">2dp</dimen>
+    <dimen name="elevation_card_md">3dp</dimen>
+    <dimen name="elevation_card_high">5dp</dimen>
+
+    <!-- ── Tamanhos de texto ──────────────────────────────────── -->
+    <dimen name="text_xs">12sp</dimen>
+    <dimen name="text_sm">13sp</dimen>
+    <dimen name="text_md">14sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_base">16sp</dimen>
+    <dimen name="text_lg">18sp</dimen>
+    <dimen name="text_xl">20sp</dimen>
+    <dimen name="text_title">22sp</dimen>
+    <dimen name="text_section">26sp</dimen>
+    <dimen name="text_hero">28sp</dimen>
+    <dimen name="text_display">36sp</dimen>
+
+    <!-- ── Altura de botões ───────────────────────────────────── -->
+    <dimen name="btn_height_sm">48dp</dimen>
+    <dimen name="btn_height_md">52dp</dimen>
+    <dimen name="btn_height_lg">56dp</dimen>
+    <dimen name="btn_height_xl">60dp</dimen>
+
+    <!-- ── Tamanhos de ícones ─────────────────────────────────── -->
+    <dimen name="icon_sm">16dp</dimen>
+    <dimen name="icon_md">20dp</dimen>
+    <dimen name="icon_lg">24dp</dimen>
+    <dimen name="icon_xl">40dp</dimen>
+    <dimen name="icon_onboarding">56dp</dimen>
+
+    <!-- ── Containers de seção/ícone ─────────────────────────── -->
+    <dimen name="section_icon_container">36dp</dimen>
+
+    <!-- ── Avatar ────────────────────────────────────────────── -->
+    <dimen name="avatar_size_sm">80dp</dimen>
+    <dimen name="avatar_size_md">84dp</dimen>
+    <dimen name="avatar_size_lg">96dp</dimen>
+    <dimen name="avatar_size_settings">100dp</dimen>
+    <dimen name="avatar_badge_size">30dp</dimen>
+    <dimen name="avatar_badge_icon">16dp</dimen>
+    <dimen name="avatar_placeholder_padding">20dp</dimen>
+
+    <!-- ── Stroke / borda ────────────────────────────────────── -->
+    <dimen name="stroke_width">1dp</dimen>
+    <dimen name="stroke_width_focus">2dp</dimen>
+    <dimen name="chip_stroke_width">1.5dp</dimen>
+
+    <!-- ── Componentes específicos ───────────────────────────── -->
+    <dimen name="chart_height">240dp</dimen>
+    <dimen name="pie_chart_height">260dp</dimen>
+    <dimen name="chat_bubble_max_width">280dp</dimen>
+    <dimen name="toolbar_height">72dp</dimen>
+    <dimen name="onboarding_icon_container">120dp</dimen>
+
+</resources>

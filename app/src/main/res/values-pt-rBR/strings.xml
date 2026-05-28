@@ -304,8 +304,6 @@
     <string name="error_remove_category">Erro ao remover categoria.</string>
     <string name="error_connection_remove_category">Falha de conexão ao remover categoria.</string>
     <string name="categories_empty">Nenhuma categoria cadastrada</string>
-    <string name="categories_count_single">1 categoria cadastrada</string>
-    <string name="categories_count_plural">%1$d categorias cadastradas</string>
     <string name="category_adding">Adicionando…</string>
 
     <!-- Configurações — sessão/logout -->
