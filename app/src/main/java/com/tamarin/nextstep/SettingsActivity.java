@@ -120,8 +120,39 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(v -> confirmLogout());
 
+        setupGoal();
         loadProfile();
         loadCategories();
+    }
+
+    private void setupGoal() {
+        com.google.android.material.textfield.TextInputEditText etGoal = findViewById(R.id.etGoal);
+        com.google.android.material.button.MaterialButton btnSaveGoal = findViewById(R.id.btnSaveGoal);
+        if (etGoal == null || btnSaveGoal == null) return;
+
+        float savedGoal = getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+                .getFloat("monthly_goal", 0f);
+        if (savedGoal > 0) {
+            etGoal.setText(String.format(java.util.Locale.getDefault(), "%.2f", savedGoal));
+        }
+
+        btnSaveGoal.setOnClickListener(v -> {
+            String raw = etGoal.getText() != null ? etGoal.getText().toString().trim() : "";
+            if (raw.isEmpty()) {
+                getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+                        .edit().remove("monthly_goal").apply();
+                Toast.makeText(this, getString(R.string.settings_goal_cleared), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                float goal = Float.parseFloat(raw.replace(",", "."));
+                getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+                        .edit().putFloat("monthly_goal", goal).apply();
+                Toast.makeText(this, getString(R.string.settings_goal_saved), Toast.LENGTH_SHORT).show();
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, getString(R.string.settings_goal_invalid), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadProfile() {

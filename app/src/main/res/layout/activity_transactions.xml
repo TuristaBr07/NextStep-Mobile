@@ -19,23 +19,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvTransactionsTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/transactions_title"
-            android:textColor="@color/ns_text_primary"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvTransactionsSubtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/transactions_subtitle"
-            android:textColor="@color/ns_text_secondary"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvTransactionsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transactions_title"
+                    android:textColor="@color/ns_text_primary"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTransactionsSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/transactions_subtitle"
+                    android:textColor="@color/ns_text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportCsv"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transactions_export"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                app:strokeColor="@color/ns_primary"
+                app:strokeWidth="1.5dp"
+                app:iconGravity="textStart"
+                app:icon="@drawable/ic_send"
+                app:iconSize="16dp"
+                app:iconTint="@color/ns_primary"
+                android:textColor="@color/ns_primary" />
+        </LinearLayout>
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -163,6 +193,53 @@
                         android:textColor="@color/ns_text_primary"
                         android:textColorHint="@color/ns_text_hint" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPeriodAll"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/period_all"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPeriodWeek"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/period_week"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPeriodMonth"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/period_month"
+                        android:textColor="@color/chip_filter_text"
+                        app:chipBackgroundColor="@color/chip_filter_bg"
+                        app:chipStrokeColor="@color/chip_filter_stroke"
+                        app:chipStrokeWidth="1.5dp"
+                        app:checkedIconTint="@android:color/white" />
+
+                </com.google.android.material.chip.ChipGroup>
 
                 <LinearLayout
                     android:layout_width="match_parent"

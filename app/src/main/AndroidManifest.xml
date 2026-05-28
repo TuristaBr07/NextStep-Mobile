@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".NextStepApp"
@@ -16,8 +19,20 @@
         android:usesCleartextTraffic="true">
 
         <activity
+            android:name=".OnboardingActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ChatbotActivity"
             android:exported="false" />
+
+        <receiver
+            android:name=".DasReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".DashboardActivity"

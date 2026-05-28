@@ -1,5 +1,6 @@
 package com.tamarin.nextstep;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.button.MaterialButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -23,6 +26,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,11 +41,13 @@ public class TransactionsActivity extends AppCompatActivity {
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
     private ChipGroup chipGroupFilterType;
+    private ChipGroup chipGroupPeriod;
     private AutoCompleteTextView actvFilterCategory;
     private RecyclerView rvAllTransactions;
     private LinearLayout layoutEmptyState;
     private TextView tvResultsCount;
     private SwipeRefreshLayout swipeRefreshTransactions;
+    private MaterialButton btnExportCsv;
 
     private TransactionAdapter adapter;
     private List<Transaction> allTransactions = new ArrayList<>();
@@ -56,7 +62,9 @@ public class TransactionsActivity extends AppCompatActivity {
         tilSearch = findViewById(R.id.tilSearch);
         etSearch = findViewById(R.id.etSearch);
         chipGroupFilterType = findViewById(R.id.chipGroupFilterType);
+        chipGroupPeriod = findViewById(R.id.chipGroupPeriod);
         actvFilterCategory = findViewById(R.id.actvFilterCategory);
+        btnExportCsv = findViewById(R.id.btnExportCsv);
         rvAllTransactions = findViewById(R.id.rvAllTransactions);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
         tvResultsCount = findViewById(R.id.tvResultsCount);
@@ -78,6 +86,10 @@ public class TransactionsActivity extends AppCompatActivity {
 
         setupFilters();
         loadCategories();
+
+        if (btnExportCsv != null) {
+            btnExportCsv.setOnClickListener(v -> exportCsv());
+        }
     }
 
     @Override
@@ -173,7 +185,9 @@ public class TransactionsActivity extends AppCompatActivity {
         }
 
         chipGroupFilterType.setOnCheckedStateChangeListener((group, checkedIds) -> applyFilters());
-
+        if (chipGroupPeriod != null) {
+            chipGroupPeriod.setOnCheckedStateChangeListener((group, checkedIds) -> applyFilters());
+        }
         actvFilterCategory.setOnItemClickListener((parent, view, position, id) -> applyFilters());
     }
 
@@ -197,6 +211,20 @@ public class TransactionsActivity extends AppCompatActivity {
                 : "Todas";
         if (categoryFilter.isEmpty()) categoryFilter = "Todas";
 
+        int periodChipId = chipGroupPeriod != null ? chipGroupPeriod.getCheckedChipId() : -1;
+        long periodStart = 0;
+        if (periodChipId == R.id.chipPeriodWeek) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0);
+            c.add(Calendar.DAY_OF_YEAR, -7);
+            periodStart = c.getTimeInMillis();
+        } else if (periodChipId == R.id.chipPeriodMonth) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, 1);
+            c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0);
+            periodStart = c.getTimeInMillis();
+        }
+
         filteredTransactions.clear();
 
         for (Transaction tx : allTransactions) {
@@ -208,7 +236,13 @@ public class TransactionsActivity extends AppCompatActivity {
             boolean matchType = typeFilter.equals("Todos") || type.equalsIgnoreCase(typeFilter);
             boolean matchCategory = categoryFilter.equals("Todas") || category.equalsIgnoreCase(categoryFilter);
 
-            if (matchText && matchType && matchCategory) {
+            boolean matchPeriod = true;
+            if (periodStart > 0) {
+                long txMs = parseDateToMillis(tx.getDate());
+                matchPeriod = txMs >= periodStart;
+            }
+
+            if (matchText && matchType && matchCategory && matchPeriod) {
                 filteredTransactions.add(tx);
             }
         }
@@ -269,6 +303,33 @@ public class TransactionsActivity extends AppCompatActivity {
         } else {
             tvResultsCount.setText(count + " transações encontradas");
         }
+    }
+
+    private void exportCsv() {
+        if (filteredTransactions.isEmpty()) {
+            Toast.makeText(this, getString(R.string.transactions_export_empty), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        StringBuilder csv = new StringBuilder("Data,Descrição,Tipo,Categoria,Valor (R$)\n");
+        for (Transaction tx : filteredTransactions) {
+            String date = tx.getDate() != null ? tx.getDate() : "";
+            String desc = tx.getDescription() != null ? tx.getDescription().replace(",", ";") : "";
+            String type = tx.getType() != null ? tx.getType() : "";
+            String cat = tx.getCategory() != null ? tx.getCategory().replace(",", ";") : "";
+            String amount = tx.getAmount() != null
+                    ? String.format(java.util.Locale.getDefault(), "%.2f", tx.getAmount())
+                    : "0.00";
+            csv.append(date).append(",")
+               .append(desc).append(",")
+               .append(type).append(",")
+               .append(cat).append(",")
+               .append(amount).append("\n");
+        }
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Transações NextStep");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, csv.toString());
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.transactions_export_share)));
     }
 
     private void updateEmptyState() {

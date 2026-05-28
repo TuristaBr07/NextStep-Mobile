@@ -269,6 +269,97 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
+                <!-- Comparativo mensal -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardComparison"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/ns_surface"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/rowKpis"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dashboard_comparison_title"
+                            android:textColor="@color/ns_text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dashboard_income_label"
+                                    android:textColor="@color/ns_text_secondary"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvComparisonIncomeChange"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/ns_success"
+                                    android:text="—" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/ns_border"
+                                android:layout_marginHorizontal="12dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/dashboard_expense_label"
+                                    android:textColor="@color/ns_text_secondary"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvComparisonExpenseChange"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/ns_error"
+                                    android:text="—" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardMei"
                     android:layout_width="0dp"
@@ -278,7 +369,7 @@
                     app:cardCornerRadius="20dp"
                     app:cardElevation="2dp"
                     app:strokeWidth="0dp"
-                    app:layout_constraintTop_toBottomOf="@id/rowKpis"
+                    app:layout_constraintTop_toBottomOf="@id/cardComparison"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_end">
 
@@ -329,6 +420,57 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Meta mensal -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardGoal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/ns_surface"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp"
+                    app:layout_constraintTop_toBottomOf="@id/cardMei"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/dashboard_goal_title"
+                            android:textColor="@color/ns_text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pbGoal"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp"
+                            android:layout_marginTop="14dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressTint="@color/ns_primary"
+                            android:progressBackgroundTint="@color/ns_border" />
+
+                        <TextView
+                            android:id="@+id/tvGoalAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/ns_text_secondary"
+                            android:textSize="13sp"
+                            android:text="—" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardGraph"
                     android:layout_width="0dp"
@@ -338,7 +480,7 @@
                     app:cardCornerRadius="24dp"
                     app:cardElevation="2dp"
                     app:strokeWidth="0dp"
-                    app:layout_constraintTop_toBottomOf="@id/cardMei"
+                    app:layout_constraintTop_toBottomOf="@id/cardGoal"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_end">
 

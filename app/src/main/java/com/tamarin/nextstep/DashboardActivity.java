@@ -32,9 +32,11 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -68,6 +70,10 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvSubHeader;
     private TextView tvMeiProgressValue;
     private TextView tvVerTodas;
+    private TextView tvComparisonIncomeChange;
+    private TextView tvComparisonExpenseChange;
+    private TextView tvGoalAmount;
+    private ProgressBar pbGoal;
 
     private ImageView ivLogo;
     private ProgressBar pbMeiLimit;
@@ -90,6 +96,10 @@ public class DashboardActivity extends AppCompatActivity {
         tvSubHeader = findViewById(R.id.tvSubHeader);
         tvMeiProgressValue = findViewById(R.id.tvMeiProgressValue);
         tvVerTodas = findViewById(R.id.tvVerTodas);
+        tvComparisonIncomeChange = findViewById(R.id.tvComparisonIncomeChange);
+        tvComparisonExpenseChange = findViewById(R.id.tvComparisonExpenseChange);
+        tvGoalAmount = findViewById(R.id.tvGoalAmount);
+        pbGoal = findViewById(R.id.pbGoal);
         ivLogo = findViewById(R.id.ivLogo);
         pbMeiLimit = findViewById(R.id.pbMeiLimit);
         lineChart = findViewById(R.id.lineChartDashboard);
@@ -117,6 +127,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         setupBottomNavigation();
         setupChartAppearance();
+        DasReminderReceiver.schedule(this);
     }
 
     @Override
@@ -240,6 +251,8 @@ public class DashboardActivity extends AppCompatActivity {
                     adapter = new TransactionAdapter(recentFive);
                     rvTransactions.setAdapter(adapter);
                     drawChart();
+                    updateComparison(transactionList);
+                    updateGoalCard();
                 } else if (response.code() == 401) {
                     Toast.makeText(DashboardActivity.this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_LONG).show();
                     SessionManager.clear();
@@ -329,13 +342,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         if (tvMeiProgressValue != null) {
             tvMeiProgressValue.setText(
-                    String.format(
-                            Locale.getDefault(),
-                            "%d%% do limite • %s de %s",
-                            progresso,
-                            formatCurrency(totalReceita),
-                            formatCurrency(LIMITE_MEI)
-                    )
+                    progresso + "% do limite • " + formatCurrency(totalReceita) + " de " + formatCurrency(LIMITE_MEI)
             );
         }
     }
@@ -452,8 +459,101 @@ public class DashboardActivity extends AppCompatActivity {
         lineChart.invalidate();
     }
 
+    private void updateComparison(List<Transaction> all) {
+        if (tvComparisonIncomeChange == null || tvComparisonExpenseChange == null) return;
+
+        Calendar now = Calendar.getInstance();
+        int curMonth = now.get(Calendar.MONTH);
+        int curYear = now.get(Calendar.YEAR);
+
+        Calendar prev = Calendar.getInstance();
+        prev.add(Calendar.MONTH, -1);
+        int prevMonth = prev.get(Calendar.MONTH);
+        int prevYear = prev.get(Calendar.YEAR);
+
+        double curIncome = 0, curExpense = 0, prevIncome = 0, prevExpense = 0;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        for (Transaction tx : all) {
+            if (tx.getDate() == null || tx.getAmount() == null) continue;
+            try {
+                Date d = sdf.parse(tx.getDate());
+                if (d == null) continue;
+                Calendar c = Calendar.getInstance();
+                c.setTime(d);
+                int m = c.get(Calendar.MONTH);
+                int y = c.get(Calendar.YEAR);
+                boolean income = tx.getType() != null &&
+                        (tx.getType().equalsIgnoreCase("Receita") || tx.getType().equalsIgnoreCase("income"));
+                if (y == curYear && m == curMonth) {
+                    if (income) curIncome += tx.getAmount();
+                    else curExpense += tx.getAmount();
+                } else if (y == prevYear && m == prevMonth) {
+                    if (income) prevIncome += tx.getAmount();
+                    else prevExpense += tx.getAmount();
+                }
+            } catch (ParseException ignored) {}
+        }
+
+        tvComparisonIncomeChange.setText(buildChangeText(curIncome, prevIncome));
+        tvComparisonIncomeChange.setTextColor(ContextCompat.getColor(this,
+                curIncome >= prevIncome ? R.color.ns_success : R.color.ns_error));
+
+        tvComparisonExpenseChange.setText(buildChangeText(curExpense, prevExpense));
+        tvComparisonExpenseChange.setTextColor(ContextCompat.getColor(this,
+                curExpense <= prevExpense ? R.color.ns_success : R.color.ns_error));
+    }
+
+    private String buildChangeText(double current, double previous) {
+        if (previous == 0) return formatCurrency(current) + " (novo)";
+        double pct = ((current - previous) / previous) * 100.0;
+        String arrow = pct >= 0 ? "↑" : "↓";
+        return String.format(Locale.getDefault(), "%s %.0f%% • %s",
+                arrow, Math.abs(pct), formatCurrency(current));
+    }
+
+    private void updateGoalCard() {
+        if (tvGoalAmount == null || pbGoal == null) return;
+        double goal = getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+                .getFloat("monthly_goal", 0f);
+
+        View cardGoal = findViewById(R.id.cardGoal);
+        if (cardGoal == null) return;
+
+        if (goal <= 0) {
+            cardGoal.setVisibility(View.GONE);
+            return;
+        }
+        cardGoal.setVisibility(View.VISIBLE);
+
+        Calendar now = Calendar.getInstance();
+        int curMonth = now.get(Calendar.MONTH);
+        int curYear = now.get(Calendar.YEAR);
+        double curIncome = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        for (Transaction tx : transactionList) {
+            if (tx.getDate() == null || tx.getAmount() == null) continue;
+            try {
+                Date d = sdf.parse(tx.getDate());
+                if (d == null) continue;
+                Calendar c = Calendar.getInstance();
+                c.setTime(d);
+                boolean income = tx.getType() != null &&
+                        (tx.getType().equalsIgnoreCase("Receita") || tx.getType().equalsIgnoreCase("income"));
+                if (c.get(Calendar.YEAR) == curYear && c.get(Calendar.MONTH) == curMonth && income) {
+                    curIncome += tx.getAmount();
+                }
+            } catch (ParseException ignored) {}
+        }
+
+        int pct = (int) Math.min(100, (curIncome / goal) * 100);
+        pbGoal.setProgress(pct);
+        tvGoalAmount.setText(String.format(Locale.getDefault(),
+                "%s de %s (%d%%)", formatCurrency(curIncome), formatCurrency(goal), pct));
+    }
+
     private String formatCurrency(double value) {
-        return String.format(Locale.getDefault(), "R$ %.2f", value);
+        return NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(value);
     }
 
     private String formatChartDate(String rawDate) {

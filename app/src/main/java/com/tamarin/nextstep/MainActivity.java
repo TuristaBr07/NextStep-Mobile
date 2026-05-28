@@ -35,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
 
         SessionManager.init(this);
 
+        boolean onboardingDone = getSharedPreferences(OnboardingActivity.PREFS_NAME, MODE_PRIVATE)
+                .getBoolean(OnboardingActivity.KEY_ONBOARDING_DONE, false);
+        if (!onboardingDone) {
+            startActivity(new Intent(this, OnboardingActivity.class));
+            finish();
+            return;
+        }
+
         if (SessionManager.hasSession()) {
             openDashboard();
             return;
