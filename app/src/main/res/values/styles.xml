@@ -85,7 +85,7 @@
     </style>
 
     <!-- ── Títulos de página ──────────────────────────────────── -->
-    <style name="NS.Text.PageTitle">
+    <style name="NS.Text.PageTitle" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/ns_text_primary</item>
@@ -93,14 +93,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="NS.Text.PageSubtitle">
+    <style name="NS.Text.PageSubtitle" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/ns_text_secondary</item>
         <item name="android:textSize">@dimen/text_md</item>
     </style>
 
-    <style name="NS.Text.SectionTitle">
+    <style name="NS.Text.SectionTitle" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/ns_text_primary</item>
@@ -108,7 +108,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="NS.Text.SectionSubtitle">
+    <style name="NS.Text.SectionSubtitle" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/ns_text_secondary</item>
