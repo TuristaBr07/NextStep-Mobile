@@ -49,6 +49,22 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean isSavingProfile = false;
     private boolean isAddingCategory = false;
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -161,9 +177,10 @@ public class SettingsActivity extends AppCompatActivity {
         String userId = SessionManager.getUserId();
         if (userId == null || userId.trim().isEmpty()) return;
 
-        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
+        track(RetrofitClient.getApi().getProfile(userId)).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     Profile p = response.body().get(0);
 
@@ -189,6 +206,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(SettingsActivity.this, getString(R.string.error_load_profile), Toast.LENGTH_SHORT).show();
             }
         });
@@ -231,9 +249,10 @@ public class SettingsActivity extends AppCompatActivity {
         Profile profileUpdate = new Profile(name, company);
         profileUpdate.setAvatar(currentAvatarBase64);
 
-        RetrofitClient.getApi().updateProfile(userId, profileUpdate).enqueue(new Callback<List<Profile>>() {
+        track(RetrofitClient.getApi().updateProfile(userId, profileUpdate)).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setProfileLoading(false);
 
                 if (response.isSuccessful()) {
@@ -249,6 +268,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setProfileLoading(false);
                 Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_save_profile), Toast.LENGTH_SHORT).show();
             }
@@ -256,9 +276,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        RetrofitClient.getApi().getCategories().enqueue(new Callback<List<Category>>() {
+        track(RetrofitClient.getApi().getCategories()).enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     categoryList = response.body();
                     adapter = new CategorySettingsAdapter(categoryList, cat -> confirmDeleteCategory(cat));
@@ -273,6 +294,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_loading_categories), Toast.LENGTH_SHORT).show();
                 categoryList.clear();
                 updateCategoryCount();
@@ -325,9 +347,10 @@ public class SettingsActivity extends AppCompatActivity {
         newCat.setType(type);
         newCat.setUserId(userId);
 
-        RetrofitClient.getApi().createCategory(newCat).enqueue(new Callback<Category>() {
+        track(RetrofitClient.getApi().createCategory(newCat)).enqueue(new Callback<Category>() {
             @Override
             public void onResponse(Call<Category> call, Response<Category> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setCategoryLoading(false);
 
                 if (response.isSuccessful()) {
@@ -345,6 +368,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Category> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setCategoryLoading(false);
                 Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_add_category), Toast.LENGTH_SHORT).show();
             }
@@ -361,9 +385,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void deleteCategory(Category cat) {
-        RetrofitClient.getApi().deleteCategory(Long.valueOf(String.valueOf(cat.getId()))).enqueue(new Callback<Void>() {
+        track(RetrofitClient.getApi().deleteCategory(Long.valueOf(String.valueOf(cat.getId())))).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful()) {
                     loadCategories();
                     Toast.makeText(SettingsActivity.this, getString(R.string.category_removed_success), Toast.LENGTH_SHORT).show();
@@ -378,6 +403,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(SettingsActivity.this, getString(R.string.error_connection_remove_category), Toast.LENGTH_SHORT).show();
             }
         });

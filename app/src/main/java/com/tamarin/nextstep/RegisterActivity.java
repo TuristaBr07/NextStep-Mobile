@@ -24,6 +24,22 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean isLoading = false;
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,15 +118,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         SignUpRequest request = new SignUpRequest(email, password, fullName);
 
-        RetrofitClient.getApi().register(request).enqueue(new Callback<Void>() {
+        track(RetrofitClient.getApi().register(request)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setLoading(false);
 
                 if (response.isSuccessful()) {
                     UiUtils.showLongToast(
                             RegisterActivity.this,
-                            "Conta criada com sucesso. Faça login e complete seu perfil em Configurações."
+                            getString(R.string.register_success_message)
                     );
                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                     finish();
@@ -125,6 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setLoading(false);
                 UiUtils.showLongToast(RegisterActivity.this, getString(R.string.connection_failure_check_internet));
             }

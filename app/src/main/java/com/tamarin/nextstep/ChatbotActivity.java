@@ -51,6 +51,23 @@ public class ChatbotActivity extends AppCompatActivity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Gson gson = new Gson();
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +94,7 @@ public class ChatbotActivity extends AppCompatActivity {
         restoreChatHistory();
 
         if (messages.isEmpty()) {
-            addBotMessage("Olá! Sou a Inteligência Artificial da NextStep.\n\nEstou conectado ao sistema e pronto para ajudar. Você pode me pedir para registrar despesas, receitas, ou tirar dúvidas sobre organização financeira!", false);
+            addBotMessage(getString(R.string.chatbot_greeting), false);
         }
 
         btnSendMessage.setOnClickListener(v -> sendMessage());
@@ -134,7 +151,7 @@ public class ChatbotActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         clearPersistedChatHistory();
 
-        addBotMessage("Histórico limpo! Como posso te ajudar agora?", true);
+        addBotMessage(getString(R.string.chatbot_history_cleared), true);
         showTypingIndicator(false);
         updateEmptyState();
 
@@ -164,9 +181,10 @@ public class ChatbotActivity extends AppCompatActivity {
 
         ChatRequestDTO requestDTO = new ChatRequestDTO(userText);
 
-        RetrofitClient.getApi().sendMessageToChatbot(requestDTO).enqueue(new Callback<ChatResponseDTO>() {
+        track(RetrofitClient.getApi().sendMessageToChatbot(requestDTO)).enqueue(new Callback<ChatResponseDTO>() {
             @Override
             public void onResponse(Call<ChatResponseDTO> call, Response<ChatResponseDTO> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setSendingState(false);
                 showTypingIndicator(false);
 
@@ -174,12 +192,13 @@ public class ChatbotActivity extends AppCompatActivity {
                     String reply = response.body().getReply();
                     addBotMessage(reply, true);
                 } else {
-                    addBotMessage("Houve um problema de comunicação com os servidores da NextStep (Erro " + response.code() + ").", true);
+                    addBotMessage(getString(R.string.chatbot_error_communication, response.code()), true);
                 }
             }
 
             @Override
             public void onFailure(Call<ChatResponseDTO> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setSendingState(false);
                 showTypingIndicator(false);
                 addBotMessage(getString(R.string.error_ai_network, t.getMessage()), true);

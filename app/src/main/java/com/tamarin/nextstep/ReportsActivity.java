@@ -42,6 +42,22 @@ public class ReportsActivity extends AppCompatActivity {
 
     private List<CategoryReport> reportData = new ArrayList<>();
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     private final int[] chartColors = new int[]{
             0xFF2E7D32,
             0xFF1565C0,
@@ -106,7 +122,7 @@ public class ReportsActivity extends AppCompatActivity {
         pieChart.setExtraLeftOffset(8f);
         pieChart.setExtraRightOffset(8f);
         pieChart.setMinAngleForSlices(4f);
-        pieChart.setNoDataText("Sem dados suficientes para montar o relatório.");
+        pieChart.setNoDataText(getString(R.string.reports_pie_no_data));
         pieChart.setNoDataTextColor(textSecondary);
 
         Legend legend = pieChart.getLegend();
@@ -127,9 +143,10 @@ public class ReportsActivity extends AppCompatActivity {
     }
 
     private void loadReportData() {
-        RetrofitClient.getApi().getCategoryReports().enqueue(new Callback<List<CategoryReport>>() {
+        track(RetrofitClient.getApi().getCategoryReports()).enqueue(new Callback<List<CategoryReport>>() {
             @Override
             public void onResponse(Call<List<CategoryReport>> call, Response<List<CategoryReport>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     reportData = response.body();
                     processChartData();
@@ -148,6 +165,7 @@ public class ReportsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<CategoryReport>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(ReportsActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
                 showEmptySummary();
             }
@@ -159,7 +177,7 @@ public class ReportsActivity extends AppCompatActivity {
 
         if (reportData == null || reportData.isEmpty()) {
             pieChart.clear();
-            pieChart.setCenterText("Sem dados");
+            pieChart.setCenterText(getString(R.string.reports_center_no_data));
             pieChart.invalidate();
             showEmptySummary();
             return;
@@ -359,11 +377,11 @@ public class ReportsActivity extends AppCompatActivity {
 
     private String buildCenterText(String typeFilter) {
         if (getString(R.string.transaction_type_income).equals(typeFilter)) {
-            return "Receitas por\ncategoria";
+            return getString(R.string.reports_center_income);
         } else if (getString(R.string.transaction_type_expense).equals(typeFilter)) {
-            return "Despesas por\ncategoria";
+            return getString(R.string.reports_center_expense);
         }
-        return "Total por\ncategoria";
+        return getString(R.string.reports_center_total);
     }
 
     private String formatCurrency(float value) {

@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Sincronizando dados..."
+            android:text="@string/loading_syncing"
             android:textColor="@color/ns_text_secondary"
             android:textSize="16sp"
             android:textStyle="bold" />

@@ -193,7 +193,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Já tem uma conta? "
+                    android:text="@string/register_have_account"
                     android:textColor="@color/ns_text_secondary"
                     android:textSize="15sp" />
 

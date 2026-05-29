@@ -40,6 +40,22 @@ public class AddTransactionActivity extends AppCompatActivity {
     private List<Category> categories = new ArrayList<>();
     private boolean isSaving = false;
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,9 +182,10 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        RetrofitClient.getApi().getCategories().enqueue(new Callback<List<Category>>() {
+        track(RetrofitClient.getApi().getCategories()).enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
                     updateCategoryDropdown();
@@ -183,6 +200,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(
                         AddTransactionActivity.this,
                         getString(R.string.error_connection_loading_categories),
@@ -283,9 +301,10 @@ public class AddTransactionActivity extends AppCompatActivity {
         transaction.setStatus(status);
         transaction.setUserId(SessionManager.getUserId());
 
-        RetrofitClient.getApi().createTransaction(transaction).enqueue(new Callback<Transaction>() {
+        track(RetrofitClient.getApi().createTransaction(transaction)).enqueue(new Callback<Transaction>() {
             @Override
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(AddTransactionActivity.this, getString(R.string.transaction_created_success), Toast.LENGTH_SHORT).show();
                     DashboardActivity.forceRefresh();
@@ -299,6 +318,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Transaction> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(AddTransactionActivity.this, getString(R.string.error_network_save, t.getMessage()), Toast.LENGTH_SHORT).show();
                 setLoading(false);
             }

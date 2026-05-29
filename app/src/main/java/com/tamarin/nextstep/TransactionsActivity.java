@@ -54,6 +54,22 @@ public class TransactionsActivity extends AppCompatActivity {
     private final List<Transaction> filteredTransactions = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,9 +115,10 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void loadTransactions() {
-        RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
+        track(RetrofitClient.getApi().getTransactions()).enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 swipeRefreshTransactions.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     allTransactions = response.body();
@@ -122,6 +139,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 swipeRefreshTransactions.setRefreshing(false);
                 Toast.makeText(TransactionsActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
                 allTransactions.clear();
@@ -134,9 +152,10 @@ public class TransactionsActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        RetrofitClient.getApi().getCategories().enqueue(new Callback<List<Category>>() {
+        track(RetrofitClient.getApi().getCategories()).enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
 
@@ -161,6 +180,7 @@ public class TransactionsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(TransactionsActivity.this, getString(R.string.error_loading_categories), Toast.LENGTH_SHORT).show();
             }
         });

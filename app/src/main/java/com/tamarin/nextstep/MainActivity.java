@@ -28,6 +28,22 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLoading = false;
     private CircularProgressDrawable progressDrawable;
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
 
         LoginRequest loginRequest = new LoginRequest(email, senha);
 
-        RetrofitClient.getApi().login(loginRequest).enqueue(new Callback<LoginResponse>() {
+        track(RetrofitClient.getApi().login(loginRequest)).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setLoading(false);
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -148,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setLoading(false);
                 Toast.makeText(
                         MainActivity.this,

@@ -14,30 +14,52 @@
         android:background="@drawable/bg_dashboard_header"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvAgendaTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:layout_marginStart="24dp"
-        android:text="@string/agenda_title"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
+    <ImageButton
+        android:id="@+id/btnAgendaBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginStart="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/action_back"
+        android:padding="12dp"
+        android:src="@drawable/ic_arrow_back"
+        android:tint="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:id="@+id/tvAgendaTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="24dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/agenda_title"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/btnAgendaBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnAgendaBack"
+        app:layout_constraintStart_toEndOf="@id/btnAgendaBack"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
         android:id="@+id/tvAgendaSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/agenda_subtitle"
         android:textColor="@color/ns_header_text_soft"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/tvAgendaTitle"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Tabs: A Pagar / A Receber -->
     <com.google.android.material.button.MaterialButtonToggleGroup

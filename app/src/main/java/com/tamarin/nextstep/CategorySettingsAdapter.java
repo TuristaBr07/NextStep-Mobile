@@ -40,13 +40,15 @@ public class CategorySettingsAdapter extends RecyclerView.Adapter<CategorySettin
 
         holder.tvCatName.setText(cat.getName());
 
-        boolean isIncome = "Receita".equalsIgnoreCase(cat.getType());
+        android.content.Context ctx = holder.itemView.getContext();
+        boolean isIncome = ctx.getString(R.string.transaction_type_income).equalsIgnoreCase(cat.getType());
         int accentColor = ContextCompat.getColor(
-                holder.itemView.getContext(),
+                ctx,
                 isIncome ? R.color.ns_success : R.color.ns_error
         );
 
-        holder.tvCatType.setText(isIncome ? "Receita" : "Despesa");
+        holder.tvCatType.setText(ctx.getString(
+                isIncome ? R.string.transaction_type_income : R.string.transaction_type_expense));
         holder.tvCatType.setTextColor(accentColor);
 
         GradientDrawable pill = new GradientDrawable();

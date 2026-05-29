@@ -98,7 +98,7 @@
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:text="Todos"
+                            android:text="@string/filter_type_all"
                             android:textAllCaps="false"
                             android:textSize="13sp"
                             android:textColor="@color/report_btn_text"

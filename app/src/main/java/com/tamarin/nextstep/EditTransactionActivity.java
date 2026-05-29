@@ -46,6 +46,22 @@ public class EditTransactionActivity extends AppCompatActivity {
     private String initialDate = "";
     private String initialStatus = "PAGO";
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,9 +199,10 @@ public class EditTransactionActivity extends AppCompatActivity {
     }
 
     private void loadCategories() {
-        RetrofitClient.getApi().getCategories().enqueue(new Callback<List<Category>>() {
+        track(RetrofitClient.getApi().getCategories()).enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     categories = response.body();
                     updateCategoryDropdown(getSelectedType());
@@ -200,6 +217,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(
                         EditTransactionActivity.this,
                         getString(R.string.error_connection_loading_categories),
@@ -307,9 +325,10 @@ public class EditTransactionActivity extends AppCompatActivity {
         // Preserva o status original (PAGO/PENDENTE) para não zerá-lo na edição.
         transaction.setStatus(initialStatus);
 
-        RetrofitClient.getApi().updateTransaction(transactionId, transaction).enqueue(new Callback<Transaction>() {
+        track(RetrofitClient.getApi().updateTransaction(transactionId, transaction)).enqueue(new Callback<Transaction>() {
             @Override
             public void onResponse(Call<Transaction> call, Response<Transaction> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setProcessing(false, true);
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -327,6 +346,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Transaction> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setProcessing(false, true);
                 Toast.makeText(EditTransactionActivity.this, getString(R.string.error_connection_generic), Toast.LENGTH_SHORT).show();
             }
@@ -350,9 +370,10 @@ public class EditTransactionActivity extends AppCompatActivity {
 
         setProcessing(true, false);
 
-        RetrofitClient.getApi().deleteTransaction(transactionId).enqueue(new Callback<Void>() {
+        track(RetrofitClient.getApi().deleteTransaction(transactionId)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
+                if (isFinishing() || isDestroyed()) return;
                 setProcessing(false, false);
 
                 if (response.isSuccessful()) {
@@ -383,6 +404,7 @@ public class EditTransactionActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 setProcessing(false, false);
                 Toast.makeText(
                         EditTransactionActivity.this,

@@ -32,6 +32,22 @@ public class AgendaActivity extends AppCompatActivity {
     private final List<Transaction> displayedItems = new ArrayList<>();
     private List<Transaction> allPending = new ArrayList<>();
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +57,11 @@ public class AgendaActivity extends AppCompatActivity {
         swipeAgenda = findViewById(R.id.swipeAgenda);
         rvAgendaItems = findViewById(R.id.rvAgendaItems);
         layoutAgendaEmpty = findViewById(R.id.layoutAgendaEmpty);
+
+        android.widget.ImageButton btnBack = findViewById(R.id.btnAgendaBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
 
         swipeAgenda.setColorSchemeColors(ContextCompat.getColor(this, R.color.ns_primary));
         swipeAgenda.setOnRefreshListener(this::loadPendingTransactions);
@@ -67,9 +88,10 @@ public class AgendaActivity extends AppCompatActivity {
     private void loadPendingTransactions() {
         swipeAgenda.setRefreshing(true);
 
-        RetrofitClient.getApi().getPendingTransactions().enqueue(new Callback<List<Transaction>>() {
+        track(RetrofitClient.getApi().getPendingTransactions()).enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 swipeAgenda.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     allPending = response.body();
@@ -88,6 +110,7 @@ public class AgendaActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 swipeAgenda.setRefreshing(false);
                 Toast.makeText(AgendaActivity.this, getString(R.string.error_connection_agenda), Toast.LENGTH_SHORT).show();
             }

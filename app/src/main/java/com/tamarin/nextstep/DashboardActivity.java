@@ -89,6 +89,22 @@ public class DashboardActivity extends AppCompatActivity {
     private double cachedReceita = 0;
     private double cachedDespesa = 0;
 
+    private final java.util.List<retrofit2.Call<?>> pendingCalls = new java.util.ArrayList<>();
+
+    private <T> retrofit2.Call<T> track(retrofit2.Call<T> call) {
+        pendingCalls.add(call);
+        return call;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (retrofit2.Call<?> c : pendingCalls) {
+            c.cancel();
+        }
+        pendingCalls.clear();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,9 +294,10 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void fetchSummary() {
-        RetrofitClient.getApi().getTransactionSummary().enqueue(new Callback<TransactionSummary>() {
+        track(RetrofitClient.getApi().getTransactionSummary()).enqueue(new Callback<TransactionSummary>() {
             @Override
             public void onResponse(Call<TransactionSummary> call, Response<TransactionSummary> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     updateKPIs(response.body());
                 }
@@ -289,15 +306,17 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TransactionSummary> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 checkAndHideLoading();
             }
         });
     }
 
     private void fetchTransactions() {
-        RetrofitClient.getApi().getTransactions().enqueue(new Callback<List<Transaction>>() {
+        track(RetrofitClient.getApi().getTransactions()).enqueue(new Callback<List<Transaction>>() {
             @Override
             public void onResponse(Call<List<Transaction>> call, Response<List<Transaction>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     transactionList = response.body();
 
@@ -327,6 +346,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Transaction>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 Toast.makeText(DashboardActivity.this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
                 checkAndHideLoading();
             }
@@ -340,9 +360,10 @@ public class DashboardActivity extends AppCompatActivity {
             return;
         }
 
-        RetrofitClient.getApi().getProfile(userId).enqueue(new Callback<List<Profile>>() {
+        track(RetrofitClient.getApi().getProfile(userId)).enqueue(new Callback<List<Profile>>() {
             @Override
             public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
+                if (isFinishing() || isDestroyed()) return;
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     Profile p = response.body().get(0);
 
@@ -369,6 +390,7 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Profile>> call, Throwable t) {
+                if (call.isCanceled() || isFinishing() || isDestroyed()) return;
                 checkAndHideLoading();
             }
         });
@@ -404,9 +426,12 @@ public class DashboardActivity extends AppCompatActivity {
         pbMeiLimit.setProgressTintList(ColorStateList.valueOf(progressColor));
 
         if (tvMeiProgressValue != null) {
-            tvMeiProgressValue.setText(
-                    progresso + "% do limite • " + formatCurrency(totalReceita) + " de " + formatCurrency(LIMITE_MEI)
-            );
+            tvMeiProgressValue.setText(getString(
+                    R.string.dashboard_mei_progress_format,
+                    progresso,
+                    formatCurrency(totalReceita),
+                    formatCurrency(LIMITE_MEI)
+            ));
         }
     }
 
@@ -495,7 +520,7 @@ public class DashboardActivity extends AppCompatActivity {
             index++;
         }
 
-        LineDataSet incomeSet = new LineDataSet(incomeEntries, "Receitas");
+        LineDataSet incomeSet = new LineDataSet(incomeEntries, getString(R.string.chart_label_income));
         incomeSet.setColor(ContextCompat.getColor(this, R.color.ns_success));
         incomeSet.setCircleColor(ContextCompat.getColor(this, R.color.ns_success));
         incomeSet.setLineWidth(2.4f);
@@ -503,7 +528,7 @@ public class DashboardActivity extends AppCompatActivity {
         incomeSet.setDrawValues(false);
         incomeSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 
-        LineDataSet expenseSet = new LineDataSet(expenseEntries, "Despesas");
+        LineDataSet expenseSet = new LineDataSet(expenseEntries, getString(R.string.chart_label_expense));
         expenseSet.setColor(ContextCompat.getColor(this, R.color.ns_error));
         expenseSet.setCircleColor(ContextCompat.getColor(this, R.color.ns_error));
         expenseSet.setLineWidth(2.4f);

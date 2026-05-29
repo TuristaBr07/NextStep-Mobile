@@ -253,6 +253,7 @@
     <!-- Ações genéricas -->
     <string name="action_clear">Limpar</string>
     <string name="action_remove">Remover</string>
+    <string name="action_back">Voltar</string>
 
     <!-- Dashboard -->
     <string name="dashboard_greeting_name">Olá, %1$s!</string>
@@ -325,6 +326,32 @@
     <string name="transaction_no_category">Sem categoria</string>
     <string name="transaction_icon_expense">Ícone de despesa</string>
     <string name="transaction_icon_income">Ícone de receita</string>
+
+    <!-- Strings extraídas do código (i18n) -->
+    <string name="register_success_message">Conta criada com sucesso. Faça login e complete seu perfil em Configurações.</string>
+    <string name="chatbot_greeting">Olá! Sou a Inteligência Artificial da NextStep.\n\nEstou conectado ao sistema e pronto para ajudar. Você pode me pedir para registrar despesas, receitas, ou tirar dúvidas sobre organização financeira!</string>
+    <string name="chatbot_history_cleared">Histórico limpo! Como posso te ajudar agora?</string>
+    <string name="chatbot_error_communication">Houve um problema de comunicação com os servidores da NextStep (Erro %1$d).</string>
+    <string name="reports_pie_no_data">Sem dados suficientes para montar o relatório.</string>
+    <string name="reports_center_no_data">Sem dados</string>
+    <string name="reports_center_income">Receitas por\ncategoria</string>
+    <string name="reports_center_expense">Despesas por\ncategoria</string>
+    <string name="reports_center_total">Total por\ncategoria</string>
+    <string name="chart_label_income">Receitas</string>
+    <string name="chart_label_expense">Despesas</string>
+    <string name="chart_no_date">Sem data</string>
+    <string name="dashboard_mei_progress_format">%1$d%% do limite • %2$s de %3$s</string>
+
+    <!-- Strings extraídas dos layouts (i18n) -->
+    <string name="loading_syncing">Sincronizando dados…</string>
+    <string name="register_have_account">Já tem uma conta? </string>
+    <string name="filter_type_all">Todos</string>
+    <string name="chatbot_suggestion_1">Gastei R$ 50 de gasolina</string>
+    <string name="chatbot_suggestion_2">Recebi R$ 500 de cliente</string>
+    <string name="chatbot_suggestion_3">Como está meu saldo?</string>
+    <string name="chatbot_suggestion_4">Dica financeira para MEI</string>
+    <string name="chatbot_empty_start">Inicie uma conversa!</string>
+    <string name="chatbot_input_hint">Descreva uma transação ou faça uma pergunta…</string>
 
     <!-- Agenda financeira (A Pagar / A Receber) -->
     <string name="agenda_title">Agenda</string>
