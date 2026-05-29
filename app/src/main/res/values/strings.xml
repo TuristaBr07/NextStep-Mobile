@@ -320,6 +320,12 @@
     <string name="transaction_status_paid">Pago</string>
     <string name="transaction_status_pending">Pendente</string>
 
+    <!-- Adapter de transações -->
+    <string name="transaction_no_description">Transação sem descrição</string>
+    <string name="transaction_no_category">Sem categoria</string>
+    <string name="transaction_icon_expense">Ícone de despesa</string>
+    <string name="transaction_icon_income">Ícone de receita</string>
+
     <!-- Agenda financeira (A Pagar / A Receber) -->
     <string name="agenda_title">Agenda</string>
     <string name="agenda_subtitle">Compromissos financeiros pendentes</string>

@@ -41,7 +41,11 @@ public final class RetrofitClient {
 
     private static OkHttpClient createHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        // Loga o corpo completo apenas em builds de desenvolvimento.
+        // Em produção fica desligado para não vazar token JWT e dados pessoais no logcat.
+        logging.setLevel(BuildConfig.DEBUG
+                ? HttpLoggingInterceptor.Level.BODY
+                : HttpLoggingInterceptor.Level.NONE);
 
         return new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)

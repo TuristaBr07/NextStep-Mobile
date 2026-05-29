@@ -42,13 +42,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction tx = list.get(position);
 
+        android.content.Context ctx = holder.itemView.getContext();
+
         String description = tx.getDescription() != null && !tx.getDescription().trim().isEmpty()
                 ? tx.getDescription()
-                : "Transação sem descrição";
+                : ctx.getString(R.string.transaction_no_description);
 
         String category = tx.getCategory() != null && !tx.getCategory().trim().isEmpty()
                 ? tx.getCategory()
-                : "Sem categoria";
+                : ctx.getString(R.string.transaction_no_category);
 
         String date = formatDate(tx.getDate());
         Double amount = tx.getAmount() != null ? tx.getAmount() : 0.0;
@@ -58,6 +60,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvCategory.setText(category + " • " + date);
         holder.tvAmount.setText(formatCurrency(amount));
 
+        boolean isPending = tx.getStatus() != null && tx.getStatus().equalsIgnoreCase("PENDENTE");
+        holder.tvStatusBadge.setVisibility(isPending ? View.VISIBLE : View.GONE);
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EditTransactionActivity.class);
             intent.putExtra("EXTRA_ID", tx.getId());
@@ -66,6 +71,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             intent.putExtra("EXTRA_TYPE", tx.getType());
             intent.putExtra("EXTRA_CATEGORY", tx.getCategory());
             intent.putExtra("EXTRA_DATE", tx.getDate());
+            intent.putExtra("EXTRA_STATUS", tx.getStatus());
             v.getContext().startActivity(intent);
         });
 
@@ -83,7 +89,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvAmount.setTextColor(amountColor);
         holder.ivIcon.setImageResource(isExpense ? R.drawable.ic_expense : R.drawable.ic_income);
         holder.ivIcon.setColorFilter(amountColor);
-        holder.ivIcon.setContentDescription(isExpense ? "Ícone de despesa" : "Ícone de receita");
+        holder.ivIcon.setContentDescription(ctx.getString(
+                isExpense ? R.string.transaction_icon_expense : R.string.transaction_icon_income));
 
         GradientDrawable bg = new GradientDrawable();
         bg.setShape(GradientDrawable.OVAL);
@@ -137,7 +144,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDescription, tvCategory, tvAmount;
+        TextView tvDescription, tvCategory, tvAmount, tvStatusBadge;
         ImageView ivIcon;
         LinearLayout iconContainer;
 
@@ -146,6 +153,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvAmount = itemView.findViewById(R.id.tvAmount);
+            tvStatusBadge = itemView.findViewById(R.id.tvStatusBadge);
             ivIcon = itemView.findViewById(R.id.ivIcon);
             iconContainer = itemView.findViewById(R.id.iconContainer);
         }

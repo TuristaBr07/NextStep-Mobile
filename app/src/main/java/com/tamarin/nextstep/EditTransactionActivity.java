@@ -41,9 +41,10 @@ public class EditTransactionActivity extends AppCompatActivity {
     private boolean isProcessing = false;
 
     private Long transactionId;
-    private String initialType = "Receita";
+    private String initialType;
     private String initialCategory = "";
     private String initialDate = "";
+    private String initialStatus = "PAGO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,10 +161,12 @@ public class EditTransactionActivity extends AppCompatActivity {
             String type = getIntent().getStringExtra("EXTRA_TYPE");
             String category = getIntent().getStringExtra("EXTRA_CATEGORY");
             String date = getIntent().getStringExtra("EXTRA_DATE");
+            String status = getIntent().getStringExtra("EXTRA_STATUS");
 
             initialType = type != null ? type : getString(R.string.transaction_type_income);
             initialCategory = category != null ? category : "";
             initialDate = formatDateForDisplay(date);
+            initialStatus = status != null && !status.trim().isEmpty() ? status : "PAGO";
 
             etDescription.setText(desc != null ? desc : "");
             etAmount.setText(amount != null ? String.valueOf(amount).replace(".", ",") : "");
@@ -301,6 +304,8 @@ public class EditTransactionActivity extends AppCompatActivity {
                 ? actvCategory.getText().toString().trim()
                 : getString(R.string.no_category));
         transaction.setDate(formatDateToApi(dateText));
+        // Preserva o status original (PAGO/PENDENTE) para não zerá-lo na edição.
+        transaction.setStatus(initialStatus);
 
         RetrofitClient.getApi().updateTransaction(transactionId, transaction).enqueue(new Callback<Transaction>() {
             @Override

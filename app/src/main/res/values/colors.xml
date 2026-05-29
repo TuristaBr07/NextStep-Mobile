@@ -26,6 +26,8 @@
     <color name="ns_error_light">#FEE2E2</color>
     <color name="ns_success">#10B981</color>
     <color name="ns_success_light">#D1FAE5</color>
+    <color name="ns_warning">#B45309</color>
+    <color name="ns_warning_light">#FEF3C7</color>
 
     <color name="colorTextSecondary">#475569</color>
 

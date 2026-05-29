@@ -52,8 +52,11 @@ public class DashboardActivity extends AppCompatActivity {
 
     private static final double LIMITE_MEI = 81000.0;
 
-    private static long lastFetchTime = 0;
+    private long lastFetchTime = 0;
     private static final long CACHE_EXPIRATION_MS = 30000;
+
+    // Sinal cross-activity (ex.: após salvar transação) para forçar recarga.
+    private static volatile boolean forceRefreshRequested = false;
 
     private LinearLayout layoutLoading;
     private NestedScrollView scrollDashboard;
@@ -146,7 +149,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         long currentTime = System.currentTimeMillis();
 
-        if (transactionList.isEmpty() || (currentTime - lastFetchTime > CACHE_EXPIRATION_MS)) {
+        if (forceRefreshRequested || transactionList.isEmpty()
+                || (currentTime - lastFetchTime > CACHE_EXPIRATION_MS)) {
+            forceRefreshRequested = false;
             pendingRequests = 3;
             showLoading();
 
@@ -164,7 +169,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     public static void forceRefresh() {
-        lastFetchTime = 0;
+        forceRefreshRequested = true;
     }
 
     private void triggerRefresh() {
@@ -643,8 +648,26 @@ public class DashboardActivity extends AppCompatActivity {
     private Bitmap decodeBase64ToBitmap(String b64) {
         try {
             byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-        } catch (Exception e) {
+
+            // Mede as dimensões sem alocar a bitmap inteira na memória.
+            BitmapFactory.Options bounds = new BitmapFactory.Options();
+            bounds.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length, bounds);
+
+            // Reduz a amostragem para um avatar de no máximo ~256px,
+            // evitando OutOfMemoryError com fotos grandes.
+            final int target = 256;
+            int sample = 1;
+            int halfW = bounds.outWidth / 2;
+            int halfH = bounds.outHeight / 2;
+            while (halfW / sample >= target || halfH / sample >= target) {
+                sample *= 2;
+            }
+
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inSampleSize = sample;
+            return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length, opts);
+        } catch (Exception | OutOfMemoryError e) {
             return null;
         }
     }
