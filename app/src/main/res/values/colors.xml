@@ -19,7 +19,7 @@
     <color name="ns_surface_soft">#F1F5F9</color>
     <color name="ns_text_primary">#0F172A</color>
     <color name="ns_text_secondary">#475569</color>
-    <color name="ns_text_hint">#94A3B8</color>
+    <color name="ns_text_hint">#64748B</color>
 
     <color name="ns_border">#E2E8F0</color>
     <color name="ns_error">#EF4444</color>
@@ -33,6 +33,6 @@
 
     <color name="ns_nav_active">#10B981</color>
     <color name="ns_nav_inactive">#94A3B8</color>
-    <color name="ns_header_text_soft">#D1FAE5</color>
+    <color name="ns_header_text_soft">#E6F9F1</color>
     <color name="ns_bubble_bot">#DCE8F8</color>
 </resources>

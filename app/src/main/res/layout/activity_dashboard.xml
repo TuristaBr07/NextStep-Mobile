@@ -91,6 +91,7 @@
                         android:id="@+id/ivLogo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="@string/dashboard_logo_description"
                         android:scaleType="centerCrop"
                         android:src="@drawable/logo_nextstep" />
                 </com.google.android.material.card.MaterialCardView>
@@ -100,6 +101,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/dashboard_header_default"
                     android:textColor="@color/white"
                     android:textSize="22sp"
@@ -128,6 +132,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/dashboard_subheader_default"
                     android:textColor="@color/ns_header_text_soft"
                     android:textSize="14sp"
@@ -180,6 +186,8 @@
                             android:id="@+id/tvSaldo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
                             android:text="@string/currency_zero"
                             android:textColor="@color/ns_text_primary"
                             android:textSize="36sp"
@@ -231,6 +239,7 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_add"
+                                android:importantForAccessibility="no"
                                 android:tint="@color/ns_success" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -267,6 +276,7 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_remove"
+                                android:importantForAccessibility="no"
                                 android:tint="@color/ns_error" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -303,6 +313,7 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_clock"
+                                android:importantForAccessibility="no"
                                 android:tint="@color/ns_primary" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -339,6 +350,7 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_nav_chatbot"
+                                android:importantForAccessibility="no"
                                 android:tint="@color/ns_secondary" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -394,6 +406,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:text="@string/currency_zero"
                                 android:textColor="@color/ns_success"
                                 android:textSize="20sp"
@@ -431,6 +445,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:text="@string/currency_zero"
                                 android:textColor="@color/ns_error"
                                 android:textSize="20sp"

@@ -45,11 +45,12 @@
 
         <ImageView
             android:id="@+id/ivDeleteCat"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/category_delete_description"
-            android:padding="2dp"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_delete"
             app:tint="@color/ns_error" />
 
