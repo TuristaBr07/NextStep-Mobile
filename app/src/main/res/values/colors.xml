@@ -23,7 +23,9 @@
 
     <color name="ns_border">#E2E8F0</color>
     <color name="ns_error">#EF4444</color>
+    <color name="ns_error_light">#FEE2E2</color>
     <color name="ns_success">#10B981</color>
+    <color name="ns_success_light">#D1FAE5</color>
 
     <color name="colorTextSecondary">#475569</color>
 

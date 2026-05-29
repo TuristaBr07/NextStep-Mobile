@@ -31,6 +31,7 @@ import retrofit2.Response;
 public class AddTransactionActivity extends AppCompatActivity {
 
     private MaterialButtonToggleGroup toggleGroupType;
+    private MaterialButtonToggleGroup toggleGroupStatus;
     private AutoCompleteTextView actvCategory;
     private TextInputEditText etDescription, etAmount, etDate;
     private TextInputLayout tilCategory, tilDescription, tilAmount, tilDate;
@@ -45,6 +46,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_transaction);
 
         toggleGroupType = findViewById(R.id.toggleGroupType);
+        toggleGroupStatus = findViewById(R.id.toggleGroupStatus);
         actvCategory = findViewById(R.id.actvCategory);
         etDescription = findViewById(R.id.etDescription);
         etAmount = findViewById(R.id.etAmount);
@@ -56,7 +58,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         btnSaveTransaction = findViewById(R.id.btnSaveTransaction);
 
         setupTypeToggle();
+        setupStatusToggle();
         setupDateField();
+        applyPresetType();
         loadCategories();
 
         btnSaveTransaction.setOnClickListener(v -> {
@@ -73,6 +77,25 @@ public class AddTransactionActivity extends AppCompatActivity {
                 updateCategoryDropdown();
             }
         });
+    }
+
+    private void applyPresetType() {
+        String preset = getIntent().getStringExtra("preset_type");
+        if ("expense".equals(preset)) {
+            toggleGroupType.check(R.id.btnTypeExpense);
+        } else {
+            toggleGroupType.check(R.id.btnTypeIncome);
+        }
+    }
+
+    private void setupStatusToggle() {
+        toggleGroupStatus.check(R.id.btnStatusPaid);
+    }
+
+    private String getSelectedStatus() {
+        return toggleGroupStatus.getCheckedButtonId() == R.id.btnStatusPending
+                ? "PENDENTE"
+                : "PAGO";
     }
 
     private void setupDateField() {
@@ -245,10 +268,10 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        saveTransaction(type, category, description, amountText, dateText);
+        saveTransaction(type, category, description, amountText, dateText, getSelectedStatus());
     }
 
-    private void saveTransaction(String type, String category, String description, String amountText, String dateText) {
+    private void saveTransaction(String type, String category, String description, String amountText, String dateText, String status) {
         setLoading(true);
 
         Transaction transaction = new Transaction();
@@ -257,6 +280,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         transaction.setDescription(description);
         transaction.setAmount(Double.parseDouble(amountText.replace(",", ".")));
         transaction.setDate(formatDateToApi(dateText));
+        transaction.setStatus(status);
         transaction.setUserId(SessionManager.getUserId());
 
         RetrofitClient.getApi().createTransaction(transaction).enqueue(new Callback<Transaction>() {
@@ -292,6 +316,9 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         for (int i = 0; i < toggleGroupType.getChildCount(); i++) {
             toggleGroupType.getChildAt(i).setEnabled(!loading);
+        }
+        for (int i = 0; i < toggleGroupStatus.getChildCount(); i++) {
+            toggleGroupStatus.getChildAt(i).setEnabled(!loading);
         }
         actvCategory.setEnabled(!loading);
         etDescription.setEnabled(!loading);

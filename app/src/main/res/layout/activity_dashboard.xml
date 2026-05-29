@@ -107,7 +107,20 @@
                     android:letterSpacing="-0.02"
                     app:layout_constraintTop_toTopOf="@id/cvAvatar"
                     app:layout_constraintStart_toEndOf="@id/cvAvatar"
-                    app:layout_constraintEnd_toEndOf="@id/guide_end" />
+                    app:layout_constraintEnd_toStartOf="@id/btnToggleBalance" />
+
+                <ImageButton
+                    android:id="@+id/btnToggleBalance"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/content_desc_toggle_balance"
+                    android:src="@drawable/ic_eye"
+                    android:tint="@color/white"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toTopOf="@id/cvAvatar"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end"
+                    app:layout_constraintBottom_toBottomOf="@id/cvAvatar" />
 
                 <TextView
                     android:id="@+id/tvSubHeader"
@@ -183,6 +196,164 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Quick Actions Row -->
+                <LinearLayout
+                    android:id="@+id/rowQuickActions"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/cardSaldo"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end">
+
+                    <!-- Nova Receita -->
+                    <LinearLayout
+                        android:id="@+id/quickActionIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="8dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="28dp"
+                            app:cardBackgroundColor="@color/ns_success_light"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="0dp">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_add"
+                                android:tint="@color/ns_success" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/quick_action_income"
+                            android:textColor="@color/ns_text_secondary"
+                            android:textSize="11sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Nova Despesa -->
+                    <LinearLayout
+                        android:id="@+id/quickActionExpense"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="8dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="28dp"
+                            app:cardBackgroundColor="@color/ns_error_light"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="0dp">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_remove"
+                                android:tint="@color/ns_error" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/quick_action_expense"
+                            android:textColor="@color/ns_text_secondary"
+                            android:textSize="11sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Agenda -->
+                    <LinearLayout
+                        android:id="@+id/quickActionAgenda"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="8dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="28dp"
+                            app:cardBackgroundColor="@color/ns_primary_light"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="0dp">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_clock"
+                                android:tint="@color/ns_primary" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/quick_action_agenda"
+                            android:textColor="@color/ns_text_secondary"
+                            android:textSize="11sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Chat IA -->
+                    <LinearLayout
+                        android:id="@+id/quickActionAI"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="8dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="28dp"
+                            app:cardBackgroundColor="@color/ns_secondary_light"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="0dp">
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_nav_chatbot"
+                                android:tint="@color/ns_secondary" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="@string/quick_action_ai"
+                            android:textColor="@color/ns_text_secondary"
+                            android:textSize="11sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/rowKpis"
                     android:layout_width="0dp"
@@ -190,7 +361,7 @@
                     android:layout_marginTop="16dp"
                     android:orientation="horizontal"
                     android:baselineAligned="false"
-                    app:layout_constraintTop_toBottomOf="@id/cardSaldo"
+                    app:layout_constraintTop_toBottomOf="@id/rowQuickActions"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintEnd_toEndOf="@id/guide_end">
 

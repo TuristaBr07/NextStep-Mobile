@@ -304,6 +304,8 @@
     <string name="error_remove_category">Erro ao remover categoria.</string>
     <string name="error_connection_remove_category">Falha de conexão ao remover categoria.</string>
     <string name="categories_empty">Nenhuma categoria cadastrada</string>
+    <string name="categories_count_single">1 categoria cadastrada</string>
+    <string name="categories_count_plural">%1$d categorias cadastradas</string>
     <string name="category_adding">Adicionando…</string>
 
     <!-- Configurações — sessão/logout -->
@@ -312,5 +314,50 @@
 
     <!-- Recuperação de senha -->
     <string name="forgot_in_development">Recuperação de senha em desenvolvimento no novo servidor.</string>
+
+    <!-- Status de transação -->
+    <string name="transaction_status_label">Status do pagamento</string>
+    <string name="transaction_status_paid">Pago</string>
+    <string name="transaction_status_pending">Pendente</string>
+
+    <!-- Agenda financeira (A Pagar / A Receber) -->
+    <string name="agenda_title">Agenda</string>
+    <string name="agenda_subtitle">Compromissos financeiros pendentes</string>
+    <string name="agenda_empty_title">Nenhum compromisso pendente</string>
+    <string name="agenda_empty_subtitle">Ao registrar uma transação como "Pendente", ela aparecerá aqui.</string>
+    <string name="agenda_tab_payable">A Pagar</string>
+    <string name="agenda_tab_receivable">A Receber</string>
+    <string name="agenda_section_overdue">Em atraso</string>
+    <string name="agenda_section_upcoming">Próximos</string>
+    <string name="agenda_mark_paid">Marcar como pago</string>
+    <string name="agenda_marked_paid_success">Marcado como pago!</string>
+    <string name="error_load_agenda">Erro ao carregar agenda.</string>
+    <string name="error_connection_agenda">Falha de conexão ao carregar agenda.</string>
+
+    <!-- Dashboard — Quick Actions -->
+    <string name="quick_action_income">Nova Receita</string>
+    <string name="quick_action_expense">Nova Despesa</string>
+    <string name="quick_action_agenda">Agenda</string>
+    <string name="quick_action_ai">Chat IA</string>
+
+    <!-- Dashboard — Health Score -->
+    <string name="health_score_title">Saúde Financeira</string>
+    <string name="health_score_excellent">Excelente</string>
+    <string name="health_score_good">Boa</string>
+    <string name="health_score_attention">Atenção</string>
+    <string name="health_score_critical">Crítica</string>
+    <string name="health_score_no_data">Registre transações para ver sua saúde financeira.</string>
+
+    <!-- Dashboard — balance visibility -->
+    <string name="balance_hidden">••••••</string>
+    <string name="content_desc_toggle_balance">Mostrar ou ocultar saldo</string>
+
+    <!-- Orçamento por categoria -->
+    <string name="budget_title">Orçamento</string>
+    <string name="budget_subtitle">Defina limites mensais por categoria</string>
+    <string name="budget_no_categories">Cadastre categorias primeiro nas configurações.</string>
+    <string name="budget_limit_hint">Limite (R$)</string>
+    <string name="budget_saved">Orçamento salvo!</string>
+    <string name="budget_exceeded">Atenção: limite de %1$s ultrapassado!</string>
 
 </resources>

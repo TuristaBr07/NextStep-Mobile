@@ -22,6 +22,9 @@ public class Transaction {
     @SerializedName("date")
     private String date;
 
+    @SerializedName("status")
+    private String status;
+
     @SerializedName("user_id")
     private String userId;
 
@@ -77,6 +80,14 @@ public class Transaction {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getUserId() {

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -78,6 +79,12 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView ivLogo;
     private ProgressBar pbMeiLimit;
     private LineChart lineChart;
+    private ImageButton btnToggleBalance;
+
+    private boolean balanceVisible = true;
+    private double cachedSaldo = 0;
+    private double cachedReceita = 0;
+    private double cachedDespesa = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +110,7 @@ public class DashboardActivity extends AppCompatActivity {
         ivLogo = findViewById(R.id.ivLogo);
         pbMeiLimit = findViewById(R.id.pbMeiLimit);
         lineChart = findViewById(R.id.lineChartDashboard);
+        btnToggleBalance = findViewById(R.id.btnToggleBalance);
 
         swipeRefreshDashboard.setColorSchemeColors(
                 ContextCompat.getColor(this, R.color.ns_primary)
@@ -126,6 +134,8 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         setupBottomNavigation();
+        setupQuickActions();
+        setupBalanceToggle();
         setupChartAppearance();
         DasReminderReceiver.schedule(this);
     }
@@ -183,6 +193,53 @@ public class DashboardActivity extends AppCompatActivity {
                 layoutLoading.setVisibility(View.GONE);
                 scrollDashboard.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void setupBalanceToggle() {
+        if (btnToggleBalance == null) return;
+        btnToggleBalance.setOnClickListener(v -> {
+            balanceVisible = !balanceVisible;
+            btnToggleBalance.setImageResource(balanceVisible ? R.drawable.ic_eye : R.drawable.ic_eye_off);
+            refreshBalanceDisplay();
+        });
+    }
+
+    private void refreshBalanceDisplay() {
+        NumberFormat fmt = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        String hidden = getString(R.string.balance_hidden);
+        if (tvSaldo != null) tvSaldo.setText(balanceVisible ? fmt.format(cachedSaldo) : hidden);
+        if (tvReceita != null) tvReceita.setText(balanceVisible ? fmt.format(cachedReceita) : hidden);
+        if (tvDespesa != null) tvDespesa.setText(balanceVisible ? fmt.format(cachedDespesa) : hidden);
+    }
+
+    private void setupQuickActions() {
+        LinearLayout qIncome = findViewById(R.id.quickActionIncome);
+        LinearLayout qExpense = findViewById(R.id.quickActionExpense);
+        LinearLayout qAgenda = findViewById(R.id.quickActionAgenda);
+        LinearLayout qAI = findViewById(R.id.quickActionAI);
+
+        if (qIncome != null) {
+            qIncome.setOnClickListener(v -> {
+                Intent i = new Intent(this, AddTransactionActivity.class);
+                i.putExtra("preset_type", "income");
+                startActivity(i);
+            });
+        }
+        if (qExpense != null) {
+            qExpense.setOnClickListener(v -> {
+                Intent i = new Intent(this, AddTransactionActivity.class);
+                i.putExtra("preset_type", "expense");
+                startActivity(i);
+            });
+        }
+        if (qAgenda != null) {
+            qAgenda.setOnClickListener(v ->
+                    startActivity(new Intent(this, AgendaActivity.class)));
+        }
+        if (qAI != null) {
+            qAI.setOnClickListener(v ->
+                    startActivity(new Intent(this, ChatbotActivity.class)));
         }
     }
 
@@ -317,9 +374,10 @@ public class DashboardActivity extends AppCompatActivity {
         double totalDespesa = summary.getDespesas();
         double saldo = summary.getSaldo();
 
-        tvSaldo.setText(formatCurrency(saldo));
-        tvReceita.setText(formatCurrency(totalReceita));
-        tvDespesa.setText(formatCurrency(totalDespesa));
+        cachedSaldo = saldo;
+        cachedReceita = totalReceita;
+        cachedDespesa = totalDespesa;
+        refreshBalanceDisplay();
 
         int progresso = (int) ((totalReceita / LIMITE_MEI) * 100);
         if (progresso < 0) progresso = 0;

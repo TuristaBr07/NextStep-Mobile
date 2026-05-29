@@ -27,6 +27,9 @@ public interface NextStepApi {
     @GET("transacoes")
     Call<List<Transaction>> getTransactions();
 
+    @GET("transacoes/pendentes")
+    Call<List<Transaction>> getPendingTransactions();
+
     @GET("transacoes/resumo")
     Call<TransactionSummary> getTransactionSummary();
 
